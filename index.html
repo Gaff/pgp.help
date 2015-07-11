@@ -30,25 +30,24 @@
           </button>
           <a class="navbar-brand" href="#">Gaff's project</a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+            <li><a data-toggle="tab" href="#about">About</a></li>
+            <li><a data-toggle="tab" href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
     <div class="container">
-      <div class="starter-template">
-        <h1>Bootstrap starter template - for Gaff. Plus tabs</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
     	<div class="tab-content">
       		<div class="tab-pane fade in active" id="about">
 	      		<p>This is an about bit</p>
     		</div>
+      		<div class="tab-pane fade in active" id="home">
+	      		<p>This is the home bit</p>
+    		</div>    	
 		</div>
     </div><!-- /.container -->
     
