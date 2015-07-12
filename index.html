@@ -50,12 +50,15 @@
 	            <fieldset>
 	              <legend>The Form</legend>
 	              <div class="form-group">
-	              	 <label class="col-lg-2 control-label" for="pass">Passphrase</label>
-                	 <div class="col-lg-10 controls">
-                     	<div class="input-append">
-                    		<input class="form-control" id="pass" placeholder="Long sentence that does not appear in songs or literature. SHA256 used as private key. Should not be empty!" type="text" autofocus/>
-                  		</div>
+	              	<label class="col-lg-2 control-label" for="pass">Passphrase</label>
+					<div class="col-lg-10 controls">
+                  		<textarea class="form-control" id="src" rows="8" spellcheck="false"></textarea>
+                  		<div>
+                    		<span id="hint_from">&nbsp;</span>&nbsp;
+              			</div>
                   	</div>
+                  </div>
+                </div>
                 </div>
 	              </div>
 	            </fieldset>
