@@ -39,7 +39,22 @@
     }
 
     function decrypt() {
+    	//First load the key.
     	var privKey = loadPgp($('#pgppriv'), $('#usernamep'), $('#fingerprintp'));
+    	//Now check that it's a private key...
+    	var passphrase = $('#passphrase').val();
+    	var messgae = $('#encmsg').val();
+    	var ctext = openpgp.message.readArmored(messgae);
+    	var privateKey = privKey.keys[0];
+    	privateKey.decrypt(passphrase);
+
+    	openpgp.decryptMessage(privateKey, ctext).then( function(plaintext) {
+    		$('#clearmsg').val(plaintext);
+    	}).catch(function(error ) {
+			$('#clearmsg').val(error);
+
+		});
+
     }
 
     function onInput(id, func) {
@@ -62,7 +77,7 @@
     function onChangeDecrypt() {
         clearTimeout(timeout);
         timeout = setTimeout(decrypt, TIMEOUT);
-    }    
+    }
 
 	//Hooks on startup
 	$(document).ready( function() {
@@ -72,7 +87,7 @@
 		if ((window.location.host=='pgp.help' || window.location.host=='gaff.github.io') && window.location.protocol!="https:")
             window.location.protocol = "https";
 
-        
+
         if (window.location.hash)
           $('#tab-' + window.location.hash.substr(1).split('?')[0]).tab('show');
 
@@ -84,7 +99,8 @@
 		onInput('#pgppub', onChangeFrom);
 		
 		onInput('#encmsg', onChangeDecrypt);
-		onInput('#pgppriv', onChangeDecrypt);		
+		onInput('#passphrase', onChangeDecrypt);
+		onInput('#pgppriv', onChangeDecrypt);	
     });
 
     function setErrorState(field, err, msg) {

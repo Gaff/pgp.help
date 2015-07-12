@@ -28,7 +28,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">pgp.help</a>
+          <a class="navbar-brand" href="">pgp.help</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
           <ul class="nav navbar-nav">
@@ -42,6 +42,107 @@
 
     <div class="container">
     	<div class="tab-content">
+      		<div class="tab-pane fade in active" id="encrypt">
+	      		<form action="/" class="form-horizontal" method="get">
+		            <fieldset>
+		              <legend>Encrypt Message</legend>
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="pgppub">Public Key</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
+	                  	</div>
+	                  </div>
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="username">Username</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="username" type="text" readonly="readonly"/>
+		                  </div>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="fingerprint" type="text" readonly="readonly"/>
+		                  </div>
+	                  	</div>
+	                  </div>
+
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="src">Message</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."></textarea>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		                <label class="col-lg-2 control-label" for="dest">Result</label>
+		                <div class="col-lg-10 controls">
+		                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8" placeholder="Encrypted text will appear here."></textarea>
+		                  <div>
+		                    <span id="hint_to">&nbsp;</span>&nbsp;
+		                  </div>
+		                </div>
+		              </div>	                  
+		            </fieldset>
+	        	</form>
+    		</div>
+      		<div class="tab-pane fade" id="decrypt">
+      			<form action="/" class="form-horizontal" method="get">
+		            <fieldset>
+		              <legend>Decrypt Messages</legend>
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="pgppriv">Private Key</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control autoselectall" id="pgppriv" rows="4" spellcheck="false" placeholder="Paste private PGP key here."></textarea>
+	                  	</div>
+	                  </div>
+	                  <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="passphrase">Password</label>
+						<div class="col-lg-10 controls">
+							<div class="input-append">
+	                  			<input type="password" class="form-control" id="passphrase" placeholder="Password for private key"></input>
+	                  		</div>
+	                  	</div>
+	                  </div>
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="usernamep">Username</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="usernamep" type="text" readonly="readonly"/>
+		                  </div>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="fingerprintp">Fingerprint</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="fingerprintp" type="text" readonly="readonly"/>
+		                  </div>
+	                  	</div>
+	                  </div>
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="encmsg">Encrypted Message</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control autoselectall" id="encmsg" rows="8" spellcheck="false" placeholder="Paste your mesage here."></textarea>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		                <label class="col-lg-2 control-label" for="clearmsg">Result</label>
+		                <div class="col-lg-10 controls">
+		                  <textarea class="form-control autoselectall" id="clearmsg" readonly="readonly" rows="8" placeholder="Decrypted text will appear here."></textarea>
+		                  <div>
+		                    <span id="hint_to">&nbsp;</span>&nbsp;
+		                  </div>
+		                </div>
+		              </div>	                  
+		            </fieldset>
+		        </form>
+    		</div>        		
       		<div class="tab-pane fade" id="about">
 	      		<div class="jumbotron">
 	      			<div class="container">
@@ -107,99 +208,6 @@ Uq0XqerlKg==
 	      			</div>
 	      		</div>
     		</div>
-      		<div class="tab-pane fade in active" id="encrypt">
-	      		<form action="/" class="form-horizontal" method="get">
-		            <fieldset>
-		              <legend>Encrypt Message</legend>
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="pgppub">Public Key</label>
-						<div class="col-lg-10 controls">
-	                  		<textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
-	                  	</div>
-	                  </div>
-
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="username">Username</label>
-						<div class="col-lg-10 controls">
-		                  <div class="input-append">
-		                    <input class="form-control" id="username" type="text" readonly="readonly"/>
-		                  </div>
-	                  	</div>
-	                  </div>
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-						<div class="col-lg-10 controls">
-		                  <div class="input-append">
-		                    <input class="form-control" id="fingerprint" type="text" readonly="readonly"/>
-		                  </div>
-	                  	</div>
-	                  </div>
-
-
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="src">Message</label>
-						<div class="col-lg-10 controls">
-	                  		<textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."></textarea>
-	                  	</div>
-	                  </div>
-		              <div class="form-group">
-		                <label class="col-lg-2 control-label" for="dest">Result</label>
-		                <div class="col-lg-10 controls">
-		                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8" placeholder="Encrypted text will appear here."></textarea>
-		                  <div>
-		                    <span id="hint_to">&nbsp;</span>&nbsp;
-		                  </div>
-		                </div>
-		              </div>	                  
-		            </fieldset>
-	        	</form>
-    		</div>
-      		<div class="tab-pane fade" id="decrypt">
-      			<form action="/" class="form-horizontal" method="get">
-		            <fieldset>
-		              <legend>Decrypt Messages</legend>
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="pgppriv">Private Key</label>
-						<div class="col-lg-10 controls">
-	                  		<textarea class="form-control autoselectall" id="pgppriv" rows="4" spellcheck="false" placeholder="Paste private PGP key here."></textarea>
-	                  	</div>
-	                  </div>
-
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="usernamep">Username</label>
-						<div class="col-lg-10 controls">
-		                  <div class="input-append">
-		                    <input class="form-control" id="usernamep" type="text" readonly="readonly"/>
-		                  </div>
-	                  	</div>
-	                  </div>
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="fingerprintp">Fingerprint</label>
-						<div class="col-lg-10 controls">
-		                  <div class="input-append">
-		                    <input class="form-control" id="fingerprintp" type="text" readonly="readonly"/>
-		                  </div>
-	                  	</div>
-	                  </div>
-
-		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="encmsg">Encrypted Message</label>
-						<div class="col-lg-10 controls">
-	                  		<textarea class="form-control autoselectall" id="encmsg" rows="8" spellcheck="false" placeholder="Paste your mesage here."></textarea>
-	                  	</div>
-	                  </div>
-		              <div class="form-group">
-		                <label class="col-lg-2 control-label" for="clearmsg">Result</label>
-		                <div class="col-lg-10 controls">
-		                  <textarea class="form-control autoselectall" id="clearmsg" readonly="readonly" rows="8" placeholder="Decrypted text will appear here."></textarea>
-		                  <div>
-		                    <span id="hint_to">&nbsp;</span>&nbsp;
-		                  </div>
-		                </div>
-		              </div>	                  
-		            </fieldset>
-		        </form>
-    		</div>        		
 		</div>
 		<hr/>
 		<footer>
