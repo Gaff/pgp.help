@@ -131,7 +131,7 @@
     }
 
     function onInput(id, func) {
-        $(id).bind("input keyup keydown keypress change blur", function() {
+        $(id).bind("input keyup keydown keypress change blur paste", function() {
             if ($(this).val() != jQuery.data(this, "lastvalue")) {
                 func();
             }
