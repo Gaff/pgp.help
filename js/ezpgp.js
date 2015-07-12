@@ -39,22 +39,30 @@
     }
 
     function decrypt() {
+    	setErrorState($('#passphrase'), false);
     	//First load the key.
     	var privKey = loadPgp($('#pgppriv'), $('#usernamep'), $('#fingerprintp'));
     	//Now check that it's a private key...
     	var passphrase = $('#passphrase').val();
-    	var messgae = $('#encmsg').val();
-    	var ctext = openpgp.message.readArmored(messgae);
-    	var privateKey = privKey.keys[0];
-    	privateKey.decrypt(passphrase);
+        var privateKey = privKey.keys[0];
+    	var ok = privateKey.decrypt(passphrase);
+		
+    	if ( ok ) {
+	    	var messgae = $('#encmsg').val();
+    		var ctext = openpgp.message.readArmored(messgae);
 
-    	openpgp.decryptMessage(privateKey, ctext).then( function(plaintext) {
-    		$('#clearmsg').val(plaintext);
-    	}).catch(function(error ) {
-			$('#clearmsg').val(error);
+			openpgp.decryptMessage(privateKey, ctext).then( function(plaintext) {
+				$('#clearmsg').val(plaintext);
+			}).catch(function(error ) {
+				$('#clearmsg').val(error);
 
-		});
+			});
 
+
+		} else {
+			setErrorState($('#passphrase'), true);
+		}
+ 
     }
 
     function onInput(id, func) {
