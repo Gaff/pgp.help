@@ -32,9 +32,9 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+            <li class="active"><a data-toggle="tab" href="#encrypt">Encrypt / Send</a></li>
+            <li><a data-toggle="tab" href="#encrypt">Decrypt / Receive</a></li>
             <li><a data-toggle="tab" href="#about">About</a></li>
-            <li><a data-toggle="tab" href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -45,23 +45,45 @@
       		<div class="tab-pane fade" id="about">
 	      		<p>This is an about bit</p>
     		</div>
-      		<div class="tab-pane fade in active" id="home">
+      		<div class="tab-pane fade in active" id="encrypt">
 	      		<form action="/" class="form-horizontal" method="get">
 		            <fieldset>
-		              <legend>The Form</legend>
+		              <legend>Encrypt Message</legend>
 		              <div class="form-group">
-		              	<label class="col-lg-2 control-label" for="pass">Input</label>
+		              	<label class="col-lg-2 control-label" for="pgppub">PGP Key</label>
 						<div class="col-lg-10 controls">
-	                  		<textarea class="form-control" id="src" rows="8" spellcheck="false"></textarea>
-	                  		<div>
-	                    		<span id="hint_from">&nbsp;</span>&nbsp;
-	              			</div>
+	                  		<textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
+	                  	</div>
+	                  </div>
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="username">Username</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="username" type="text" readonly="readonly"/>
+		                  </div>
 	                  	</div>
 	                  </div>
 		              <div class="form-group">
-		                <label class="col-lg-2 control-label" for="enc_from">Result</label>
+		              	<label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+						<div class="col-lg-10 controls">
+		                  <div class="input-append">
+		                    <input class="form-control" id="fingerprint" type="text" readonly="readonly"/>
+		                  </div>
+	                  	</div>
+	                  </div>
+
+
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="src">Message</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."></textarea>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		                <label class="col-lg-2 control-label" for="dest">Result</label>
 		                <div class="col-lg-10 controls">
-		                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"></textarea>
+		                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8" placeholder="Encrypted text will appear here."></textarea>
 		                  <div>
 		                    <span id="hint_to">&nbsp;</span>&nbsp;
 		                  </div>
@@ -70,7 +92,7 @@
 		            </fieldset>
 	        	</form>
     		</div>
-      		<div class="tab-pane fade" id="contact">
+      		<div class="tab-pane fade" id="decrypt">
 	      		<p>This is the contact bit</p>
     		</div>        		
 		</div>

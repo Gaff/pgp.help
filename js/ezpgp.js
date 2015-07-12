@@ -97,12 +97,29 @@
 		'=q60p',
 		'-----END PGP PRIVATE KEY BLOCK-----'].join('\n');
 
+	function loadPgppub() {
+		setErrorState($('#pgppub'), false);
+		var newKey = $('#pgppub').val();
+		var publicKey = openpgp.key.readArmored(newKey);
+
+		try {
+			var prefferedKey = publicKey.keys[0];
+			var user = prefferedKey.getPrimaryUser();
+			var keyIds = prefferedKey.getKeyIds();
+			$('#username').val(user.user.userId.userid ); //TODO: This looks ugly, is there a better way?
+			$('#fingerprint').val(prefferedKey.primaryKey.fingerprint);
+		} catch (err) {
+			setErrorState($('#pgppub'), true);
+			console.log(err);
+		}
+
+		return publicKey;
+	}
+
     function translate() {
 
         var str = $('#src').val();
-        var publicKey = openpgp.key.readArmored(key);
-        var text = '...translating';
-        $('#dest').val(text);
+        var publicKey = loadPgppub();
 
 		openpgp.encryptMessage(publicKey.keys, str).then(function(pgpMessage) {
 		    text = pgpMessage;
@@ -111,9 +128,6 @@
 		    text = error;
 		    $('#dest').val(text);
 		});
-
-        
-
     }
 
     function onInput(id, func) {
@@ -138,8 +152,20 @@
 		//console.log ('document ready - woot!');
 
 		onInput('#src', onChangeFrom);
+		onInput('#pgppub', onChangeFrom);
 		
     });
+
+    function setErrorState(field, err, msg) {
+        var group = field.closest('.controls').parent();
+        if (err) {
+            group.addClass('has-error');
+            group.attr('title',msg);
+        } else {
+            group.removeClass('has-error');
+            group.attr('title','');
+        }
+    }
 
 	//Make it easer to cut-and-paste.
 	//Thanks to: https://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
@@ -153,6 +179,10 @@
 	        $this.unbind("mouseup");
 	        return false;
     });
+
+	$('.autoselectall').blur(function() {
+		$(this).scrollTop(0);
+	});
 });
 
 })(jQuery);
