@@ -47,21 +47,27 @@
     		</div>
       		<div class="tab-pane fade in active" id="home">
 	      		<form action="/" class="form-horizontal" method="get">
-	            <fieldset>
-	              <legend>The Form</legend>
-	              <div class="form-group">
-	              	<label class="col-lg-2 control-label" for="pass">Passphrase</label>
-					<div class="col-lg-10 controls">
-                  		<textarea class="form-control" id="src" rows="8" spellcheck="false"></textarea>
-                  		<div>
-                    		<span id="hint_from">&nbsp;</span>&nbsp;
-              			</div>
-                  	</div>
-                  </div>
-                </div>
-                </div>
-	              </div>
-	            </fieldset>
+		            <fieldset>
+		              <legend>The Form</legend>
+		              <div class="form-group">
+		              	<label class="col-lg-2 control-label" for="pass">Input</label>
+						<div class="col-lg-10 controls">
+	                  		<textarea class="form-control" id="src" rows="8" spellcheck="false"></textarea>
+	                  		<div>
+	                    		<span id="hint_from">&nbsp;</span>&nbsp;
+	              			</div>
+	                  	</div>
+	                  </div>
+		              <div class="form-group">
+		                <label class="col-lg-2 control-label" for="enc_from">Result</label>
+		                <div class="col-lg-10 controls">
+		                  <textarea class="form-control" id="dest" readonly="readonly" rows="8"></textarea>
+		                  <div>
+		                    <span id="hint_to">&nbsp;</span>&nbsp;
+		                  </div>
+		                </div>
+		              </div>	                  
+		            </fieldset>
 	        	</form>
     		</div>
       		<div class="tab-pane fade" id="contact">
