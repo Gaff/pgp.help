@@ -133,7 +133,7 @@
         timeout = setTimeout(translate, TIMEOUT);
     }
 
-	//I'm not sure what any of this means :/
+	//Hooks on startup
 	$(document).ready( function() {
 		//console.log ('document ready - woot!');
 
@@ -141,6 +141,7 @@
 		
     });
 
+	//Make it easer to cut-and-paste.
 	//Thanks to: https://stackoverflow.com/questions/5797539/jquery-select-all-text-from-a-textarea
     $('.autoselectall').focus(function() {    	
 	    var $this = $(this);
