@@ -20,6 +20,12 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   //TODO: All this stuff should be pushed to a generic module!
   $scope.isNew = function(key) { return key == k; }
 
+  $scope.$on('newkey', function(event, data) {
+    console.log(data);
+    $scope.keys.push(data);
+    $scope.onSelect(data);
+  });
+
   $scope.getUser = function(key) {
     if('alias' in key) {
       return key.alias;
@@ -44,6 +50,14 @@ pgpApp.controller('KeyWorkCtrl', function ($scope) {
   });
 
   $scope.$watch('key', function() {$scope.encryptMessage()});
+
+  $scope.loadKey = function() {
+    var publicKey = openpgp.key.readArmored($scope.rawkey);
+    for( i = 0; i < publicKey.keys.length; i++) {
+      $scope.$emit('newkey', publicKey.keys[i]);
+    }
+    $scope.rawkey = "";
+  }
 
   $scope.encryptMessage = function() {
     if ($scope.message && !$scope.isNew($scope.key)) {

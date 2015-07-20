@@ -69,7 +69,8 @@
               <div class="form-group" ng-show="isNew(selectit)">
                 <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
                 <div class="col-lg-10 controls">
-                  <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
+                  <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
+                    ng-model="rawkey" ng-change="loadKey()"></textarea>
                 </div>
               </div>
 
