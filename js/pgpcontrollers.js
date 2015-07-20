@@ -1,17 +1,63 @@
 var pgpApp = angular.module('pgpApp', []);
 
 pgpApp.controller('KeyListCtrl', function ($scope) {
-  $scope.keys = [
-    {'name': 'New Key...'},
-    {'name': 'help@pgp.help', 'snippet': 'Fast just got faster with Nexus S.'},
-    {'name': 'test1@whoisit.com', 'snippet': 'The Next, Next Generation tablet.'},
-    {'name': 'blah@silly.com', 'snippet': 'The Next, Next Generation tablet.'}
-  ];
-  $scope.selectit = {index: 0, dummy: "foo"};
+  k = {'alias': 'New Key...', 'new' : 'True'};
+  $scope.selectit = k;
+  $scope.keys = [k];
+  pgpkeys = openpgp.key.readArmored(myKey);
+  $scope.keys = $scope.keys.concat (pgpkeys.keys);
+  $scope.selectedIndex = function() { return  $scope.keys.indexOf($scope.selectit);}
+  $scope.onSelect = function(key) {
+    $scope.selectit = key;
+    $scope.$broadcast('selection', key);
+  }
 
+  $scope.$watch('$viewContentLoaded', function() {
+    //This makes sure that when we load up we pass down the selection.
+    $scope.onSelect($scope.selectit);
+  });
+
+  //TODO: All this stuff should be pushed to a generic module!
+  $scope.isNew = function(key) { return key == k; }
+
+  $scope.getUser = function(key) {
+    if('alias' in key) {
+      return key.alias;
+    }
+    if('primaryKey' in key) {
+      return key.getPrimaryUser().user.userId.userid;
+    }
+    return key.keys();
+  }
+
+  $scope.getFingerprint = function(key) {
+    if('primaryKey' in key) {
+      return key.primaryKey.fingerprint;
+    }
+  }
 });
 
+pgpApp.controller('KeyWorkCtrl', function ($scope) {
+  //$scope.key = "none yet";
+  $scope.$on('selection', function(event, data) {
+    $scope.key = data;
+  });
 
+  $scope.encryptMessage = function() {
+    if ($scope.message && !$scope.isNew($scope.key)) {
+      //return "DEC: " + message;
+      openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
+        $scope.ciphertext = $scope.message + "\n" + pgpMessage;
+        $scope.$apply();
+      }).catch(function(error) {
+        $scope.ciphertext = error;
+        $scope.$apply();
+      });
+    } else {
+      $scope.ciphertext = "";
+    }
+  }
+});
 
 var myKey = [
 '-----BEGIN PGP PUBLIC KEY BLOCK-----',

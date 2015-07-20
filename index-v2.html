@@ -23,11 +23,12 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
+    <script src="js/extrastyle.js"></script>
   </head>
 
   <body>
@@ -51,32 +52,70 @@
       </div>
     </header>
 
-    <div class="container">
-      <div class="row work" ng-controller="KeyListCtrl">
+    <div class="container" ng-controller="KeyListCtrl">
+      <div class="row work">
         <div class="col-lg-2 keylist nav-pills well">
           <h4>Keys</h4>
           <ul class="nav nav-pills nav-stacked">
-              <li ng-repeat="key in keys" ng-click="selectit.index=$index;selectit.key = key" ng-class="{active:$index==selectit.index}">
-                <a href="#key/{{key.name}}">{{key.name}}</a>
+              <li ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
+                <a href="">{{getUser(key)}}</a>
               </li>
           </ul>
-          <p>Selected: {{selectit}}</p>
         </div>
 
-        <div class="col-lg-10">
-          <h4>Subheading: {{selectit.key.name}}</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+        <div class="col-lg-10 active" ng-controller="KeyWorkCtrl">
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>Encrypt Message</legend>
+              <div class="form-group" ng-show="isNew(selectit)">
+                <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
+                </div>
+              </div>
 
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="username">Username</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" id="username" type="text" readonly="readonly" ng-value="getUser(selectit)"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" id="fingerprint" type="text" readonly="readonly" ng-value="getFingerprint(selectit)"/>
+                  </div>
+                </div>
+              </div>
 
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="src">Message</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."
+                    ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="dest">Result</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                      placeholder="Encrypted text will appear here.">{{ciphertext}}</textarea>
+                  <div>
+                    <span id="hint_to">&nbsp;</span>&nbsp;
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
         </div>
       </div>
 
       <footer class="footer">
-        <p>&copy; Company 2014</p>
+        <p>&copy; pgp.help 2015</p>
       </footer>
 
     </div> <!-- /container -->
