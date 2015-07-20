@@ -24,11 +24,10 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/angular.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
-    <script src="js/extrastyle.js"></script>
   </head>
 
   <body>
@@ -54,7 +53,7 @@
 
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
-        <div class="col-lg-2 keylist nav-pills well">
+        <div class="col-lg-3 keylist nav-pills well">
           <h4>Keys</h4>
           <ul class="nav nav-pills nav-stacked">
               <li ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
@@ -63,7 +62,7 @@
           </ul>
         </div>
 
-        <div class="col-lg-10 active" ng-controller="KeyWorkCtrl">
+        <div class="col-lg-9 active" ng-controller="KeyWorkCtrl">
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Encrypt Message</legend>
@@ -120,6 +119,7 @@
 
     </div> <!-- /container -->
 
+    <script src="js/extrastyle.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!-- script src="../../assets/js/ie10-viewport-bug-workaround.js"></script -->

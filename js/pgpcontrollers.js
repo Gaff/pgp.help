@@ -43,6 +43,8 @@ pgpApp.controller('KeyWorkCtrl', function ($scope) {
     $scope.key = data;
   });
 
+  $scope.$watch('key', function() {$scope.encryptMessage()});
+
   $scope.encryptMessage = function() {
     if ($scope.message && !$scope.isNew($scope.key)) {
       //return "DEC: " + message;

@@ -6,20 +6,41 @@
           background-color:red;
         }
         </style>
-        <script type="text/javascript" src="js/angular.min.js"></script>
-        <script type="text/javascript" src="js/app.js"></script>
 	</head>
 
 	<body ng-controller="MyController" ng-init="count=0">
 		<div>
 			<div class="button" ng-class="{'active':isActiveTab(0)}" ng-click="count = count + 1">Some Title 1</div>
 			<div class="button" ng-class="{'active':isActiveTab(1)}" ng-click="count = count - 1">Some Title 2</div>
+			<div class="col-lg-10 controls">
+				<textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+						placeholder="Encrypted text will appear here.">
+					Lots and lots of data needs to go here
+					blah
+					blah
+
+
+					blah
+					blah
+					</textarea>
+				<div>
+					<span id="hint_to">&nbsp;</span>&nbsp;
+				</div>
+			</div>
+
 		</div>
     <br/>
     <p>count: {{count}}</p>
 		<br/>
 		<div ng-show="isActiveTab(0)">tab1</div>
 		<div ng-show="isActiveTab(1)">tab2</div>
+
+	<script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/angular.min.js"></script>
+  <script src="js/openpgp.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/extrastyle.js"></script>
 
 
 	</body>
