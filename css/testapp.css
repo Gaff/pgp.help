@@ -4,6 +4,22 @@
   color: yellow;
 }
 
+.smartfade.ng-hide-add {
+  transition:0.5s linear all;
+}
+
+.smartfade.ng-hide {
+  opacity: 0;
+}
+
+.fade2.ng-hide-add, .fade2.ng-hide-remove {
+  transition:0.5s linear all;
+}
+
+.fade2.ng-hide {
+  opacity: 0;
+}
+
 .fade.ng-enter,
 .fade.ng-leave {
   transition:0.5s linear all;

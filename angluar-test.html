@@ -11,7 +11,7 @@
 
 	<body ng-controller="MyController">
 		<div class="bs-component">
-			<div ng-if="bool" class="info fade">
+			<div ng-show="bool" class="info fade2">
 			   Grasshopper
 			</div>
 			<button ng-click="bool=true">Fade In!</button>
@@ -19,17 +19,17 @@
 			<br/>
 		</div>
 		<div class="bs-component">
-	    <button ng-click="test.hideme = !test.hideme">
+	    <button ng-click="quickhide()">
 	      Quickhide
 	    </button>
-	   	<button ng-click="test.instahide = !test.instahide; test.hideme=false">
+	   	<button ng-click="slowhide()">
 	      Slowhide
 	    </button>
-			<button ng-click="test.instahide = !test.instahide; test.hideme=false">
+			<button ng-click="show()">
 		      Show
 	    </button>
 	    <p>before the box</p>
-	    <div class="box" ng-class="{ 'bigger': test.bigger, 'light-theme': test.lightTheme, 'hideme':test.hideme }" ng-hide="(test.instahide || test.hideme)">
+	    <div class="box" ng-class="test.class" ng-hide="test.hide">
 	      This is just a box.
 	    </div>
 	    <p>after the box</p>
