@@ -71,7 +71,7 @@
               <div class="form-group" ng-class="smartfade" ng-show="isNewKey()">
                 <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
                 <div class="col-lg-10 controls">
-                  <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
+                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
                     ng-model="rawkey" ng-change="loadKey()"></textarea>
                 </div>
               </div>
@@ -79,7 +79,7 @@
                 <label class="col-lg-2 control-label" for="username">Username</label>
                 <div class="col-lg-10 controls">
                   <div class="input-append">
-                    <input class="form-control" id="username" type="text" readonly="readonly" ng-value="getUser(key)"/>
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
                   </div>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                 <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
                 <div class="col-lg-10 controls">
                   <div class="input-append">
-                    <input class="form-control" id="fingerprint" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
                   </div>
                 </div>
               </div>
@@ -95,7 +95,7 @@
               <div class="form-group">
                 <label class="col-lg-2 control-label" for="src">Message</label>
                 <div class="col-lg-10 controls">
-                  <textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."
+                  <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
                     ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
                 </div>
               </div>

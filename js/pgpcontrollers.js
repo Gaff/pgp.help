@@ -1,5 +1,24 @@
 var pgpApp = angular.module('pgpApp', ['ngAnimate']);
 
+pgpApp.directive('focusOn', function() {
+   return function(scope, elem, attr) {
+      scope.$on('focusOn', function(e, name) {
+        if(name === attr.focusOn) {
+          //console.log("focuson "+attr.focusOn);
+          elem[0].focus();
+        }
+      });
+   };
+});
+
+pgpApp.factory('focus', function ($rootScope, $timeout) {
+  return function(name) {
+    $timeout(function (){
+      $rootScope.$broadcast('focusOn', name);
+    });
+  }
+});
+
 pgpApp.controller('KeyListCtrl', function ($scope) {
   k = {'alias': 'New Key...', 'new' : 'True'};
   $scope.selectit = k;
@@ -52,7 +71,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   }
 });
 
-pgpApp.controller('KeyWorkCtrl', function ($scope) {
+pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
   //$scope.key = "none yet";
   $scope.$on('selection', function(event, data) {
     $scope.smartfade = "";
@@ -60,8 +79,11 @@ pgpApp.controller('KeyWorkCtrl', function ($scope) {
     $scope.key = data;
     if ($scope.isNewKey()) {
       $scope.rawkey = "";
+      focus("pgppub");
+
     } else {
       $scope.rawkey = data.armor();
+      focus("message");
     }
   });
 
@@ -75,6 +97,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope) {
       //Apply this first to get animations to work:
       $scope.key = publicKey.keys[publicKey.keys.length - 1];
       $scope.smartfade = "smartfade";
+      focus("message");
       //$scope.wasNew = true;
 
       //Now notify about the new keys.
