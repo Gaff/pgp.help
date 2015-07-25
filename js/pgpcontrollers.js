@@ -1,4 +1,4 @@
-var pgpApp = angular.module('pgpApp', []);
+var pgpApp = angular.module('pgpApp', ['ngAnimate']);
 
 pgpApp.controller('KeyListCtrl', function ($scope) {
   k = {'alias': 'New Key...', 'new' : 'True'};
@@ -21,9 +21,18 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.isNew = function(key) { return key == k; }
 
   $scope.$on('newkey', function(event, data) {
-    console.log(data);
+    //console.log(data);
+    f = $scope.getFingerprint(data);
+    for (i = 0; i < $scope.keys.length; i++) {
+      d = $scope.keys[i];
+      if ($scope.getFingerprint(d) == f) {
+        $scope.selectit = d;
+        return;
+      }
+    }
     $scope.keys.push(data);
-    $scope.onSelect(data);
+    $scope.selectit = data;
+    //$scope.onSelect(data);
   });
 
   $scope.getUser = function(key) {
@@ -46,17 +55,36 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 pgpApp.controller('KeyWorkCtrl', function ($scope) {
   //$scope.key = "none yet";
   $scope.$on('selection', function(event, data) {
+    $scope.smartfade = "";
+
     $scope.key = data;
+    if ($scope.isNewKey()) {
+      $scope.rawkey = "";
+    } else {
+      $scope.rawkey = data.armor();
+    }
   });
 
   $scope.$watch('key', function() {$scope.encryptMessage()});
+  $scope.isNewKey = function() { return $scope.isNew($scope.key)};
 
   $scope.loadKey = function() {
-    var publicKey = openpgp.key.readArmored($scope.rawkey);
-    for( i = 0; i < publicKey.keys.length; i++) {
-      $scope.$emit('newkey', publicKey.keys[i]);
+    try {
+      var publicKey = openpgp.key.readArmored($scope.rawkey);
+
+      //Apply this first to get animations to work:
+      $scope.key = publicKey.keys[publicKey.keys.length - 1];
+      $scope.smartfade = "smartfade";
+      //$scope.wasNew = true;
+
+      //Now notify about the new keys.
+      for( i = 0; i < publicKey.keys.length; i++) {
+        $scope.$emit('newkey', publicKey.keys[i]);
+      }
+
+    } catch (err) {
+      console.log("Not a key: " + err);
     }
-    $scope.rawkey = "";
   }
 
   $scope.encryptMessage = function() {

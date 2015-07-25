@@ -26,6 +26,7 @@
     <script src="js/jquery-2.1.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
   </head>
@@ -56,7 +57,7 @@
         <div class="col-lg-3 keylist nav-pills well">
           <h4>Keys</h4>
           <ul class="nav nav-pills nav-stacked">
-              <li ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
+              <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
                 <a href="">{{getUser(key)}}</a>
               </li>
           </ul>
@@ -66,31 +67,30 @@
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Encrypt Message</legend>
-              <div class="form-group" ng-show="isNew(selectit)">
+
+              <div class="form-group" ng-class="smartfade" ng-show="isNewKey()">
                 <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
                 <div class="col-lg-10 controls">
                   <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
                     ng-model="rawkey" ng-change="loadKey()"></textarea>
                 </div>
               </div>
-
-              <div class="form-group">
+              <div class="form-group" ng-show="!isNewKey()">
                 <label class="col-lg-2 control-label" for="username">Username</label>
                 <div class="col-lg-10 controls">
                   <div class="input-append">
-                    <input class="form-control" id="username" type="text" readonly="readonly" ng-value="getUser(selectit)"/>
+                    <input class="form-control" id="username" type="text" readonly="readonly" ng-value="getUser(key)"/>
                   </div>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-show="!isNewKey()">
                 <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
                 <div class="col-lg-10 controls">
                   <div class="input-append">
-                    <input class="form-control" id="fingerprint" type="text" readonly="readonly" ng-value="getFingerprint(selectit)"/>
+                    <input class="form-control" id="fingerprint" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
                   </div>
                 </div>
               </div>
-
 
               <div class="form-group">
                 <label class="col-lg-2 control-label" for="src">Message</label>
