@@ -54,41 +54,6 @@
 
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
-        <div class="col-lg-3" ng-show="workstarted">
-          <div class="panel panel-default">
-            <div class=panel-heading>Keys</div>
-            <div class="panel-body nav-pills smartfade">
-              <ul class="nav nav-pills nav-stacked">
-                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
-                    <a href="">{{getUser(key)}}</a>
-                  </li>
-              </ul>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class=panel-heading>Settings</div>
-            <div class="panel-body">
-              <div class="form-group row">
-                <label class="control-label col-sm-7">Remember keys</label>
-                <div class="controls col-sm-5 pull-right">
-                  <div class="btn-group btn-group-justified btn-group-horizontal" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
-                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
-                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
-                  </div>
-                </div>
-              </div>
-              <div class="alert alert-warning smartfade" hidden="false" ng-show="persist_mo">
-                Key data is stored within your browser. It is NEVER sent over the internet.
-              </div>
-              <div class="form-group row" hidden="true">
-                <label class="control-label col-sm-7" >Delete local data</label>
-                <div class="controls col-sm-5 pull-right">
-                  <button class="btn btn-xs btn-block btn-warning">Delete!</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="col-lg-9 active" ng-controller="KeyWorkCtrl">
           <form action="/" class="form-horizontal" method="get">
@@ -139,6 +104,42 @@
             </fieldset>
           </form>
         </div>
+        <div class="col-lg-3" ng-show="workstarted">
+          <div class="well">
+            <div class="nav-pills smartfade">
+              <legend>Keys</legend>
+              <ul class="nav nav-pills nav-stacked">
+                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
+                    <a href="">{{getUser(key)}}</a>
+                  </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading>Settings</div>
+            <div class="panel-body">
+              <div class="form-group row">
+                <label class="control-label col-sm-7">Remember keys</label>
+                <div class="controls col-sm-5 pull-right">
+                  <div class="btn-group btn-group-justified btn-group-horizontal" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning smartfade" ng-show="persist_mo">
+                Key data is stored within your browser. It is NEVER sent over the internet.
+              </div>
+              <div class="form-group row" ng-show="!persist && localdata">
+                <label class="control-label col-sm-7" >Delete local data!</label>
+                <div class="controls col-sm-5 pull-right">
+                  <button class="btn btn-xs btn-block btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <footer class="footer">

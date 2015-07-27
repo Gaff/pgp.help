@@ -123,7 +123,8 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     if ($scope.message && !$scope.isNew($scope.key)) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
-        $scope.ciphertext = $scope.message + "\n" + pgpMessage;
+        $scope.ciphertext = pgpMessage;
+        //$scope.ciphertext = $scope.message + "\n" + pgpMessage;
         $scope.$apply();
       }).catch(function(error) {
         $scope.ciphertext = error;
