@@ -75,6 +75,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
   //$scope.key = "none yet";
   $scope.$on('selection', function(event, data) {
     $scope.smartfade = "";
+    $scope.pgperror = false;
 
     $scope.key = data;
     if ($scope.isNewKey()) {
@@ -93,20 +94,25 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
   $scope.loadKey = function() {
     try {
       var publicKey = openpgp.key.readArmored($scope.rawkey);
+      if (publicKey.err) {
+        $scope.pgperror = true;
+      } else {
+        $scope.pgperror = false;
+        //Apply this first to get animations to work:
+        $scope.key = publicKey.keys[publicKey.keys.length - 1];
+        $scope.smartfade = "smartfade";
+        focus("message");
+        //$scope.wasNew = true;
 
-      //Apply this first to get animations to work:
-      $scope.key = publicKey.keys[publicKey.keys.length - 1];
-      $scope.smartfade = "smartfade";
-      focus("message");
-      //$scope.wasNew = true;
-
-      //Now notify about the new keys.
-      for( i = 0; i < publicKey.keys.length; i++) {
-        $scope.$emit('newkey', publicKey.keys[i]);
+        //Now notify about the new keys.
+        for( i = 0; i < publicKey.keys.length; i++) {
+          $scope.$emit('newkey', publicKey.keys[i]);
+        }
       }
 
     } catch (err) {
-      console.log("Not a key: " + err);
+      //console.log("Not a key: " + err);
+      $scope.pgperror = true;
     }
   }
 

@@ -68,11 +68,11 @@
             <fieldset>
               <legend>Encrypt Message</legend>
 
-              <div class="form-group" ng-class="smartfade" ng-show="isNewKey()">
+              <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
                 <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
                 <div class="col-lg-10 controls">
                   <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
-                    ng-model="rawkey" ng-change="loadKey()"></textarea>
+                    ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
                 </div>
               </div>
               <div class="form-group" ng-show="!isNewKey()">
