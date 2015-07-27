@@ -23,6 +23,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   k = {'alias': 'New Key...', 'new' : 'True'};
   $scope.selectit = k;
   $scope.keys = [k];
+  $scope.persist = true;
   pgpkeys = openpgp.key.readArmored(myKey);
   $scope.keys = $scope.keys.concat (pgpkeys.keys);
   $scope.selectedIndex = function() { return  $scope.keys.indexOf($scope.selectit);}
