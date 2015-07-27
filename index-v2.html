@@ -91,58 +91,53 @@
         </div>
 
         <div class="col-lg-9 active" ng-controller="KeyWorkCtrl">
-          <div class="panel panel-primary">
-            <div class="panel-heading">Encrypt Message</div>
-            <div class="panel-body">
-              <form action="/" class="form-horizontal" method="get">
-                <fieldset>
-                  
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>Encrypt Message</legend>
 
-                  <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
-                    <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
-                    <div class="col-lg-10 controls">
-                      <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
-                        ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
-                    </div>
+              <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
+                <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
+                    ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
+                </div>
+              </div>
+              <div class="form-group" ng-show="!isNewKey()">
+                <label class="col-lg-2 control-label" for="username">Username</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
                   </div>
-                  <div class="form-group" ng-show="!isNewKey()">
-                    <label class="col-lg-2 control-label" for="username">Username</label>
-                    <div class="col-lg-10 controls">
-                      <div class="input-append">
-                        <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
-                      </div>
-                    </div>
+                </div>
+              </div>
+              <div class="form-group" ng-show="!isNewKey()">
+                <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
                   </div>
-                  <div class="form-group" ng-show="!isNewKey()">
-                    <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-                    <div class="col-lg-10 controls">
-                      <div class="input-append">
-                        <input class="form-control" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
-                      </div>
-                    </div>
-                  </div>
+                </div>
+              </div>
 
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label" for="src">Message</label>
-                    <div class="col-lg-10 controls">
-                      <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
-                        ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
-                    </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="src">Message</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
+                    ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="dest">Result</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                      placeholder="Encrypted text will appear here.">{{ciphertext}}</textarea>
+                  <div>
+                    <span id="hint_to">&nbsp;</span>&nbsp;
                   </div>
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label" for="dest">Result</label>
-                    <div class="col-lg-10 controls">
-                      <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-                          placeholder="Encrypted text will appear here.">{{ciphertext}}</textarea>
-                      <div>
-                        <span id="hint_to">&nbsp;</span>&nbsp;
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-              </form>
-            </div>
-          </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
         </div>
       </div>
 
