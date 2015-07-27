@@ -24,6 +24,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.selectit = k;
   $scope.keys = [k];
   $scope.persist = true;
+  $scope.workstarted = false;
   pgpkeys = openpgp.key.readArmored(myKey);
   $scope.keys = $scope.keys.concat (pgpkeys.keys);
   $scope.selectedIndex = function() { return  $scope.keys.indexOf($scope.selectit);}
@@ -42,6 +43,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 
   $scope.$on('newkey', function(event, data) {
     //console.log(data);
+    $scope.workstarted = true;
     f = $scope.getFingerprint(data);
     for (i = 0; i < $scope.keys.length; i++) {
       d = $scope.keys[i];
