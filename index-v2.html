@@ -44,9 +44,9 @@
           <a class="navbar-brand" href="">pgp.help</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li>
-            <li><a data-toggle="tab" href="#help" id="tab-help">Help</a></li>
+          <ul class="nav navbar-nav pull-right">
+            <!-- <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li> -->
+            <li><a href="https://github.com/Gaff/pgp.help/blob/master/README.md" id="tab-help">Help</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -104,12 +104,12 @@
             </fieldset>
           </form>
         </div>
-        <div class="col-lg-3" ng-show="workstarted">
+        <div class="col-lg-3" ng-show="workstarted" ng-cloak>
           <div class="well">
             <div class="nav-pills smartfade">
               <legend>Keys</legend>
               <ul class="nav nav-pills nav-stacked">
-                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
+                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
                     <a href="">{{getUser(key)}}</a>
                   </li>
               </ul>
