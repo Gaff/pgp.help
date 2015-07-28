@@ -1,7 +1,5 @@
 # pgp.help
 
-##FAQ
-
 ###Help, what is PGP? How do I use this?
 
 Chances are you were sent here by someone who wants you to send them an encrypted message. This is what you need to do:
