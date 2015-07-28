@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pgpApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.png">
+
+    <title>pgp.help</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.flatly.min.css" rel="stylesheet">
+    <link href="css/mytemplate.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/openpgp.js"></script>
+    <script src="js/pgpcontrollers.js"></script>
+  </head>
+
+  <body>
+    <header class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="">pgp.help</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li>
+            <li><a data-toggle="tab" href="#help" id="tab-help">Help</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </header>
+
+    <div class="container" ng-controller="KeyListCtrl">
+      <div class="row work">
+
+        <div class="col-lg-9 active" ng-controller="KeyWorkCtrl">
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>Encrypt Message</legend>
+
+              <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
+                <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
+                    ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
+                </div>
+              </div>
+              <div class="form-group" ng-show="!isNewKey()">
+                <label class="col-lg-2 control-label" for="username">Username</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" ng-show="!isNewKey()">
+                <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="src">Message</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
+                    ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="dest">Result</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                      placeholder="Encrypted text will appear here.">{{ciphertext}}</textarea>
+                  <div>
+                    <span id="hint_to">&nbsp;</span>&nbsp;
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="col-lg-3" ng-show="workstarted">
+          <div class="well">
+            <div class="nav-pills smartfade">
+              <legend>Keys</legend>
+              <ul class="nav nav-pills nav-stacked">
+                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{active:$index==selectedIndex()}">
+                    <a href="">{{getUser(key)}}</a>
+                  </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading>Settings</div>
+            <div class="panel-body">
+              <div class="form-group row">
+                <label class="control-label col-sm-7">Remember keys</label>
+                <div class="controls col-sm-5 pull-right">
+                  <div class="btn-group btn-group-justified btn-group-horizontal" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning smartfade" ng-show="persist_mo">
+                Key data is stored within your browser. It is NEVER sent over the internet.
+              </div>
+              <div class="form-group row" ng-show="!persist && localdata">
+                <label class="control-label col-sm-7" >Delete local data!</label>
+                <div class="controls col-sm-5 pull-right">
+                  <button class="btn btn-xs btn-block btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <p>&copy; pgp.help 2015</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="js/extrastyle.js"></script>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- script src="../../assets/js/ie10-viewport-bug-workaround.js"></script -->
+  </body>
+</html>

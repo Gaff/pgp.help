@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html ng-app="myApp">
+	<head>
+		<script src="js/jquery-2.1.4.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/angular.min.js"></script>
+		<script src="js/angular-animate.min.js"></script>
+		<script src="js/app.js"></script>
+		<link href="css/testapp.css" rel="stylesheet">
+	</head>
+
+	<body ng-controller="MyController">
+		<div class="bs-component">
+			<p>The top</p>
+			<div ng-show="bool" class="info fade2">
+			   Grasshopper
+			</div>
+			<button ng-click="bool=true">Fade In!</button>
+			<button ng-click="bool=false">Fade Out!</button>
+			<br/>
+		</div>
+		<div class="bs-component">
+	    <button ng-click="quickhide()">
+	      Quickhide
+	    </button>
+	   	<button ng-click="slowhide()">
+	      Slowhide
+	    </button>
+			<button ng-click="show()">
+		      Show
+	    </button>
+	    <p>before the box</p>
+	    <div class="box" ng-class="test.class" ng-hide="test.hide">
+	      This is just a box.
+	    </div>
+	    <p>after the box</p>
+		</div>
+	</body>
+</html>
