@@ -29,7 +29,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     }
     console.log("Ooops - no idea what this key is:");
     console.log(key);
-    return "unknown key!";
+    return "Unknown key!";
   };
 
   $scope.getFingerprint = function(key) {
@@ -43,20 +43,30 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.workstarted = true;
     var f = $scope.getFingerprint(data);
     var match = $scope.keyring.getKeysForId(f);
+    var ret = null;
     if (match) {
       key = match[0];
       key.update(data);
+      ret = key;
     } else {
       $scope.keyring.publicKeys.push(data);
+      ret = data;
     }
+
+    return ret;
   };
+
+  $scope.allKeys = function() {
+    return $scope.keyring.getAllKeys();
+  };
+
 
   k = {'alias': 'New Key...', 'new' : 'True'};
   $scope.selectit = k;
   $scope.keys = [k];
-  $scope.persist = false;
   $scope.workstarted = true;
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
+  $scope.persist = $scope.allKeys().length > 0 ? true : false;
   pgpkeys = openpgp.key.readArmored(myKey);
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
 
@@ -69,21 +79,23 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.selectit = key;
     $scope.$broadcast('selection', key);
   };
-  $scope.allKeys = function() {
-    return $scope.keyring.getAllKeys();
-  };
 
   $scope.$watch('$viewContentLoaded', function() {
     //This makes sure that when we load up we pass down the selection.
     $scope.onSelect($scope.selectit);
   });
 
+  $scope.$watch('persist', function() {
+    $scope.saveKeys();
+  });
+
   //TODO: All this stuff should be pushed to a generic module!
   $scope.isNew = function(key) { return key == k; };
 
   $scope.$on('newkey', function(event, data) {
-    $scope.addOrUpdateKey(data);
-    $scope.selectit = data;
+    var updated = $scope.addOrUpdateKey(data);
+    $scope.saveKeys();
+    $scope.selectit = updated;
   });
 
   $scope.loadKeys = function() {
@@ -93,8 +105,17 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   };
 
   $scope.saveKeys = function() {
-
+    if ($scope.persist) {
+      //console.log("saved...");
+      $scope.keyring.store();
+    };
   };
+
+  $scope.purgeKeys = function() {
+    $scope.keyring.clear();
+    $scope.keyring.store();
+    $scope.onSelect(k);
+  }
 });
 
 pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
