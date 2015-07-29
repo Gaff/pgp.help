@@ -109,7 +109,7 @@
             <div class="nav-pills smartfade">
               <legend>Keys</legend>
               <ul class="nav nav-pills nav-stacked">
-                  <li class="animate-repeat" ng-repeat="key in keys" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
+                  <li class="animate-repeat" ng-repeat="key in allKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
                     <a href="">{{getUser(key)}}</a>
                   </li>
               </ul>
@@ -126,10 +126,13 @@
                     <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
                   </div>
                 </div>
+                <div class="alert alert-warning smartfade" ng-show="persist_mo">
+                  Key data is stored within your browser. It is NEVER sent over the internet.
+                </div>
               </div>
-              <div class="alert alert-warning smartfade" ng-show="persist_mo">
-                Key data is stored within your browser. It is NEVER sent over the internet.
-              </div>
+              <button class="btn btn-xs" ng-click="loadKeys()">Manually load keys</button>
+              <button class="btn btn-xs" ng-click="saveKeys()">Manually save keys</button>
+              <button class="btn btn-xs" ng-click="purgeKeys()">Manually purge keys</button>
               <div class="form-group row" ng-show="!persist && localdata">
                 <label class="control-label col-sm-7" >Delete local data!</label>
                 <div class="controls col-sm-5 pull-right">

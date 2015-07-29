@@ -20,43 +20,6 @@ pgpApp.factory('focus', function ($rootScope, $timeout) {
 });
 
 pgpApp.controller('KeyListCtrl', function ($scope) {
-  k = {'alias': 'New Key...', 'new' : 'True'};
-  $scope.selectit = k;
-  $scope.keys = [k];
-  $scope.persist = false;
-  $scope.workstarted = false;
-  pgpkeys = openpgp.key.readArmored(myKey);
-  $scope.keys = $scope.keys.concat (pgpkeys.keys);
-  $scope.selectedIndex = function() { return  $scope.keys.indexOf($scope.selectit);}
-  $scope.onSelect = function(key) {
-    $scope.selectit = key;
-    $scope.$broadcast('selection', key);
-  }
-
-  $scope.$watch('$viewContentLoaded', function() {
-    //This makes sure that when we load up we pass down the selection.
-    $scope.onSelect($scope.selectit);
-  });
-
-  //TODO: All this stuff should be pushed to a generic module!
-  $scope.isNew = function(key) { return key == k; }
-
-  $scope.$on('newkey', function(event, data) {
-    //console.log(data);
-    $scope.workstarted = true;
-    f = $scope.getFingerprint(data);
-    for (i = 0; i < $scope.keys.length; i++) {
-      d = $scope.keys[i];
-      if ($scope.getFingerprint(d) == f) {
-        $scope.selectit = d;
-        return;
-      }
-    }
-    $scope.keys.push(data);
-    $scope.selectit = data;
-    //$scope.onSelect(data);
-  });
-
   $scope.getUser = function(key) {
     if('alias' in key) {
       return key.alias;
@@ -64,14 +27,74 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     if('primaryKey' in key) {
       return key.getPrimaryUser().user.userId.userid;
     }
-    return key.keys();
-  }
+    console.log("Ooops - no idea what this key is:");
+    console.log(key);
+    return "unknown key!";
+  };
 
   $scope.getFingerprint = function(key) {
     if('primaryKey' in key) {
       return key.primaryKey.fingerprint;
     }
-  }
+  };
+
+  $scope.addOrUpdateKey = function(data) {
+    //console.log(data);
+    $scope.workstarted = true;
+    var f = $scope.getFingerprint(data);
+    var match = $scope.keyring.getKeysForId(f);
+    if (match) {
+      key = match[0];
+      key.update(data);
+    } else {
+      $scope.keyring.publicKeys.push(data);
+    }
+  };
+
+  k = {'alias': 'New Key...', 'new' : 'True'};
+  $scope.selectit = k;
+  $scope.keys = [k];
+  $scope.persist = false;
+  $scope.workstarted = true;
+  $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
+  pgpkeys = openpgp.key.readArmored(myKey);
+  $scope.addOrUpdateKey(pgpkeys.keys[0]);
+
+  //$scope.keys = $scope.keys.concat (pgpkeys.keys);
+  $scope.selectedIndex = function() {
+    all = $scope.allKeys();
+    return all.indexOf($scope.selectit);
+  };
+  $scope.onSelect = function(key) {
+    $scope.selectit = key;
+    $scope.$broadcast('selection', key);
+  };
+  $scope.allKeys = function() {
+    return $scope.keyring.getAllKeys();
+  };
+
+  $scope.$watch('$viewContentLoaded', function() {
+    //This makes sure that when we load up we pass down the selection.
+    $scope.onSelect($scope.selectit);
+  });
+
+  //TODO: All this stuff should be pushed to a generic module!
+  $scope.isNew = function(key) { return key == k; };
+
+  $scope.$on('newkey', function(event, data) {
+    $scope.addOrUpdateKey(data);
+    $scope.selectit = data;
+  });
+
+  $scope.loadKeys = function() {
+    //var localstore = new openpgp.Keyring.localstore("pgp.help_");
+    var keyring = new openpgp.Keyring();
+    console.log(keyring);
+  };
+
+  $scope.saveKeys = function() {
+
+  };
 });
 
 pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
