@@ -85,7 +85,7 @@
               <div class="form-group">
                 <label class="col-lg-2 control-label"></label>
                 <div class="col-lg-6 controls">
-                  <div class="btn btn-large btn-primary" ng-show="!working" ng-click="generateKeyPair()">Generate New Key Pair!</div>
+                  <div class="btn btn-large btn-primary" ng-show="!working" ng-click="generateKeyPair()">Generate New Key Pair</div>
                   <div class="btn btn-large btn-primary" disabled='true' ng-show="working">Working...</div>
                 </div>
               </div>
@@ -133,6 +133,17 @@
                     <div class="col-lg-10 controls">
                       <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
                           placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-lg-offset-8 pull-right">
+                    <div class="btn-group pull-right">
+                        <a href="#" class="btn btn-sm btn-default">Options</a>
+                        <a href="#" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                          <li><a href="#">Export private key</a></li>
+                          <li class="divider"></li>
+                          <li><a href="#">Delete key!</a></li>
+                        </ul>
                     </div>
                   </div>
                 </div>
@@ -238,6 +249,7 @@
       </div>
 
       <footer class="footer">
+        <hr/>
         <p>&copy; pgp.help 2015</p>
       </footer>
 

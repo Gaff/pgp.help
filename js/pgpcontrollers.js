@@ -362,7 +362,7 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
     }).catch(function(err) {
         // failure
         $scope.working = false;
-        condole.log(err);
+        console.log(err);
         $scope.$apply();
     });
   };
