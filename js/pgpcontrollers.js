@@ -47,15 +47,28 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.addOrUpdateKey = function(data) {
     //console.log(data);
     var f = $scope.getFingerprint(data);
-    var match = $scope.keyring.getKeysForId(f);
     var ret = null;
-    if (match) {
-      key = match[0];
-      key.update(data);
-      ret = key;
+
+    if( data.isPrivate()) {
+      var match = $scope.keyring.privateKeys.getForId(f);
+      if (match) {
+        key = match;
+        key.update(data);
+        ret = key;
+      } else {
+        $scope.keyring.privateKeys.push(data);
+        ret = data;
+      }
     } else {
-      $scope.keyring.publicKeys.push(data);
-      ret = data;
+      var match = $scope.keyring.publicKeys.getForId(f);
+      if (match) {
+        key = match;
+        key.update(data);
+        ret = key;
+      } else {
+        $scope.keyring.publicKeys.push(data);
+        ret = data;
+      }
     }
 
     return ret;
@@ -84,12 +97,18 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.stored = $scope.persist; //Have we stored anything locally? Used to control delete button.
   pgpkeys = openpgp.key.readArmored(myKey);
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
+  $scope.newidentityopts = $scope.privateKeys() == 0;
 
-  //$scope.keys = $scope.keys.concat (pgpkeys.keys);
-  $scope.selectedIndex = function() {
-    all = $scope.allKeys();
+  $scope.selectedPublicIndex = function() {
+    all = $scope.publicKeys();
     return all.indexOf($scope.selectit);
   };
+
+  $scope.selectedPrivateIndex = function() {
+    all = $scope.privateKeys();
+    return all.indexOf($scope.selectit);
+  };
+
   $scope.onSelect = function(key) {
     $scope.selectit = key;
     $scope.$broadcast('selection', key);
@@ -126,9 +145,13 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 
   $scope.$on('newkey', function(event, data) {
     var updated = $scope.addOrUpdateKey(data);
+    if(data.isPrivate()) {
+      $scope.newidentityopts = false;
+    }
     $scope.workstarted = true;
     $scope.saveKeys();
     $scope.selectit = updated;
+
   });
 
   $scope.loadKeys = function() {

@@ -124,12 +124,14 @@
           <div class="panel panel-default">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
-               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}" ng-click="selectNew(true)"><a>Add new key...</a></div>
+               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
+                  ng-click="selectNew(true)"><a>Add new key...</a></div>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">{{getUser(key)}}</a>
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)"
+                  ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
-          <div class="panel panel-default" ng-init="newidentityopts=true">
+          <div class="panel panel-default">
             <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-minus':newidentityopts, 'glyphicon-plus':!newidentityopts}"></i></span>
@@ -138,11 +140,13 @@
                <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectNew(false)">
                  <a>Generate new identity...</a>
                </div>
-               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit)}" ng-show="newidentityopts" ng-click="selectNew(false)">
+               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit)}"
+                  ng-show="newidentityopts" ng-click="selectNew(false)">
                  <a>Import private key...</a>
                </div>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">{{getUser(key)}}</a>
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)"
+                  ng-class="{'active':$index==selectedPrivateIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
           <div class="panel panel-default">
