@@ -143,6 +143,14 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     }
   }
 
+  $scope.isDecrypted = function(key) {
+    if( $scope.isNew(key)) {
+      return false;
+    } else {
+      return key.primaryKey.isDecrypted;
+    }
+  }
+
   $scope.$on('newkey', function(event, data) {
     var updated = $scope.addOrUpdateKey(data);
     if(data.isPrivate()) {
