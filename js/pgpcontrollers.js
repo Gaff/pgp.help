@@ -80,6 +80,10 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.$broadcast('selection', key);
   };
 
+  $scope.selectNew = function() {
+    $scope.onSelect(k);    
+  }
+
   $scope.$watch('$viewContentLoaded', function() {
     //This makes sure that when we load up we pass down the selection.
     $scope.onSelect($scope.selectit);
