@@ -105,14 +105,12 @@
           </form>
         </div>
         <div class="col-lg-3" ng-show="workstarted" ng-cloak>
-          <div class="well">
-            <div class="nav-pills smartfade">
+          <div class="panel panel-default">
+            <div class=panel-heading>Public keys</div>
+            <div class="panel-body nav-pills smartfade">
               <ul class="nav nav-pills nav-stacked">
-
-              </ul>
-              <h5>Public Keys</h5>
-              <ul class="nav nav-pills nav-stacked">
-                <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">Add key...</a></li>
+                <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">Add new key...</a></li>
+                <hr>
                 <li class="animate-repeat" ng-repeat="key in allKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
                   <a href="">{{getUser(key)}}</a>
                 </li>
