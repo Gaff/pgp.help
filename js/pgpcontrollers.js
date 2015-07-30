@@ -139,7 +139,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     if( $scope.isNew(key)) {
       return( 'private' in key);
     } else {
-      return false;
+      return key.isPrivate();
     }
   }
 
@@ -181,6 +181,8 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
   $scope.$on('selection', function(event, data) {
     $scope.smartfade = "";
     $scope.pgperror = false;
+    $scope.password = "";
+    $scope.passworderror = false;
 
     $scope.key = data;
     if ($scope.isNewKey()) {
@@ -193,7 +195,14 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     }
   });
 
-  $scope.$watch('key', function() {$scope.encryptMessage()});
+  $scope.$watch('key', function() {
+    if ($scope.isPrivateKey()) {
+      $scope.decryptMessage();
+    } else {
+      $scope.encryptMessage()}
+    }
+  );
+
   $scope.isNewKey = function() { return $scope.isNew($scope.key)};
   $scope.isPrivateKey = function() { return $scope.isPrivate($scope.key)};
 
@@ -220,23 +229,52 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
       //console.log("Not a key: " + err);
       $scope.pgperror = true;
     }
-  }
+  };
 
   $scope.encryptMessage = function() {
+    $scope.resulttext = "";
+
     if ($scope.message && !$scope.isNew($scope.key)) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
-        $scope.ciphertext = pgpMessage;
+        $scope.resulttext = pgpMessage;
         //$scope.ciphertext = $scope.message + "\n" + pgpMessage;
         $scope.$apply();
       }).catch(function(error) {
-        $scope.ciphertext = error;
+        $scope.resulttext = error;
         $scope.$apply();
       });
-    } else {
-      $scope.ciphertext = "";
+    }
+  };
+
+  $scope.applyPassword = function() {
+    $scope.passworderror = false;
+    if ($scope.password) {
+      var ok = $scope.key.decrypt($scope.password);
+      $scope.passworderror = !ok;
     }
   }
+
+  $scope.decryptMessage = function() {
+    $scope.resulttext = "";
+    if ($scope.message && !$scope.isNew($scope.key)) {
+
+      //var ok = $scope.key.isDecrypted();
+      var ctext = openpgp.message.readArmored($scope.message);
+      if ( ctext ) {
+
+
+        openpgp.decryptMessage($scope.key, ctext).then( function(plaintext) {
+          $scope.resulttext = plaintext;
+          $scope.$apply();
+        }).catch(function(error ) {
+          $scope.resulttext = error;
+          $scope.$apply();
+        });
+      }
+    }
+  };
+
 });
 
 var myKey = [
