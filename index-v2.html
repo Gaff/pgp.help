@@ -179,7 +179,7 @@
           <div class="panel panel-default">
             <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
               My identities
-              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-minus':newidentityopts, 'glyphicon-plus':!newidentityopts}"></i></span>
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
                <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectGenerator()">
@@ -191,26 +191,19 @@
                </div>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
                <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)"
-                  ng-class="{'active':$index==selectedPrivateIndex()}">{{getUser(key)}}</a>
+                  ng-class="{'active':$index==selectedPrivateIndex()}">
+                  {{getUser(key)}}
+              </a>
             </div>
           </div>
           <div class="panel panel-default">
-            <div class=panel-heading>Settings</div>
-            <div class="panel-body">
-              <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
-                <label class="control-label col-sm-7">Remember keys</label>
-                <div class="controls col-sm-5 pull-right">
-                  <div class="btn-group btn-group-justified btn-group-horizontal">
-                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
-                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
-                  </div>
-                </div>
-              </div>
-              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
-                Key data is stored within your browser. It is NEVER sent over the internet.
-              </div>
-              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
-                <label class="control-label col-sm-7" >Delete keys?</label>
+            <div class=panel-heading ng-click="settingsopts=!settingsopts">
+              Settings
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span>
+            </div>
+            <div class="panel-body" ng-show="settingsopts">
+              <div class="form-group row">
+                <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
                   <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
                 </div>

@@ -93,9 +93,9 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.selectit = k;
   $scope.keys = [k];
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
-  $scope.persist = $scope.allKeys().length > 0 ? true : false;
-  $scope.workstarted = $scope.persist; //Should we start in basic mode?
-  $scope.stored = $scope.persist; //Have we stored anything locally? Used to control delete button.
+  $scope.persist = true;
+  $scope.workstarted = $scope.allKeys().length > 0 ? true : false; //Should we start in basic mode?
+  $scope.stored = $scope.workstarted; //Have we stored anything locally? Used to control delete button.
   pgpkeys = openpgp.key.readArmored(myKey);
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
   $scope.newidentityopts = $scope.privateKeys() == 0;
@@ -334,7 +334,7 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
     var userid;
 
     if ($scope.user) {
-      userid = $scope.user + "<" + $scope.email + ">";
+      userid = $scope.user + " <" + $scope.email + ">";
     } else {
       userid = $scope.email;
     }
