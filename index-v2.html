@@ -54,8 +54,45 @@
 
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
-
-        <div class="col-lg-9 active" ng-controller="KeyWorkCtrl" ng-cloak>
+        <div class="col-lg-9 active" ng-show="isGenerator(selectit)" ng-controller="KeyGenerator" ng-cloak>
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>Generate New Identity</legend>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Username</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" ng-model="user"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="email" ng-model="email"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Passphrase</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="password" ng-model="passphrase"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label"></label>
+                <div class="col-lg-6 controls">
+                  <div class="btn btn-large btn-primary" ng-show="!working" ng-click="generateKeyPair()">Generate New Key Pair!</div>
+                  <div class="btn btn-large btn-primary" disabled='true' ng-show="working">Working...</div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="col-lg-9 active" ng-hide="isGenerator(selectit)" ng-controller="KeyWorkCtrl" ng-cloak>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>{{isPrivate(selectit) ? 'Decrypt' : 'Encrypt'}} Message</legend>
@@ -67,27 +104,29 @@
                     ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
                 </div>
               </div>
-              <div class="form-group" ng-show="!isNewKey()">
-                <label class="col-lg-2 control-label" for="username">Username</label>
-                <div class="col-lg-10 controls">
-                  <div class="input-append">
-                    <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="form-group" ng-show="!isNewKey()">
-                  <label class="col-lg-2 control-label" for="keyId">Key ID</label>
-                  <div class="col-lg-3 controls">
+              <div ng-show="!isNewKey()">
+                <div class="form-group">
+                  <label class="col-lg-2 control-label" for="username">Username</label>
+                  <div class="col-lg-10 controls">
                     <div class="input-append">
-                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
+                      <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
                     </div>
                   </div>
+                </div>
+                <div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label" for="keyId">Key ID</label>
+                    <div class="col-lg-3 controls">
+                      <div class="input-append">
+                        <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
+                      </div>
+                    </div>
 
-                  <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-                  <div class="col-lg-5 controls">
-                    <div class="input-append">
-                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+                    <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                    <div class="col-lg-5 controls">
+                      <div class="input-append">
+                        <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -96,8 +135,9 @@
                 <label class="col-lg-2 control-label" for="passphrase">Password</label>
                 <div class="col-lg-10 controls">
                   <div class="input-append" ng-class="{'has-error':passworderror}">
-                    <input type="password" class="form-control" id="passphrase" ng-model-options="{debounce:500}" placeholder="Password for private key"
-                      ng-model="password" ng-change="applyPassword()"></input>
+                    <input type="password" class="form-control" focus-on="passphrase" ng-model-options="{debounce:500}"
+                      placeholder="{{isDecryptedKey() ? 'Key already decrypted' : 'Password for private key'}}"
+                      ng-model="password" ng-change="applyPassword()" ng-readonly="isDecryptedKey()"></input>
                   </div>
                 </div>
               </div>
@@ -107,9 +147,9 @@
                   <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
                     ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
                 </div>
-                <div class="col-lg-10 controls" ng-show="isPrivateKey()">
-                  <textarea class="form-control autoselectall" focus-on="message" rows="8" spellcheck="false" placeholder="Paste encrypted message here."
-                    ng-model="message" ng-model-options="{debounce:500}" ng-change="decryptMessage()"></textarea>
+                <div class="col-lg-10 controls" ng-show="isPrivateKey()" ng-class="{'has-error': pmessageerror}">
+                  <textarea class="form-control autoselectall" focus-on="pmessage" rows="8" spellcheck="false" placeholder="Paste encrypted message here."
+                    ng-model="pmessage" ng-model-options="{debounce:500}" ng-change="decryptMessage()"></textarea>
                 </div>
               </div>
               <div class="form-group">
@@ -142,10 +182,10 @@
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-minus':newidentityopts, 'glyphicon-plus':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
-               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectNew(false)">
+               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectGenerator()">
                  <a>Generate new identity...</a>
                </div>
-               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit)}"
+               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
                   ng-show="newidentityopts" ng-click="selectNew(false)">
                  <a>Import private key...</a>
                </div>

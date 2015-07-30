@@ -88,7 +88,8 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 
 
   k = {'alias': 'New Key...', 'new' : true };
-  kpriv = {'alias': 'New Key...', 'new' : true, 'private' : true};
+  kpriv = {'alias': 'Import Private Key...', 'new' : true, 'private' : true};
+  kgenerate = {'alias': 'Generate Key...', 'new' : true, 'private' : true, 'generate' : true};
   $scope.selectit = k;
   $scope.keys = [k];
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
@@ -122,6 +123,10 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     }
   }
 
+  $scope.selectGenerator = function() {
+    $scope.onSelect(kgenerate);
+  };
+
   $scope.$watch('$viewContentLoaded', function() {
     //This makes sure that when we load up we pass down the selection.
     $scope.onSelect($scope.selectit);
@@ -142,6 +147,10 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
       return key.isPrivate();
     }
   }
+
+  $scope.isGenerator = function(key) {
+    return ('generate' in key ? true : false);
+  };
 
   $scope.isDecrypted = function(key) {
     if( $scope.isNew(key)) {
@@ -185,7 +194,8 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 });
 
 pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
-  //$scope.key = "none yet";
+  $scope.key = null;
+
   $scope.$on('selection', function(event, data) {
     $scope.smartfade = "";
     $scope.pgperror = false;
@@ -196,10 +206,19 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     if ($scope.isNewKey()) {
       $scope.rawkey = "";
       focus("pgppub");
-
     } else {
       $scope.rawkey = data.armor();
-      focus("message");
+
+      if ($scope.isPrivateKey()) {
+        if(!$scope.isDecryptedKey()) {
+          focus("passphrase");
+        } else {
+          focus("pmessage");
+        };
+      } else {
+        focus("message");
+      }
+
     }
   });
 
@@ -213,6 +232,11 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
 
   $scope.isNewKey = function() { return $scope.isNew($scope.key)};
   $scope.isPrivateKey = function() { return $scope.isPrivate($scope.key)};
+  $scope.isDecryptedKey = function() {
+    if($scope.key){
+      return ($scope.isDecrypted($scope.key));
+    } else { return(false); }
+  };
 
   $scope.loadKey = function() {
     try {
@@ -260,30 +284,86 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     if ($scope.password) {
       var ok = $scope.key.decrypt($scope.password);
       $scope.passworderror = !ok;
+
+      if(ok) {
+        $scope.password = "";
+        focus('pmessage');
+      }
+
+      if(ok && $scope.pmessage) {
+        $scope.decryptMessage();
+      }
     }
   }
 
   $scope.decryptMessage = function() {
     $scope.resulttext = "";
-    if ($scope.message && !$scope.isNew($scope.key)) {
+    $scope.pmessageerror = false;
 
-      //var ok = $scope.key.isDecrypted();
-      var ctext = openpgp.message.readArmored($scope.message);
-      if ( ctext ) {
+    if( $scope.isNew($scope.key) ) return;
+    if( !$scope.pmessage) return;
 
-
-        openpgp.decryptMessage($scope.key, ctext).then( function(plaintext) {
-          $scope.resulttext = plaintext;
-          $scope.$apply();
-        }).catch(function(error ) {
-          $scope.resulttext = error;
-          $scope.$apply();
-        });
-      }
+    var ctext;
+    try {
+      ctext = openpgp.message.readArmored($scope.pmessage);
+    } catch (err) {
+      $scope.resulttext = err.message;
+      $scope.pmessageerror = true;
+      return;
     }
+
+    if (!$scope.isDecryptedKey()) {
+      focus("passphrase");
+      return;
+    }
+
+    openpgp.decryptMessage($scope.key, ctext).then( function(plaintext) {
+      $scope.resulttext = plaintext;
+      $scope.$apply();
+    }).catch(function(error ) {
+      $scope.resulttext = error.message;
+      $scope.$apply();
+    });
   };
 
 });
+
+pgpApp.controller('KeyGenerator', function ($scope, focus) {
+  $scope.working = false;
+  $scope.generateKeyPair = function() {
+    var userid;
+
+    if ($scope.user) {
+      userid = $scope.user + "<" + $scope.email + ">";
+    } else {
+      userid = $scope.email;
+    }
+
+    var options = {
+        numBits: 2048,
+        userId: userid,
+        passphrase: $scope.passphrase
+    };
+
+    $scope.working = true;
+    openpgp.generateKeyPair(options).then(function(keypair) {
+        $scope.working = false;
+        // success
+        //var privkey = keypair.privateKeyArmored;
+        //var pubkey = keypair.publicKeyArmored;
+        var pKey = openpgp.key.readArmored( keypair.publicKeyArmored );
+        $scope.$emit('newkey', pKey.keys[0]);
+        $scope.$emit('newkey', keypair.key);
+        $scope.$apply();
+    }).catch(function(err) {
+        // failure
+        $scope.working = false;
+        condole.log(err);
+        $scope.$apply();
+    });
+  };
+});
+
 
 var myKey = [
 '-----BEGIN PGP PUBLIC KEY BLOCK-----',
