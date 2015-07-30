@@ -65,8 +65,17 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     return $scope.keyring.getAllKeys();
   };
 
+  $scope.publicKeys = function() {
+    return $scope.keyring.publicKeys.keys;
+  };
+
+  $scope.privateKeys = function() {
+    return $scope.keyring.privateKeys.keys;
+  };
+
 
   k = {'alias': 'New Key...', 'new' : 'True'};
+  kpriv = {'alias': 'New Key...', 'new' : 'True', 'private' : 'True'};
   $scope.selectit = k;
   $scope.keys = [k];
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
@@ -150,6 +159,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
 
   $scope.$watch('key', function() {$scope.encryptMessage()});
   $scope.isNewKey = function() { return $scope.isNew($scope.key)};
+  $scope.isPrivateKey = function() { return $scope.isPrivate($scope.key)};
 
   $scope.loadKey = function() {
     try {

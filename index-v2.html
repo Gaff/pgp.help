@@ -119,8 +119,20 @@
             <div class="panel-body nav-pills smartfade">
               <ul class="nav nav-pills nav-stacked">
                 <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">Add new key...</a></li>
-                <hr>
-                <li class="animate-repeat" ng-repeat="key in allKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
+                <hr ng-show="publicKeys().length > 0"/>
+                <li class="animate-repeat" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
+                  <a href="">{{getUser(key)}}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading>My identities</div>
+            <div class="panel-body nav-pills smartfade">
+              <ul class="nav nav-pills nav-stacked">
+                <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">New private key...</a></li>
+                <hr ng-show="privateKeys().length > 0"/>
+                <li class="animate-repeat" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
                   <a href="">{{getUser(key)}}</a>
                 </li>
               </ul>
