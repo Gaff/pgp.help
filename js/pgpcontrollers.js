@@ -210,15 +210,15 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
       $scope.rawkey = "";
       focus("pgppub");
     } else {
-      $scope.rawkey = data.armor();
-
       if ($scope.isPrivateKey()) {
+        $scope.rawkey = data.toPublic().armor();
         if(!$scope.isDecryptedKey()) {
           focus("passphrase");
         } else {
           focus("pmessage");
         };
       } else {
+        $scope.rawkey = data.armor();
         focus("message");
       }
 

@@ -107,28 +107,38 @@
               <div ng-show="!isNewKey()">
                 <div class="form-group">
                   <label class="col-lg-2 control-label" for="username">Username</label>
-                  <div class="col-lg-10 controls">
+                  <div class="col-lg-5 controls">
                     <div class="input-append">
                       <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label" for="keyId">Key ID</label>
-                    <div class="col-lg-3 controls">
-                      <div class="input-append">
-                        <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
-                      </div>
+                  <label class="col-lg-2 control-label" for="keyId">Key ID</label>
+                  <div class="col-lg-3 controls">
+                    <div class="input-append">
+                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
                     </div>
-
+                  </div>
+                </div>
+                <div ng-show="showdetails">
+                  <div class="form-group">
                     <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-                    <div class="col-lg-5 controls">
+                    <div class="col-lg-10 controls">
                       <div class="input-append">
                         <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
                       </div>
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Public Key</label>
+                    <div class="col-lg-10 controls">
+                      <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                          placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-lg-2 control-label"></label>
+                  <a class="col-lg-2" ng-click="showdetails = !showdetails">{{showdetails ? 'Hide' : 'Show'}} details »</a>
                 </div>
               </div>
               <div class="form-group" ng-show="isPrivateKey() && !isNewKey()">
