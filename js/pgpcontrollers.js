@@ -74,8 +74,8 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   };
 
 
-  k = {'alias': 'New Key...', 'new' : 'True'};
-  kpriv = {'alias': 'New Key...', 'new' : 'True', 'private' : 'True'};
+  k = {'alias': 'New Key...', 'new' : true };
+  kpriv = {'alias': 'New Key...', 'new' : true, 'private' : true};
   $scope.selectit = k;
   $scope.keys = [k];
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
@@ -95,8 +95,12 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.$broadcast('selection', key);
   };
 
-  $scope.selectNew = function() {
-    $scope.onSelect(k);
+  $scope.selectNew = function(priv) {
+    if (priv) {
+      $scope.onSelect(k);
+    } else {
+      $scope.onSelect(kpriv);
+    }
   }
 
   $scope.$watch('$viewContentLoaded', function() {
@@ -108,8 +112,17 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.saveKeys();
   });
 
-  //TODO: All this stuff should be pushed to a generic module!
-  $scope.isNew = function(key) { return key == k; };
+  $scope.isNew = function(key) {
+      return( 'new' in key ? true : false );
+  };
+
+  $scope.isPrivate = function(key) {
+    if( $scope.isNew(key)) {
+      return( 'private' in key);
+    } else {
+      return false;
+    }
+  }
 
   $scope.$on('newkey', function(event, data) {
     var updated = $scope.addOrUpdateKey(data);

@@ -55,15 +55,15 @@
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
 
-        <div class="col-lg-9 active" ng-controller="KeyWorkCtrl">
+        <div class="col-lg-9 active" ng-controller="KeyWorkCtrl" ng-cloak>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Encrypt Message</legend>
 
               <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
-                <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
+                <label class="col-lg-2 control-label" for="pgppub">{{isPrivateKey() ? 'Private' : 'Public'}} Key</label>
                 <div class="col-lg-10 controls">
-                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."
+                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste PGP key here."
                     ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
                 </div>
               </div>
@@ -92,7 +92,14 @@
                   </div>
                 </div>
               </div>
-
+              <div class="form-group" ng-show="isPrivateKey() && !isNewKey()">
+                <label class="col-lg-2 control-label" for="passphrase">Password</label>
+                <div class="col-lg-10 controls">
+                  <div class="input-append">
+                    <input type="password" class="form-control" id="passphrase" placeholder="Password for private key"></input>
+                  </div>
+                </div>
+              </div>
               <div class="form-group">
                 <label class="col-lg-2 control-label" for="src">Message</label>
                 <div class="col-lg-10 controls">
@@ -116,26 +123,26 @@
         <div class="col-lg-3" ng-show="workstarted" ng-cloak>
           <div class="panel panel-default">
             <div class=panel-heading>Public keys</div>
-            <div class="panel-body nav-pills smartfade">
-              <ul class="nav nav-pills nav-stacked">
-                <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">Add new key...</a></li>
-                <hr ng-show="publicKeys().length > 0"/>
-                <li class="animate-repeat" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
-                  <a href="">{{getUser(key)}}</a>
-                </li>
-              </ul>
+            <div class="list-group">
+               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}" ng-click="selectNew(true)"><a>Add new key...</a></div>
+               <br ng-show="publicKeys().length > 0"/>
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class=panel-heading>My identities</div>
-            <div class="panel-body nav-pills smartfade">
-              <ul class="nav nav-pills nav-stacked">
-                <li ng-class="{'active':isNew(selectit)}"><a href="" ng-click="selectNew()">New private key...</a></li>
-                <hr ng-show="privateKeys().length > 0"/>
-                <li class="animate-repeat" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">
-                  <a href="">{{getUser(key)}}</a>
-                </li>
-              </ul>
+          <div class="panel panel-default" ng-init="newidentityopts=true">
+            <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
+              My identities
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-minus':newidentityopts, 'glyphicon-plus':!newidentityopts}"></i></span>
+            </div>
+            <div class="list-group" >
+               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectNew(false)">
+                 <a>Generate new identity...</a>
+               </div>
+               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit)}" ng-show="newidentityopts" ng-click="selectNew(false)">
+                 <a>Import private key...</a>
+               </div>
+               <br ng-show="privateKeys().length > 0 && newidentityopts"/>
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ng-class="{'active':$index==selectedIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
           <div class="panel panel-default">
