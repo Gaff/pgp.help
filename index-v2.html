@@ -75,11 +75,20 @@
                   </div>
                 </div>
               </div>
-              <div class="form-group" ng-show="!isNewKey()">
-                <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-                <div class="col-lg-10 controls">
-                  <div class="input-append">
-                    <input class="form-control" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+              <div>
+                <div class="form-group" ng-show="!isNewKey()">
+                  <label class="col-lg-2 control-label" for="keyId">Key ID</label>
+                  <div class="col-lg-3 controls">
+                    <div class="input-append">
+                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
+                    </div>
+                  </div>
+
+                  <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                  <div class="col-lg-5 controls">
+                    <div class="input-append">
+                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -120,25 +129,22 @@
           <div class="panel panel-default">
             <div class=panel-heading>Settings</div>
             <div class="panel-body">
-              <div class="form-group row">
+              <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
                 <label class="control-label col-sm-7">Remember keys</label>
                 <div class="controls col-sm-5 pull-right">
-                  <div class="btn-group btn-group-justified btn-group-horizontal" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                  <div class="btn-group btn-group-justified btn-group-horizontal">
                     <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
                     <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
                   </div>
                 </div>
               </div>
-              <div class="alert alert-warning smartfade" ng-show="persist_mo">
+              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
                 Key data is stored within your browser. It is NEVER sent over the internet.
               </div>
-              <button class="btn btn-xs" ng-click="loadKeys()">Manually load keys</button>
-              <button class="btn btn-xs" ng-click="saveKeys()">Manually save keys</button>
-              <button class="btn btn-xs" ng-click="purgeKeys()">Manually purge keys</button>
-              <div class="form-group row" ng-show="!persist && localdata">
-                <label class="control-label col-sm-7" >Delete local data!</label>
+              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
+                <label class="control-label col-sm-7" >Delete keys?</label>
                 <div class="controls col-sm-5 pull-right">
-                  <button class="btn btn-xs btn-block btn-danger">Delete</button>
+                  <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
                 </div>
               </div>
             </div>
