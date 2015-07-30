@@ -141,6 +141,7 @@
                   </div>
                 </div>
               </div>
+              <hr/>
               <div class="form-group">
                 <label class="col-lg-2 control-label" for="src">Message</label>
                 <div class="col-lg-10 controls" ng-show="!isPrivateKey()">
@@ -202,7 +203,19 @@
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span>
             </div>
             <div class="panel-body" ng-show="settingsopts">
-              <div class="form-group row">
+              <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                <label class="control-label col-sm-7">Store key data</label>
+                <div class="controls col-sm-5 pull-right">
+                  <div class="btn-group btn-group-justified btn-group-horizontal">
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
+                Key data is stored within your browser. It is NEVER sent over the internet.
+              </div>
+              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
                   <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
