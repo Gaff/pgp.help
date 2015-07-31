@@ -167,6 +167,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
 
   $scope.$on('persist', function(event) {
     $scope.persist = true;
+
   });
 
   $scope.$on('newkey', function(event, data) {
@@ -178,6 +179,13 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     $scope.saveKeys();
     $scope.selectit = updated;
 
+  });
+
+  $scope.$on('deletekey', function(event, data) {
+    var f = $scope.getFingerprint(data);
+    $scope.keyring.removeKeysForId(f);
+    $scope.saveKeys();
+    $scope.onSelect(k); 
   });
 
   $scope.loadKeys = function() {
@@ -247,6 +255,10 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
       return ($scope.isDecrypted($scope.key));
     } else { return(false); }
   };
+
+  $scope.deleteKey = function() {
+    $scope.$emit('deletekey', $scope.key);
+  }
 
   $scope.loadKey = function() {
     try {
