@@ -97,6 +97,7 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.persist = $scope.workstarted;
   $scope.stored = $scope.persist; //Have we stored anything locally? Used to control delete button.
   pgpkeys = openpgp.key.readArmored(myKey);
+  openpgp.config.commentstring = "https://pgp.help"; //Bit of a hack?
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
 
   $scope.selectedPublicIndex = function() {
@@ -136,10 +137,15 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   });
 
   $scope.isNew = function(key) {
-      return( 'new' in key ? true : false );
+      if(key) {
+        return( 'new' in key ? true : false );
+      } else {
+        return true;
+      }
   };
 
   $scope.isPrivate = function(key) {
+    if(!key) return false;
     if( $scope.isNew(key)) {
       return( 'private' in key);
     } else {
