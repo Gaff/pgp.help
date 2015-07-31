@@ -119,6 +119,23 @@
                     </div>
                   </div>
                 </div>
+                <div class="form-group" ng-show="isPrivateKey() && !isNewKey()">
+                  <label class="col-lg-2 control-label" for="passphrase">Password</label>
+                  <div class="col-lg-10 controls">
+                    <div class="input-append" ng-class="{'has-error':passworderror}">
+                      <input type="password" class="form-control" focus-on="passphrase" ng-model-options="{debounce:500}"
+                        placeholder="{{isDecryptedKey() ? 'Key already decrypted' : 'Password for private key'}}"
+                        ng-model="password" ng-change="applyPassword()" ng-readonly="isDecryptedKey()"></input>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" ng-click="showdetails = !showdetails">
+                  <a class="col-lg-2 col-lg-offset-2">{{showdetails ? 'Hide' : 'Show'}} details »</a>
+                  <div class="col-lg-1 col-lg-offset-7 controls">
+                    <div class="input-append btn btn-sm btn-quiet"><i class="glyphicon"
+                      ng-class="{'glyphicon-chevron-up':showdetails, 'glyphicon-chevron-down':!showdetails}"></i></div>
+                  </div>
+                </div>
                 <div ng-show="showdetails">
                   <div class="form-group">
                     <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
@@ -135,58 +152,84 @@
                           placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
                     </div>
                   </div>
-                  <div class="col-lg-4 col-lg-offset-8 pull-right">
-                    <div class="btn-group pull-right">
-                        <a href="#" class="btn btn-sm btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
-                        <a href="#" class="btn btn-sm btn-default">Delete Key</a>
+                  <div class="forum-group row">
+                    <div class="col-lg-10 col-lg-offset-2">
+                      <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
+                      <a class="btn btn-default" data-toggle="modal" data-target="#keyDelete">Delete Key</a>
                     </div>
-                  </div>
-                  <div id="keyExport" class="modal fade" role="dialog">
-                    <div class="modal-dialog modal-lg">
-                      <!-- Modal content-->
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                          <h4 class="modal-title">Export Key Data</h4>
-                        </div>
-                        <div class="modal-body">
-                          <div class="panel panel-warning">
-                            <div class="panel-heading">
-                              <h3 class="panel-title">Do not share this data with anyone!</h3>
-                            </div>
-                            <div class="panel-body">
-                              This data should be used to backup the private key, and import it to other pgp apps that you own. Do NOT give this data to anyone
-                              as it will allow them to read your messages, or steal your identity!
-                            </div>
+                    <!-- Modals -->
+                    <div id="keyExport" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-lg">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Export Key Data</h4>
                           </div>
+                          <div class="modal-body">
+                            <div class="panel panel-warning">
+                              <div class="panel-heading">
+                                <h3 class="panel-title">Do not share this data with anyone!</h3>
+                              </div>
+                              <div class="panel-body">
+                                This data should be used to backup the private key, and import it to other pgp apps that you own. Do NOT give this data to anyone
+                                as it will allow them to read your messages, or steal your identity!
+                              </div>
+                            </div>
 
-                          <div class="form-group">
-                            <label class="col-lg-2 control-label">Private Key</label>
-                            <div class="col-lg-10 controls">
-                              <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-                                  placeholder="Encrypted text will appear here.">{{rawkey_private}}</textarea>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Private Key</label>
+                              <div class="col-lg-10 controls">
+                                <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                                    placeholder="Encrypted text will appear here.">{{rawkey_private}}</textarea>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-lg-2 control-label"></label>
-                  <a class="col-lg-2" ng-click="showdetails = !showdetails">{{showdetails ? 'Hide' : 'Show'}} details »</a>
-                </div>
-              </div>
-              <div class="form-group" ng-show="isPrivateKey() && !isNewKey()">
-                <label class="col-lg-2 control-label" for="passphrase">Password</label>
-                <div class="col-lg-10 controls">
-                  <div class="input-append" ng-class="{'has-error':passworderror}">
-                    <input type="password" class="form-control" focus-on="passphrase" ng-model-options="{debounce:500}"
-                      placeholder="{{isDecryptedKey() ? 'Key already decrypted' : 'Password for private key'}}"
-                      ng-model="password" ng-change="applyPassword()" ng-readonly="isDecryptedKey()"></input>
+                    <div id="keyDelete" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-lg">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Delete Key Data</h4>
+                          </div>
+                          <div class="modal-body" ng-show="isPrivateKey()">
+                            <div class="panel panel-danger">
+                              <div class="panel-heading">
+                                <h3 class="panel-title">This action is irreversible!</h3>
+                              </div>
+                              <div class="panel-body">
+                                This will permanently delete the key data! There will be no way to recover this identity unless YOU made a backup.
+                                <br/>
+                                Are you sure you wish to do this?
+                              </div>
+                            </div>
+
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Private Key</label>
+                              <div class="col-lg-10 controls">
+                                <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                                    placeholder="Encrypted text will appear here.">{{rawkey_private}}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-body" ng-show="!isPrivateKey()">
+                            Are you sure? This action cannot be reversed.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn" ng-class="isPrivateKey() ? 'btn-danger' : 'btn-warning'" data-dismiss="modal" ng-click="deleteKey()">Delete!</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Modals finish here -->
                   </div>
                 </div>
               </div>
