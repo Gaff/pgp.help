@@ -24,7 +24,7 @@ I'm currently looking for work in the security space. If you are interested or t
 
 ###How can I contact you? What is your PGP key?
 
-You can email me at pgp.help@shaylor.co.uk
+You can email me at hello@pgp.help
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
