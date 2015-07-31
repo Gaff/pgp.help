@@ -212,6 +212,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     } else {
       if ($scope.isPrivateKey()) {
         $scope.rawkey = data.toPublic().armor();
+        $scope.rawkey_private = data.armor();
         if(!$scope.isDecryptedKey()) {
           focus("passphrase");
         } else {
