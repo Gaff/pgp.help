@@ -130,11 +130,12 @@
                   </div>
                 </div>
                 <div class="form-group" ng-click="showdetails = !showdetails">
-                  <a class="col-lg-2 col-lg-offset-2">{{showdetails ? 'Hide' : 'Show'}} details »</a>
-                  <div class="col-lg-1 col-lg-offset-7 controls">
-                    <div class="input-append btn btn-sm btn-quiet"><i class="glyphicon"
-                      ng-class="{'glyphicon-chevron-up':showdetails, 'glyphicon-chevron-down':!showdetails}"></i></div>
-                  </div>
+                  <a class="col-lg-2 col-lg-offset-2">{{showdetails ? 'Hide' : 'Show'}} details
+                    <span class="pull-left"><i class="glyphicon"
+                        ng-class="{'glyphicon-chevron-up':showdetails, 'glyphicon-chevron-down':!showdetails}"></i>
+                    </span>
+                  </a>
+
                 </div>
                 <div ng-show="showdetails">
                   <div class="form-group">
