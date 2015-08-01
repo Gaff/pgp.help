@@ -55,12 +55,7 @@
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
         <div class="col-lg-9 active" ng-cloak>
-          <div ui-view></div>
-          <pre>$location.path() = {{$location.path()}}</pre>
-          <pre>$location.protocol() = {{$location.protocol()}}</pre>
-          <pre>$location.search() = {{$location.search()}}</pre>
-          <pre>$location.hash() = {{$location.hash()}}</pre>
-          <pre>$location.absUrl() = {{$location.absUrl()}}</pre>          
+          <div ui-view></div>  
         </div>
         <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
