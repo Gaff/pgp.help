@@ -1,6 +1,16 @@
 body {
   padding-top: 90px;
 }
+
+.btn-quiet {
+}
+
+.btn-quiet:hover, .btn-quiet:focus, .btn-quiet.focus {
+    color: #000000;
+    background-color: #ecf0f1;
+    text-decoration: none;
+}
+
 .starter-template {
   padding: 40px 15px;
   text-align: center;
