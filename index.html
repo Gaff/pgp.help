@@ -26,7 +26,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-animate.min.js"></script>
-    <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
   </head>
@@ -55,12 +55,12 @@
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
         <div class="col-lg-9 active" ng-cloak>
+          <div ui-view></div>
           <pre>$location.path() = {{$location.path()}}</pre>
           <pre>$location.protocol() = {{$location.protocol()}}</pre>
           <pre>$location.search() = {{$location.search()}}</pre>
           <pre>$location.hash() = {{$location.hash()}}</pre>
-          <pre>$location.absUrl() = {{$location.absUrl()}}</pre>
-          <div ng-view></div>
+          <pre>$location.absUrl() = {{$location.absUrl()}}</pre>          
         </div>
         <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
@@ -263,11 +263,11 @@
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
                <a class="a-like list-group-item " ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
-                  ng-click="selectNew(true)" href="#import">
+                  ng-click="selectNew(true)" ui-sref="import">
                   Add new key...
                </a>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" href="#key?key={{getFingerprint(key)}}"
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ui-sref="key({'key':getFingerprint(key)})"
                   ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
@@ -277,16 +277,16 @@
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
-               <a class="list-group-item a-like" href="#generate" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts"
-                  ng-click="selectGenerator()" href="#generate">
+               <a class="list-group-item a-like" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts"
+                  ng-click="selectGenerator()" ui-sref="generate">
                   Generate new identity...
                </a>
                <a class="list-group-item a-like" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
-                  ng-show="newidentityopts" ng-click="selectNew(false)" href="#import">
+                  ng-show="newidentityopts" ng-click="selectNew(false)" ui-sref="import">
                   Import private key...
                </a>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" href="#key?key={{getFingerprint(key)}}"
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ui-sref="key({'key':getFingerprint(key)})"
                   ng-class="{'active':$index==selectedPrivateIndex()}">
                   {{getUser(key)}}
               </a>

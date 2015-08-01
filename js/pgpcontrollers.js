@@ -1,4 +1,4 @@
-var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ngRoute']);
+var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router']);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -19,20 +19,26 @@ pgpApp.factory('focus', function ($rootScope, $timeout) {
   }
 });
 
-pgpApp.config(function($routeProvider, $locationProvider) {
-  $routeProvider
-   .when('/key', {
-    templateUrl: 'keyWork.html',
-    controller: 'KeyWorkCtrl',
-  })
-  .when('/import', {
-   templateUrl: 'keyWork.html',
-   controller: 'KeyWorkCtrl',
-  })
-  .when('/generate', {
-    templateUrl: 'keyGenerator.html',
-    controller: 'KeyGenerator'
-  });
+pgpApp.config(function($stateProvider, $urlRouterProvider) {
+  $urlRouterProvider.otherwise("/import");
+
+  $stateProvider
+    .state('key', {
+      url: "/",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+    })
+    .state('import', {
+      url: "/import",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+    })
+    .state('generate', {
+      url: "/generate",
+      templateUrl: "keyGenerator.html",
+      controller: 'KeyGenerator',
+    });
+
 
   // configure html5 to get links working on jsfiddle
   //$locationProvider.html5Mode({
