@@ -35,10 +35,16 @@ pgpApp.config(function($routeProvider, $locationProvider) {
   });
 
   // configure html5 to get links working on jsfiddle
-  //$locationProvider.html5Mode(true);
+  //$locationProvider.html5Mode({
+  //  enabled: true,
+  //  requireBase: false,
+  //});
 });
 
-pgpApp.controller('KeyListCtrl', function ($scope) {
+pgpApp.controller('KeyListCtrl', function ($scope, $location) {
+
+  $scope.$location = $location;
+
   $scope.getUser = function(key) {
     if (!key) return "";
     if('alias' in key) {

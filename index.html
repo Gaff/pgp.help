@@ -8,7 +8,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.png">
-
     <title>pgp.help</title>
 
     <!-- Bootstrap core CSS -->
@@ -56,6 +55,11 @@
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
         <div class="col-lg-9 active" ng-cloak>
+          <pre>$location.path() = {{$location.path()}}</pre>
+          <pre>$location.protocol() = {{$location.protocol()}}</pre>
+          <pre>$location.search() = {{$location.search()}}</pre>
+          <pre>$location.hash() = {{$location.hash()}}</pre>
+          <pre>$location.absUrl() = {{$location.absUrl()}}</pre>
           <div ng-view></div>
         </div>
         <script type='text/ng-template' id='keyGenerator.html'>
@@ -263,7 +267,7 @@
                   Add new key...
                </a>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" href="#key?{{getFingerprint(key)}}"
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" href="#key?key={{getFingerprint(key)}}"
                   ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
@@ -282,7 +286,7 @@
                   Import private key...
                </a>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" href="#key?{{getFingerprint(key)}}"
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" href="#key?key={{getFingerprint(key)}}"
                   ng-class="{'active':$index==selectedPrivateIndex()}">
                   {{getUser(key)}}
               </a>
