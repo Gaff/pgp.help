@@ -27,6 +27,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-animate.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
   </head>
@@ -54,7 +55,10 @@
 
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
-        <div class="col-lg-9 active" ng-show="isGenerator(selectit)" ng-controller="KeyGenerator" ng-cloak>
+        <div class="col-lg-9 active" ng-cloak>
+          <div ng-view></div>
+        </div>
+        <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Generate New Identity</legend>
@@ -91,11 +95,11 @@
               </div>
             </fieldset>
           </form>
-        </div>
-        <div class="col-lg-9 active" ng-hide="isGenerator(selectit)" ng-controller="KeyWorkCtrl" ng-cloak>
+        </script>
+        <script type='text/ng-template' id='keyWork.html'>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
-              <legend>{{isPrivate(selectit) ? 'Decrypt' : 'Encrypt'}} Message</legend>
+              <legend>{{isPrivateKey() ? 'Decrypt' : 'Encrypt'}} Message</legend>
 
               <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
                 <label class="col-lg-2 control-label" for="pgppub">{{isPrivateKey() ? 'Private' : 'Public'}} Key</label>
@@ -249,33 +253,36 @@
               </div>
             </fieldset>
           </form>
-        </div>
+        </script>
         <div class="col-lg-3" ng-show="workstarted" ng-cloak>
           <div class="panel panel-default">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
-               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
-                  ng-click="selectNew(true)"><a>Add new key...</a></div>
+               <a class="a-like list-group-item " ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
+                  ng-click="selectNew(true)" href="#import">
+                  Add new key...
+               </a>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)"
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" href="#key?{{getFingerprint(key)}}"
                   ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
             </div>
           </div>
           <div class="panel panel-default">
-            <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
+            <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
-               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectGenerator()">
-                 <a>Generate new identity...</a>
-               </div>
-               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
-                  ng-show="newidentityopts" ng-click="selectNew(false)">
-                 <a>Import private key...</a>
-               </div>
+               <a class="list-group-item a-like" href="#generate" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts"
+                  ng-click="selectGenerator()" href="#generate">
+                  Generate new identity...
+               </a>
+               <a class="list-group-item a-like" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
+                  ng-show="newidentityopts" ng-click="selectNew(false)" href="#import">
+                  Import private key...
+               </a>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)"
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" href="#key?{{getFingerprint(key)}}"
                   ng-class="{'active':$index==selectedPrivateIndex()}">
                   {{getUser(key)}}
               </a>

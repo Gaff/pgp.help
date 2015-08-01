@@ -1,4 +1,4 @@
-var pgpApp = angular.module('pgpApp', ['ngAnimate']);
+var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ngRoute']);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -19,8 +19,28 @@ pgpApp.factory('focus', function ($rootScope, $timeout) {
   }
 });
 
+pgpApp.config(function($routeProvider, $locationProvider) {
+  $routeProvider
+   .when('/key', {
+    templateUrl: 'keyWork.html',
+    controller: 'KeyWorkCtrl',
+  })
+  .when('/import', {
+   templateUrl: 'keyWork.html',
+   controller: 'KeyWorkCtrl',
+  })
+  .when('/generate', {
+    templateUrl: 'keyGenerator.html',
+    controller: 'KeyGenerator'
+  });
+
+  // configure html5 to get links working on jsfiddle
+  //$locationProvider.html5Mode(true);
+});
+
 pgpApp.controller('KeyListCtrl', function ($scope) {
   $scope.getUser = function(key) {
+    if (!key) return "";
     if('alias' in key) {
       return key.alias;
     }
@@ -33,12 +53,14 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   };
 
   $scope.getFingerprint = function(key) {
+    if(!key) return "";
     if('primaryKey' in key) {
       return key.primaryKey.fingerprint;
     }
   };
 
   $scope.getKeyId = function(key) {
+    if(!key) return "";
     if('primaryKey' in key) {
       return key.primaryKey.getKeyId().toHex();
     }
