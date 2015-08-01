@@ -1,225 +1,355 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <title>pgp.help</title>
+<html lang="en" ng-app="pgpApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.png">
 
-  <!-- Bootstrap -->
-  <link href="css/bootstrap.flatly.min.css" rel="stylesheet">
-  <link href="css/mytemplate.css" rel="stylesheet">
+    <title>pgp.help</title>
 
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-</head>
-<body>
-  <header class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="">pgp.help</a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li class="active"><a data-toggle="tab" href="#encrypt" id="tab-encrypt">Encrypt / Send</a></li>
-          <li><a data-toggle="tab" href="#decrypt" id="tab-decrypt">Decrypt / Receive</a></li>
-          <li><a data-toggle="tab" href="#about" id="tab-about">FAQ</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
-    </div>
-  </header>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.flatly.min.css" rel="stylesheet">
+    <link href="css/mytemplate.css" rel="stylesheet">
 
-  <div class="container">
-    <div class="tab-content">
-      <div class="tab-pane fade in active" id="encrypt">
-        <form action="/" class="form-horizontal" method="get">
-          <fieldset>
-            <legend>Encrypt Message</legend>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="pgppub">Public Key</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control autoselectall" id="pgppub" rows="4" spellcheck="false" placeholder="Paste public PGP key here."></textarea>
-              </div>
-            </div>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="username">Username</label>
-              <div class="col-lg-10 controls">
-                <div class="input-append">
-                  <input class="form-control" id="username" type="text" readonly="readonly"/>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
-              <div class="col-lg-10 controls">
-                <div class="input-append">
-                  <input class="form-control" id="fingerprint" type="text" readonly="readonly"/>
-                </div>
-              </div>
-            </div>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/openpgp.js"></script>
+    <script src="js/pgpcontrollers.js"></script>
+  </head>
 
-
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="src">Message</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control" id="src" rows="8" spellcheck="false" placeholder="Type your mesage here."></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="dest">Result</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8" placeholder="Encrypted text will appear here."></textarea>
-                <div>
-                  <span id="hint_to">&nbsp;</span>&nbsp;
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-      <div class="tab-pane fade" id="decrypt">
-        <form action="/" class="form-horizontal" method="get">
-          <fieldset>
-            <legend>Decrypt Messages</legend>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="pgppriv">Private Key</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control autoselectall" id="pgppriv" rows="4" spellcheck="false" placeholder="Paste private PGP key here."></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="passphrase">Password</label>
-              <div class="col-lg-10 controls">
-                <div class="input-append">
-                  <input type="password" class="form-control" id="passphrase" placeholder="Password for private key"></input>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="usernamep">Username</label>
-              <div class="col-lg-10 controls">
-                <div class="input-append">
-                  <input class="form-control" id="usernamep" type="text" readonly="readonly"/>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="fingerprintp">Fingerprint</label>
-              <div class="col-lg-10 controls">
-                <div class="input-append">
-                  <input class="form-control" id="fingerprintp" type="text" readonly="readonly"/>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="encmsg">Encrypted Message</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control autoselectall" id="encmsg" rows="8" spellcheck="false" placeholder="Paste your mesage here."></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label" for="clearmsg">Result</label>
-              <div class="col-lg-10 controls">
-                <textarea class="form-control autoselectall" id="clearmsg" readonly="readonly" rows="8" placeholder="Decrypted text will appear here."></textarea>
-                <div>
-                  <span id="hint_to">&nbsp;</span>&nbsp;
-                </div>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-      <div class="tab-pane fade" id="about">
-        <div class="jumbotron">
-          <div class="container">
-            <h1>pgp.help</h1>
-            <p>This website allows you to send and receive pgp messages in a few simple clicks.</p>
-          </div>
+  <body>
+    <header class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="">pgp.help</a>
         </div>
-        <div class="container">
-          <div>
-            <h3>Help, what is PGP? How do I use this?</h3>
-            <p>Chances are you were sent here by someone who wants you to send them a secret message. This is what you need to do:</p>
-            <ol>
-              <li>Click on the encrypt tab.</li>
-              <li>Paste their public key into the public key box.</li>
-              <li>Type your message to them in the message box.</li>
-              <li>Copy the encrypted message from the result box and send it back to them.</li>
-              <ol>
+        <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
+          <ul class="nav navbar-nav pull-right">
+            <!-- <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li> -->
+            <li><a href="https://github.com/Gaff/pgp.help/blob/master/README.md" id="tab-help">Help</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </header>
+
+    <div class="container" ng-controller="KeyListCtrl">
+      <div class="row work">
+        <div class="col-lg-9 active" ng-show="isGenerator(selectit)" ng-controller="KeyGenerator" ng-cloak>
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>Generate New Identity</legend>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Username</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="text" ng-model="user"/>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3>Is this site safe? Is my data private?</h3>
-                <p>All the code runs locally in your browser. No data is sent over the network. Therefore it should be safe to use.
-                  However there are some risks which I'll note below:</p>
-                  <p><b>This website is loaded over the internet.</b> This means that it's possible that a malicious actor (or even the author) subverts
-                    the code on this page before it gets to you and makes it share your data. Make sure you load this page from:
-                    <a href="https://pgp.help">https://pgp.help</a>, and if you're really paranoid save a known good copy locally and only
-                    run that (see .zip link in the footer).</p>
-                    <p><b>The code runs in a browser.</b> This means that if your browser is compromised it may be possible to make it leak data from other
-                      tabs / sites. If you're worried then it would be prudent to do your PGP work in a separate session to other browsing, or restart your browser
-                      before you do any sensitive PGP work.</p>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="email" ng-model="email"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label">Passphrase</label>
+                <div class="col-lg-6 controls">
+                  <div class="input-append">
+                    <input class="form-control" type="password" ng-model="passphrase"/>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label"></label>
+                <div class="col-lg-6 controls">
+                  <div class="btn btn-large btn-primary" ng-show="!working" ng-click="generateKeyPair()">Generate New Key Pair</div>
+                  <div class="btn btn-large btn-primary" disabled='true' ng-show="working">Working...</div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="col-lg-9 active" ng-hide="isGenerator(selectit)" ng-controller="KeyWorkCtrl" ng-cloak>
+          <form action="/" class="form-horizontal" method="get">
+            <fieldset>
+              <legend>{{isPrivate(selectit) ? 'Decrypt' : 'Encrypt'}} Message</legend>
+
+              <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
+                <label class="col-lg-2 control-label" for="pgppub">{{isPrivateKey() ? 'Private' : 'Public'}} Key</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" focus-on="pgppub" rows="4" spellcheck="false" placeholder="Paste PGP key here."
+                    ng-model="rawkey" ng-model-options="{debounce:500}" ng-change="loadKey()"></textarea>
+                </div>
+              </div>
+              <div ng-show="!isNewKey()">
+                <div class="form-group">
+                  <label class="col-lg-2 control-label" for="username">Username</label>
+                  <div class="col-lg-5 controls">
+                    <div class="input-append">
+                      <input class="form-control" type="text" readonly="readonly" ng-value="getUser(key)"/>
                     </div>
-                    <div>
-                      <h3>Can I help with your project? Can you help with my project?</h3>
-                      <p>I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you
-                        spot any secruity issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for
-                        certain things (via Bitcoin), so please get in touch.</p>
-                        <p>I'm currently looking for work in the security space. If you are interested or thing I could help please get in touch. If you would
-                          like specific enhancements added to the site then please feel free to ask.
-                        </p>
-                      </div>
-                      <div>
-                        <h3>How can I contact you? What is your PGP key?</h3>
-                        <p>You can email me at <a href="mailto:pgp.help@shaylor.co.uk">pgp.help@shaylor.co.uk</a></p>
-                        <textarea class="form-control autoselectall" readonly="readonly" rows=15>
-                          -----BEGIN PGP PUBLIC KEY BLOCK-----
-                          Version: BCPG C# v1.6.1.0
+                  </div>
+                  <label class="col-lg-2 control-label" for="keyId">Key ID</label>
+                  <div class="col-lg-3 controls">
+                    <div class="input-append">
+                      <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getKeyId(key)"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" ng-show="isPrivateKey() && !isNewKey()">
+                  <label class="col-lg-2 control-label" for="passphrase">Password</label>
+                  <div class="col-lg-10 controls">
+                    <div class="input-append" ng-class="{'has-error':passworderror}">
+                      <input type="password" class="form-control" focus-on="passphrase" ng-model-options="{debounce:500}"
+                        placeholder="{{isDecryptedKey() ? 'Key already decrypted' : 'Password for private key'}}"
+                        ng-model="password" ng-change="applyPassword()" ng-readonly="isDecryptedKey()"></input>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" ng-click="showdetails = !showdetails">
+                  <a class="col-lg-10 col-lg-offset-2">{{showdetails ? 'Hide' : 'Show'}} key details
+                    <span class="pull-left"><i class="glyphicon"
+                        ng-class="{'glyphicon-chevron-up':showdetails, 'glyphicon-chevron-down':!showdetails}"></i>
+                    </span>
+                  </a>
 
-                          mQENBFWip3EBCADWJcyGfxOTWyW2inpYwqKKwyWGvz+/ypqxt7QSLlqgpUgNLznH
-                          5PnuTuO9LO+QGMt2xYr5hxmv75/Xhj1OgpFB3ejh4B5dedFli1MBQ1fASHnqGIAY
-                          hf8CHnrRsCpG9xsU4aAVoFyc4c/FbmLq8NlAz8yqHGx5zR2II0p3I9kYnQOywveD
-                          zMhSmJiaH1hNbaBDiuzvWGX4Uya2KMZnTb5yhRcOLvgj5R6m1knq/fJVyqmrBoGZ
-                          hiQ2UQOz5OmoPciu61pDiYBUjke4enUjJjOOfKsxy/hSanfjsDBLizNkjDJ6GTmt
-                          qxg38ZCoTfle+B7OockT9M4exkt1FfDa1rbhABEBAAG0FnBncC5oZWxwQHNoYXls
-                          b3IuY28udWuJARwEEAECAAYFAlWip3EACgkQ4cuI9adKJZkkewgAlybUl5vwtKaQ
-                          fQnq079DIKp303NtfTp4zZpfk/rbnyewOYeS+GmKj7pbxJGwit9b4u2OLFUQtzjL
-                          dcJPb41u5ACy89E8NIGyjlD8betiCnXnS6QT+4K+RZ7wmEKtOVToGQU6i8jy3W47
-                          4sBWP6+WGTvbxmTAJlZG/0JlQ9lDXvRYTnFaNbhiYvQfA5uuLkqbmKdC4GR5RbIU
-                          hqXWDAt/eIx+nr6tBjJ/zcz2yRiSMNayTSg4qk0Y/+eq6eIC+3sbf5Sv4Na+j1Q0
-                          RfPOO22INIz7vY0ycd740lRhDrVoEQilkTWhQT0JtWD0gFQIeFARqqvDjghr/yBX
-                          Uq0XqerlKg==
-                          =n31g
-                          -----END PGP PUBLIC KEY BLOCK-----</textarea>
-
-                        </div>
+                </div>
+                <div ng-show="showdetails">
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label" for="fingerprint">Fingerprint</label>
+                    <div class="col-lg-10 controls">
+                      <div class="input-append">
+                        <input class="form-control autoselectall" type="text" readonly="readonly" ng-value="getFingerprint(key)"/>
                       </div>
                     </div>
                   </div>
-                  <hr/>
-                  <footer>
-                    <p>
-                      &copy; 2015&ndash;2015 <span class="pull-right">Powered by <a href="http://pages.github.com">GitHub Pages</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/tree/gh-pages">GitHub Repository</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/archive/gh-pages.zip">Download .zip</a></span>
-                    </p>
-                  </footer>
-                </div><!-- /.container -->
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Public Key</label>
+                    <div class="col-lg-10 controls">
+                      <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                          placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
+                    </div>
+                  </div>
+                  <div class="forum-group row">
+                    <div class="col-lg-10 col-lg-offset-2">
+                      <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
+                      <a class="btn btn-default" data-toggle="modal" data-target="#keyDelete">Delete Key</a>
+                    </div>
+                    <!-- Modals -->
+                    <div id="keyExport" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-lg">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Export Key Data</h4>
+                          </div>
+                          <div class="modal-body">
+                            <div class="panel panel-warning">
+                              <div class="panel-heading">
+                                <h3 class="panel-title">Do not share this data with anyone!</h3>
+                              </div>
+                              <div class="panel-body">
+                                <p>This data should be used to backup the private key, and import it to other pgp apps that you own.</p>
+                                <p>Do NOT give this data to anyone as it will allow them to read your messages, or steal your identity!</p>
+                              </div>
+                            </div>
 
-                <script src="js/jquery-1.11.3.min.js"></script>
-                <script src="js/bootstrap.min.js"></script>
-                <script src="js/openpgp.js"></script>
-                <script src="js/ezpgp.js"></script>
-              </body>
-              </html>
+                            <div class="form-group">
+                              <label class="col-lg-2 control-label">Private Key</label>
+                              <div class="col-lg-10 controls">
+                                <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                                    placeholder="Encrypted text will appear here.">{{rawkey_private}}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="keyDelete" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-lg">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Delete Key Data</h4>
+                          </div>
+                          <div class="modal-body" ng-show="isPrivateKey()">
+                            <div class="panel panel-danger">
+                              <div class="panel-heading">
+                                <h3 class="panel-title">This action is irreversible!</h3>
+                              </div>
+                              <div class="panel-body">
+                                <p>This will permanently delete the key data! There will be no way to recover this identity unless YOU made a backup.</p>
+                                <p>Are you sure you wish to do this?</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-body" ng-show="!isPrivateKey()">
+                            Are you sure? This action cannot be reversed.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn" ng-class="isPrivateKey() ? 'btn-danger' : 'btn-warning'" data-dismiss="modal" ng-click="deleteKey()">Delete!</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Modals finish here -->
+                  </div>
+                </div>
+              </div>
+              <hr/>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="src">Message</label>
+                <div class="col-lg-10 controls" ng-show="!isPrivateKey()">
+                  <textarea class="form-control" focus-on="message" rows="8" spellcheck="false" placeholder="Type your mesage here."
+                    ng-model="message" ng-model-options="{debounce:500}" ng-change="encryptMessage()"></textarea>
+                </div>
+                <div class="col-lg-10 controls" ng-show="isPrivateKey()" ng-class="{'has-error': pmessageerror}">
+                  <textarea class="form-control autoselectall" focus-on="pmessage" rows="8" spellcheck="false" placeholder="Paste encrypted message here."
+                    ng-model="pmessage" ng-model-options="{debounce:500}" ng-change="decryptMessage()"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 control-label" for="dest">Result</label>
+                <div class="col-lg-10 controls">
+                  <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
+                      placeholder="Encrypted text will appear here.">{{resulttext}}</textarea>
+                  <div>
+                    <span id="hint_to">&nbsp;</span>&nbsp;
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="col-lg-3" ng-show="workstarted" ng-cloak>
+          <div class="panel panel-default">
+            <div class=panel-heading>Public keys</div>
+            <div class="list-group">
+               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
+                  ng-click="selectNew(true)"><a>Add new key...</a></div>
+               <br ng-show="publicKeys().length > 0"/>
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)"
+                  ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
+              My identities
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
+            </div>
+            <div class="list-group" >
+               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectGenerator()">
+                 <a>Generate new identity...</a>
+               </div>
+               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
+                  ng-show="newidentityopts" ng-click="selectNew(false)">
+                 <a>Import private key...</a>
+               </div>
+               <br ng-show="privateKeys().length > 0 && newidentityopts"/>
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)"
+                  ng-class="{'active':$index==selectedPrivateIndex()}">
+                  {{getUser(key)}}
+              </a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading ng-click="settingsopts=!settingsopts">
+              Settings
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span>
+            </div>
+            <div class="panel-body" ng-show="settingsopts">
+              <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                <label class="control-label col-sm-7">Store key data</label>
+                <div class="controls col-sm-5 pull-right">
+                  <div class="btn-group btn-group-justified btn-group-horizontal">
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
+                Key data is stored within your browser. It is NEVER sent over the internet.
+              </div>
+              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
+                <label class="control-label col-sm-7" >Delete all data?</label>
+                <div class="controls col-sm-5 pull-right">
+                  <button class="btn btn-xs btn-block btn-danger" data-toggle="modal" data-target="#deleteAll">Delete!</button>
+                </div>
+                <div id="deleteAll" class="modal fade" role="dialog">
+                  <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete ALL Key Data</h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="panel panel-danger">
+                          <div class="panel-heading">
+                            <h3 class="panel-title">This action is irreversible!</h3>
+                          </div>
+                          <div class="panel-body">
+                            <p>This will permanently delete the key data! There will be no way to recover your identities unless YOU made a backup.</p>
+                            <p>Are you sure you wish to do this?</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="purgeKeys()">Delete!</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <hr/>
+        <p>&copy; pgp.help 2015
+          <span class="pull-right">Powered by <a href="http://pages.github.com">GitHub Pages</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/tree/gh-pages">GitHub Repository</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/archive/gh-pages.zip">Download .zip</a></span>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="js/extrastyle.js"></script>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- script src="../../assets/js/ie10-viewport-bug-workaround.js"></script -->
+  </body>
+</html>
