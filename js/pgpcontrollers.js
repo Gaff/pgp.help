@@ -182,10 +182,16 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   });
 
   $scope.$on('deletekey', function(event, data) {
+    //Maybe check isNew?
     var f = $scope.getFingerprint(data);
-    $scope.keyring.removeKeysForId(f);
+    if (data.isPrivate()) {
+      $scope.keyring.privateKeys.removeForId(f);
+    } else {
+      $scope.keyring.publicKeys.removeForId(f);
+    }
+
     $scope.saveKeys();
-    $scope.onSelect(k); 
+    $scope.onSelect(k);
   });
 
   $scope.loadKeys = function() {
