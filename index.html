@@ -302,8 +302,35 @@
               <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
-                  <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
+                  <button class="btn btn-xs btn-block btn-danger" data-toggle="modal" data-target="#deleteAll">Delete!</button>
                 </div>
+                <div id="deleteAll" class="modal fade" role="dialog">
+                  <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete ALL Key Data</h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="panel panel-danger">
+                          <div class="panel-heading">
+                            <h3 class="panel-title">This action is irreversible!</h3>
+                          </div>
+                          <div class="panel-body">
+                            <p>This will permanently delete the key data! There will be no way to recover your identities unless YOU made a backup.</p>
+                            <p>Are you sure you wish to do this?</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="purgeKeys()">Delete!</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
