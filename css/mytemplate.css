@@ -11,6 +11,19 @@ body {
     text-decoration: none;
 }
 
+a.a-like.list-group-item.active {
+    color: #18bc9c;
+}
+
+a.a-like, a.a-like:active {
+    color: #18bc9c;
+}
+a.a-like:hover, a.a-like:focus {
+    text-decoration: underline;
+    color: #18bc9c;
+    background-color: #ecf0f1;
+}
+
 .starter-template {
   padding: 40px 15px;
   text-align: center;

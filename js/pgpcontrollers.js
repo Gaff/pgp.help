@@ -1,4 +1,21 @@
-var pgpApp = angular.module('pgpApp', ['ngAnimate']);
+var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router', 'ui.bootstrap']);
+
+/*
+pgpApp.run(
+  [          '$rootScope', '$state', '$stateParams',
+    function ($rootScope,   $state,   $stateParams) {
+
+    // It's very handy to add references to $state and $stateParams to the $rootScope
+    // so that you can access them from any scope within your applications.For example,
+    // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
+    // to active whenever 'contacts.list' or one of its decendents is active.
+    //$rootScope.$state = $state;
+    //$rootScope.$stateParams = $stateParams;
+    $rootScope.$on("$stateChangeError", console.log.bind(console));
+
+    }
+  ]
+);*/
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -19,8 +36,48 @@ pgpApp.factory('focus', function ($rootScope, $timeout) {
   }
 });
 
-pgpApp.controller('KeyListCtrl', function ($scope) {
+pgpApp.config(function($stateProvider, $urlRouterProvider) {
+  $urlRouterProvider.otherwise("/import");
+
+  $stateProvider
+    .state('key', {
+      url: "/",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+      params: {
+        key : null,
+        private : null,
+      },
+    })
+    .state('import', {
+      url: "/import",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+      params: {
+        key : null,
+        private : null,
+      },
+    })
+    .state('generate', {
+      url: "/generate",
+      templateUrl: "keyGenerator.html",
+      controller: 'KeyGenerator',
+    });
+
+
+  // configure html5 to get links working on jsfiddle
+  //$locationProvider.html5Mode({
+  //  enabled: true,
+  //  requireBase: false,
+  //});
+});
+
+pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
+
+  $scope.$location = $location;
+
   $scope.getUser = function(key) {
+    if (!key) return "";
     if('alias' in key) {
       return key.alias;
     }
@@ -33,12 +90,14 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   };
 
   $scope.getFingerprint = function(key) {
+    if(!key) return "";
     if('primaryKey' in key) {
       return key.primaryKey.fingerprint;
     }
   };
 
   $scope.getKeyId = function(key) {
+    if(!key) return "";
     if('primaryKey' in key) {
       return key.primaryKey.getKeyId().toHex();
     }
@@ -86,12 +145,6 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     return $scope.keyring.privateKeys.keys;
   };
 
-
-  k = {'alias': 'New Key...', 'new' : true };
-  kpriv = {'alias': 'Import Private Key...', 'new' : true, 'private' : true};
-  kgenerate = {'alias': 'Generate Key...', 'new' : true, 'private' : true, 'generate' : true};
-  $scope.selectit = k;
-  $scope.keys = [k];
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
   $scope.workstarted = $scope.allKeys().length > 0 ? true : false; //Should we start in basic mode?
   $scope.persist = $scope.workstarted;
@@ -100,69 +153,32 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   openpgp.config.commentstring = "https://pgp.help"; //Bit of a hack?
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
 
-  $scope.selectedPublicIndex = function() {
-    all = $scope.publicKeys();
-    return all.indexOf($scope.selectit);
-  };
-
-  $scope.selectedPrivateIndex = function() {
-    all = $scope.privateKeys();
-    return all.indexOf($scope.selectit);
-  };
-
-  $scope.onSelect = function(key) {
-    $scope.selectit = key;
-    $scope.$broadcast('selection', key);
-  };
-
-  $scope.selectNew = function(priv) {
-    if (priv) {
-      $scope.onSelect(k);
+  $scope.findKey = function(id, private) {
+    if (!id) return null;
+    if (private) {
+      return $scope.keyring.privateKeys.getForId(id);
     } else {
-      $scope.onSelect(kpriv);
-    }
-  }
-
-  $scope.selectGenerator = function() {
-    $scope.onSelect(kgenerate);
+      return $scope.keyring.publicKeys.getForId(id);
+    };
   };
+
 
   $scope.$watch('$viewContentLoaded', function() {
     //This makes sure that when we load up we pass down the selection.
-    $scope.onSelect($scope.selectit);
   });
 
   $scope.$watch('persist', function() {
     $scope.saveKeys();
   });
 
-  $scope.isNew = function(key) {
-      if(key) {
-        return( 'new' in key ? true : false );
-      } else {
-        return true;
-      }
-  };
-
   $scope.isPrivate = function(key) {
     if(!key) return false;
-    if( $scope.isNew(key)) {
-      return( 'private' in key);
-    } else {
-      return key.isPrivate();
-    }
+    return key.isPrivate();
   }
 
-  $scope.isGenerator = function(key) {
-    return ('generate' in key ? true : false);
-  };
-
   $scope.isDecrypted = function(key) {
-    if( $scope.isNew(key)) {
-      return false;
-    } else {
-      return key.primaryKey.isDecrypted;
-    }
+    if(!key) return false;
+    return key.primaryKey.isDecrypted;
   }
 
   $scope.$on('persist', function(event) {
@@ -177,8 +193,6 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     }
     $scope.workstarted = true;
     $scope.saveKeys();
-    $scope.selectit = updated;
-
   });
 
   $scope.$on('deletekey', function(event, data) {
@@ -191,7 +205,6 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
     }
 
     $scope.saveKeys();
-    $scope.onSelect(k);
   });
 
   $scope.loadKeys = function() {
@@ -209,53 +222,68 @@ pgpApp.controller('KeyListCtrl', function ($scope) {
   };
 
   $scope.purgeKeys = function() {
-    $scope.keyring.clear();
-    $scope.keyring.store();
-    $scope.stored = false;
-    $scope.onSelect(k);
-  }
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'chickenBox.html',
+      controller: 'chickenBoxCtrl',
+      size: 'lg',
+      resolve: {
+        content: function () {
+          return {
+            title : 'Delete ALL key data!',
+            danger : $scope.privateKeys().length > 0,
+          };
+        }
+      }
+    });
+
+    modalInstance.result.then(function (result) {
+      $scope.keyring.clear();
+      $scope.keyring.store();
+      $scope.stored = false;
+
+      $scope.$state.go("key", {key:null, private:false});
+    }, function () {
+      //$log.info('Modal dismissed at: ' + new Date());
+    });
+
+  };
+
 });
 
-pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
+pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, $modal) {
   $scope.key = null;
+  $scope.$stateParams = $stateParams;
+  $scope.$state = $state;
 
-  $scope.$on('selection', function(event, data) {
-    $scope.smartfade = "";
-    $scope.pgperror = false;
-    $scope.password = "";
-    $scope.passworderror = false;
+  $scope.init = function() {
+    $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
 
-    $scope.key = data;
     if ($scope.isNewKey()) {
       $scope.rawkey = "";
       focus("pgppub");
     } else {
       if ($scope.isPrivateKey()) {
-        $scope.rawkey = data.toPublic().armor();
-        $scope.rawkey_private = data.armor();
+        $scope.rawkey = $scope.key.toPublic().armor();
+        $scope.rawkey_private = $scope.key.armor();
         if(!$scope.isDecryptedKey()) {
           focus("passphrase");
         } else {
           focus("pmessage");
         };
       } else {
-        $scope.rawkey = data.armor();
+        $scope.rawkey = $scope.key.armor();
         focus("message");
       }
-
     }
-  });
+  };
 
-  $scope.$watch('key', function() {
-    if ($scope.isPrivateKey()) {
-      $scope.decryptMessage();
-    } else {
-      $scope.encryptMessage()}
-    }
-  );
-
-  $scope.isNewKey = function() { return $scope.isNew($scope.key)};
-  $scope.isPrivateKey = function() { return $scope.isPrivate($scope.key)};
+  //TODO: These don't need to be functions any more. Except isDecrypted maybe
+  $scope.isNewKey = function() { return $scope.key == null};
+  $scope.isPrivateKey = function() {
+    if (!$scope.key) return $scope.$stateParams.private;
+    return $scope.isPrivate($scope.key);
+  };
   $scope.isDecryptedKey = function() {
     if($scope.key){
       return ($scope.isDecrypted($scope.key));
@@ -263,38 +291,69 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
   };
 
   $scope.deleteKey = function() {
-    $scope.$emit('deletekey', $scope.key);
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'chickenBox.html',
+      controller: 'chickenBoxCtrl',
+      size: 'lg',
+      resolve: {
+        content: function () {
+          return {
+            title : 'Delete key data',
+            danger : $scope.isPrivateKey(),
+          };
+        }
+      }
+    });
+
+    modalInstance.result.then(function (result) {
+      $scope.$emit('deletekey', $scope.key);
+      $scope.$state.go("key", {key:null, private:false});
+    }, function () {
+      //$log.info('Modal dismissed at: ' + new Date());
+    });
+
   }
 
   $scope.loadKey = function() {
+    var publicKey;
     try {
       var publicKey = openpgp.key.readArmored($scope.rawkey);
-      if (publicKey.err) {
-        $scope.pgperror = true;
-      } else {
-        $scope.pgperror = false;
-        //Apply this first to get animations to work:
-        $scope.key = publicKey.keys[publicKey.keys.length - 1];
-        $scope.smartfade = "smartfade";
-        focus("message");
-        //$scope.wasNew = true;
-
-        //Now notify about the new keys.
-        for( i = 0; i < publicKey.keys.length; i++) {
-          $scope.$emit('newkey', publicKey.keys[i]);
-        }
-      }
-
     } catch (err) {
       //console.log("Not a key: " + err);
       $scope.pgperror = true;
+      return;
     }
+
+    if (publicKey.err) {
+      $scope.pgperror = true;
+    } else {
+      $scope.pgperror = false;
+      //Apply this first to get animations to work:
+      key = publicKey.keys[publicKey.keys.length - 1];
+      $scope.smartfade = "smartfade";
+      focus("message");
+      //$scope.wasNew = true;
+
+      //Now notify about the new keys.
+      for( i = 0; i < publicKey.keys.length; i++) {
+        $scope.$emit('newkey', publicKey.keys[i]);
+      }
+
+      var sp = {
+        key: $scope.getFingerprint(key),
+        private: $scope.isPrivate(key),
+      };
+      //console.log(sp);
+      $scope.$state.go("key", sp);
+    }
+
   };
 
   $scope.encryptMessage = function() {
     $scope.resulttext = "";
 
-    if ($scope.message && !$scope.isNew($scope.key)) {
+    if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
         $scope.resulttext = pgpMessage;
@@ -328,7 +387,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     $scope.resulttext = "";
     $scope.pmessageerror = false;
 
-    if( $scope.isNew($scope.key) ) return;
+    if( $scope.isNewKey() ) return;
     if( !$scope.pmessage) return;
 
     var ctext;
@@ -354,10 +413,12 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus) {
     });
   };
 
+  $scope.init();
 });
 
-pgpApp.controller('KeyGenerator', function ($scope, focus) {
+pgpApp.controller('KeyGenerator', function ($scope, $state, focus) {
   $scope.working = false;
+  $scope.$state = $state;
   $scope.generateKeyPair = function() {
     var userid;
 
@@ -383,7 +444,10 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
         $scope.$emit('persist');
         $scope.$emit('newkey', pKey.keys[0]);
         $scope.$emit('newkey', keypair.key);
-        $scope.$apply();
+        $scope.$state.go("key", {
+          key : $scope.getFingerprint(keypair.key),
+          private : true,
+        });
     }).catch(function(err) {
         // failure
         $scope.working = false;
@@ -393,6 +457,18 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
   };
 });
 
+pgpApp.controller('chickenBoxCtrl', function ($scope, $modalInstance, content) {
+
+  $scope.content = content;
+
+  $scope.ok = function () {
+    $modalInstance.close(true);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
 
 var myKey = [
 '-----BEGIN PGP PUBLIC KEY BLOCK-----',
