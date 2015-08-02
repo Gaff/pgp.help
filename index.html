@@ -55,7 +55,7 @@
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
         <div class="col-lg-9 active" ng-cloak>
-          <div ui-view></div>  
+          <div ui-view></div>
         </div>
         <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
@@ -96,6 +96,7 @@
           </form>
         </script>
         <script type='text/ng-template' id='keyWork.html'>
+          <pre>{{$stateParams | json}}</pre>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>{{isPrivateKey() ? 'Decrypt' : 'Encrypt'}} Message</legend>
@@ -257,13 +258,13 @@
           <div class="panel panel-default">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
-               <a class="a-like list-group-item " ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
-                  ng-click="selectNew(true)" ui-sref="import">
+               <a class="a-like list-group-item " ui-sref-active="active"
+                  ui-sref="import({'private':false})">
                   Add new key...
                </a>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)" ui-sref="key({'key':getFingerprint(key)})"
-                  ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ui-sref="key({'key':getFingerprint(key), 'private':false})"
+                  ui-sref-active="active">{{getUser(key)}}</a>
             </div>
           </div>
           <div class="panel panel-default">
@@ -272,17 +273,17 @@
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
-               <a class="list-group-item a-like" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts"
-                  ng-click="selectGenerator()" ui-sref="generate">
+               <a class="list-group-item a-like" ui-sref-active="active" ng-show="newidentityopts"
+                  ui-sref="generate">
                   Generate new identity...
                </a>
-               <a class="list-group-item a-like" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
-                  ng-show="newidentityopts" ng-click="selectNew(false)" ui-sref="import">
+               <a class="list-group-item a-like" ui-sref-active="active"
+                  ng-show="newidentityopts" ui-sref="import({'private':true})">
                   Import private key...
                </a>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)" ui-sref="key({'key':getFingerprint(key)})"
-                  ng-class="{'active':$index==selectedPrivateIndex()}">
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ui-sref="key({'key':getFingerprint(key), 'private':true})"
+                  ui-sref-active="active">
                   {{getUser(key)}}
               </a>
             </div>
