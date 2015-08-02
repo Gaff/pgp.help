@@ -8,7 +8,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.png">
-
     <title>pgp.help</title>
 
     <!-- Bootstrap core CSS -->
@@ -27,6 +26,8 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-animate.min.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
+    <script src="js/ui-bootstrap-tpls-0.13.2.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
   </head>
@@ -54,7 +55,34 @@
 
     <div class="container" ng-controller="KeyListCtrl">
       <div class="row work">
-        <div class="col-lg-9 active" ng-show="isGenerator(selectit)" ng-controller="KeyGenerator" ng-cloak>
+        <div class="col-lg-9 active" ng-cloak>
+          <div ui-view></div>
+        </div>
+        <script type='text/ng-template' id='chickenBox.html'>
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{content.title}}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger" ng-show="content.danger">
+              <div class="panel-heading">
+                <h3 class="panel-title">This action is irreversible!</h3>
+              </div>
+              <div class="panel-body">
+                <p>This will permanently delete the key data! There will be no way to recover this identity unless YOU made a backup.</p>
+                <p>Are you sure you wish to do this?</p>
+              </div>
+            </div>
+            <div ng-show="!content.danger">
+              Are you sure? This action cannot be reversed.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn" ng-class="content.danger ? 'btn-danger' : 'btn-warning'" ng-click="ok()">Delete!</button>
+            <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+          </div>
+        </script>
+        <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Generate New Identity</legend>
@@ -91,11 +119,11 @@
               </div>
             </fieldset>
           </form>
-        </div>
-        <div class="col-lg-9 active" ng-hide="isGenerator(selectit)" ng-controller="KeyWorkCtrl" ng-cloak>
+        </script>
+        <script type='text/ng-template' id='keyWork.html'>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
-              <legend>{{isPrivate(selectit) ? 'Decrypt' : 'Encrypt'}} Message</legend>
+              <legend>{{isPrivateKey() ? 'Decrypt' : 'Encrypt'}} Message</legend>
 
               <div class="form-group" ng-class="[smartfade, {'has-error': pgperror}]" ng-show="isNewKey()">
                 <label class="col-lg-2 control-label" for="pgppub">{{isPrivateKey() ? 'Private' : 'Public'}} Key</label>
@@ -156,7 +184,7 @@
                   <div class="forum-group row">
                     <div class="col-lg-10 col-lg-offset-2">
                       <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
-                      <a class="btn btn-default" data-toggle="modal" data-target="#keyDelete">Delete Key</a>
+                      <a class="btn btn-default" ng-click="deleteKey()">Delete Key</a>
                     </div>
                     <!-- Modals -->
                     <div id="keyExport" class="modal fade" role="dialog">
@@ -192,35 +220,6 @@
                         </div>
                       </div>
                     </div>
-                    <div id="keyDelete" class="modal fade" role="dialog">
-                      <div class="modal-dialog modal-lg">
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Key Data</h4>
-                          </div>
-                          <div class="modal-body" ng-show="isPrivateKey()">
-                            <div class="panel panel-danger">
-                              <div class="panel-heading">
-                                <h3 class="panel-title">This action is irreversible!</h3>
-                              </div>
-                              <div class="panel-body">
-                                <p>This will permanently delete the key data! There will be no way to recover this identity unless YOU made a backup.</p>
-                                <p>Are you sure you wish to do this?</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="modal-body" ng-show="!isPrivateKey()">
-                            Are you sure? This action cannot be reversed.
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn" ng-class="isPrivateKey() ? 'btn-danger' : 'btn-warning'" data-dismiss="modal" ng-click="deleteKey()">Delete!</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     <!-- Modals finish here -->
                   </div>
                 </div>
@@ -249,34 +248,37 @@
               </div>
             </fieldset>
           </form>
-        </div>
+        </script>
         <div class="col-lg-3" ng-show="workstarted" ng-cloak>
           <div class="panel panel-default">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
-               <div  class="list-group-item" ng-class="{'active':isNew(selectit) && !isPrivate(selectit)}"
-                  ng-click="selectNew(true)"><a>Add new key...</a></div>
+               <a class="a-like list-group-item " ui-sref-active="active"
+                  ui-sref="import({'private':false})">
+                  Add new key...
+               </a>
                <br ng-show="publicKeys().length > 0"/>
-               <a class="list-group-item" ng-repeat="key in publicKeys()" ng-click="onSelect(key)"
-                  ng-class="{'active':$index==selectedPublicIndex()}">{{getUser(key)}}</a>
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ui-sref="key({'key':getFingerprint(key), 'private':false})"
+                  ui-sref-active="active">{{getUser(key)}}</a>
             </div>
           </div>
           <div class="panel panel-default">
-            <div class=panel-heading  ng-click="newidentityopts=!newidentityopts">
+            <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
             </div>
             <div class="list-group" >
-               <div class="list-group-item" ng-class="{'active':isGenerator(selectit)}" ng-show="newidentityopts" ng-click="selectGenerator()">
-                 <a>Generate new identity...</a>
-               </div>
-               <div class="list-group-item" ng-class="{'active':isNew(selectit) && isPrivate(selectit) && !isGenerator(selectit)}"
-                  ng-show="newidentityopts" ng-click="selectNew(false)">
-                 <a>Import private key...</a>
-               </div>
+               <a class="list-group-item a-like" ui-sref-active="active" ng-show="newidentityopts"
+                  ui-sref="generate">
+                  Generate new identity...
+               </a>
+               <a class="list-group-item a-like" ui-sref-active="active"
+                  ng-show="newidentityopts" ui-sref="import({'private':true})">
+                  Import private key...
+               </a>
                <br ng-show="privateKeys().length > 0 && newidentityopts"/>
-               <a class="list-group-item" ng-repeat="key in privateKeys()" ng-click="onSelect(key)"
-                  ng-class="{'active':$index==selectedPrivateIndex()}">
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ui-sref="key({'key':getFingerprint(key), 'private':true})"
+                  ui-sref-active="active">
                   {{getUser(key)}}
               </a>
             </div>
@@ -302,35 +304,8 @@
               <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
-                  <button class="btn btn-xs btn-block btn-danger" data-toggle="modal" data-target="#deleteAll">Delete!</button>
+                  <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
                 </div>
-                <div id="deleteAll" class="modal fade" role="dialog">
-                  <div class="modal-dialog modal-lg">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Delete ALL Key Data</h4>
-                      </div>
-                      <div class="modal-body">
-                        <div class="panel panel-danger">
-                          <div class="panel-heading">
-                            <h3 class="panel-title">This action is irreversible!</h3>
-                          </div>
-                          <div class="panel-body">
-                            <p>This will permanently delete the key data! There will be no way to recover your identities unless YOU made a backup.</p>
-                            <p>Are you sure you wish to do this?</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="purgeKeys()">Delete!</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
