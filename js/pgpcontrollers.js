@@ -136,11 +136,13 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location) {
   openpgp.config.commentstring = "https://pgp.help"; //Bit of a hack?
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
 
-  $scope.findKey = function(id) {
+  $scope.findKey = function(id, private) {
     if (!id) return null;
-    //TODO how do we sort out pub/priv?
-    var keys = $scope.keyring.getKeysForId(id);
-    return keys[0];
+    if (private) {
+      return $scope.keyring.privateKeys.getForId(id);
+    } else {
+      return $scope.keyring.publicKeys.getForId(id);
+    };
   };
 
 
@@ -213,7 +215,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
   $scope.key = null;
   $scope.$stateParams = $stateParams;
   $scope.init = function() {
-    $scope.key = $scope.findKey($stateParams.key);
+    $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
 
     if ($scope.isNewKey()) {
       $scope.rawkey = "";
@@ -278,7 +280,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
   $scope.encryptMessage = function() {
     $scope.resulttext = "";
 
-    if ($scope.message && !$scope.isNew($scope.key)) {
+    if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
         $scope.resulttext = pgpMessage;
@@ -312,7 +314,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
     $scope.resulttext = "";
     $scope.pmessageerror = false;
 
-    if( $scope.isNew($scope.key) ) return;
+    if( $scope.isNewKey() ) return;
     if( !$scope.pmessage) return;
 
     var ctext;
