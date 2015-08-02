@@ -1,21 +1,22 @@
 var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router', 'ui.bootstrap']);
 
-/*
-pgpApp.run(
-  [          '$rootScope', '$state', '$stateParams',
-    function ($rootScope,   $state,   $stateParams) {
-
-    // It's very handy to add references to $state and $stateParams to the $rootScope
-    // so that you can access them from any scope within your applications.For example,
-    // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
-    // to active whenever 'contacts.list' or one of its decendents is active.
-    //$rootScope.$state = $state;
-    //$rootScope.$stateParams = $stateParams;
-    $rootScope.$on("$stateChangeError", console.log.bind(console));
-
-    }
-  ]
-);*/
+pgpApp.directive('autoselectall', ['$window', function ($window) {
+    return {
+        restrict: 'C', //A would be better
+        link: function (scope, element, attrs) {
+          //var $this = $(this);
+          element.on('click', function () {
+              if (!$window.getSelection().toString()) {
+                  // Required r mobile Safari
+                  this.select();
+              }
+          });
+          element.on('blur', function(){
+            element.scrollTop(0);
+          });
+        }
+    };
+}]);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
