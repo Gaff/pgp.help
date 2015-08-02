@@ -73,6 +73,10 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: "keyGenerator.html",
       controller: 'KeyGenerator',
     })
+    .state('intro', {
+      url : "/intro",
+      templateUrl : "intro.html",
+    })
     ;
 
 
