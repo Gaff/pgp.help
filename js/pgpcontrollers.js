@@ -271,7 +271,14 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     if ('pgp' in $stateParams ) {
       $scope.rawkey = decodeURIComponent($stateParams.pgp);
       key = $scope.loadKey_raw();
-      $scope.key = key;
+      if( key ) {
+        $scope.key = key;
+        if ($scope.isPrivateKey()) {
+          focus("pmessage");
+        } else {
+          focus("message");
+        }
+      }
     } else {
       $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
 
