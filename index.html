@@ -27,6 +27,7 @@
     <script src="js/angular.min.js"></script>
     <script src="js/angular-animate.min.js"></script>
     <script src="js/angular-ui-router.min.js"></script>
+    <script src="js/ct-ui-router-extras.min.js"></script>
     <script src="js/openpgp.js"></script>
     <script src="js/pgpcontrollers.js"></script>
   </head>
@@ -56,6 +57,7 @@
       <div class="row work">
         <div class="col-lg-9 active" ng-cloak>
           <div ui-view></div>
+          <div ui-view="key" ></div>
         </div>
         <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">

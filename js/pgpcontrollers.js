@@ -1,4 +1,4 @@
-var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router']);
+var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router', 'ct.ui.router.extras']);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -19,14 +19,16 @@ pgpApp.factory('focus', function ($rootScope, $timeout) {
   }
 });
 
-pgpApp.config(function($stateProvider, $urlRouterProvider) {
+pgpApp.config(function($stateProvider, $stickyStateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/import");
 
   $stateProvider
     .state('key', {
       url: "/",
-      templateUrl: "keyWork.html",
+      //templateUrl: "keyWork.html",
+      views: {'key':{templateUrl:"keyWork.html"}},
       controller: 'KeyWorkCtrl',
+      sticky: true,
       params: {
         key : null,
         private : null,
@@ -278,7 +280,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
   $scope.encryptMessage = function() {
     $scope.resulttext = "";
 
-    if ($scope.message && !$scope.isNew($scope.key)) {
+    if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
         $scope.resulttext = pgpMessage;
@@ -312,7 +314,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
     $scope.resulttext = "";
     $scope.pmessageerror = false;
 
-    if( $scope.isNew($scope.key) ) return;
+    if( $scope.isNewKey() ) return;
     if( !$scope.pmessage) return;
 
     var ctext;
