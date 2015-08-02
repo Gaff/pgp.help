@@ -87,6 +87,17 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   //});
 });
 
+pgpApp.config( [
+    '$compileProvider',
+    function( $compileProvider )
+    {
+        //need to enable data links for downloads.
+        ///^\s*(https?|ftp|mailto|tel|file):/
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data|mailto):/);
+    }
+]);
+
+
 pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
 
   $scope.$location = $location;
@@ -344,6 +355,11 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     });
   }
 
+  $scope.encodeURIComponent = function(raw) {
+    var r = encodeURIComponent(raw);
+    return r;
+  }
+
   $scope.loadKey_raw = function() {
     var publicKey;
     try {
@@ -351,7 +367,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     } catch (err) {
       //console.log("Not a key: " + err);
       $scope.pgperror = true;
-      return;
+      return null;
     }
 
     if (publicKey.err) {
@@ -372,20 +388,19 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
 
       return key;
     };
+  };
 
-    $scope.loadKey = function() {
-      key = $scope.loadKey_raw();
+  $scope.loadKey = function() {
+    key = $scope.loadKey_raw();
 
-      if (!key) return;
+    if (!key) return;
 
-      var sp = {
-        key: $scope.getFingerprint(key),
-        private: $scope.isPrivate(key),
-      };
-      //console.log(sp);
-      $scope.$state.go("key", sp);
-    }
-
+    var sp = {
+      key: $scope.getFingerprint(key),
+      private: $scope.isPrivate(key),
+    };
+    //console.log(sp);
+    $scope.$state.go("key", sp);
   };
 
   $scope.encryptMessage = function() {
