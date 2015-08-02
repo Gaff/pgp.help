@@ -307,6 +307,7 @@
                 <div class="col-lg-10 controls">
                   <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
                       placeholder="Encrypted text will appear here.">{{resulttext}}</textarea>
+                  <div class="pull-right" ng-show="resulttext && mailit()">(<a ng-href="{{mailit()}}">send in email</a>)</div>
                   <div>
                     <span id="hint_to">&nbsp;</span>&nbsp;
                   </div>

@@ -355,6 +355,16 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     });
   }
 
+  $scope.mailit = function() {
+    //Not bullet-proof but probably good enough.
+    var emailMatches = $scope.getUser($scope.key).match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\b/);
+    if (!emailMatches) return "";
+    var email = emailMatches[0];
+    var rt = $scope.resulttext;
+
+    return ("mailto:" + email + "?subject=" + encodeURIComponent("Sent from pgp.help") + "&body=" + encodeURIComponent(rt));
+  }
+
   $scope.encodeURIComponent = function(raw) {
     var r = encodeURIComponent(raw);
     return r;
