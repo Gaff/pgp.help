@@ -268,16 +268,13 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   $scope.$state = $state;
 
   $scope.init = function() {
-    if ('pgp' in $stateParams ) {
+    if ('pgp' in $stateParams && $stateParams.pgp) {
       $scope.rawkey = decodeURIComponent($stateParams.pgp);
       key = $scope.loadKey_raw();
       if( key ) {
         $scope.key = key;
-        if ($scope.isPrivateKey()) {
-          focus("pmessage");
-        } else {
-          focus("message");
-        }
+        //not quite correct for private keys. Why would you be making permanlinks for this?
+        focus("message");
       }
     } else {
       $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
