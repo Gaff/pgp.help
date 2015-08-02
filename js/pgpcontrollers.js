@@ -1,4 +1,6 @@
-var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router']);
+var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router', 'ui.bootstrap']);
+
+/*
 pgpApp.run(
   [          '$rootScope', '$state', '$stateParams',
     function ($rootScope,   $state,   $stateParams) {
@@ -7,35 +9,13 @@ pgpApp.run(
     // so that you can access them from any scope within your applications.For example,
     // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
     // to active whenever 'contacts.list' or one of its decendents is active.
-    $rootScope.$state = $state;
-    $rootScope.$stateParams = $stateParams;
+    //$rootScope.$state = $state;
+    //$rootScope.$stateParams = $stateParams;
     $rootScope.$on("$stateChangeError", console.log.bind(console));
-
-    $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
-      console.log('$stateChangeStart to '+toState.to+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
-    });
-    $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams, error){
-      console.log('$stateChangeError - fired when an error occurs during transition.');
-      console.log(arguments);
-    });
-    $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
-      console.log('$stateChangeSuccess to '+toState.name+'- fired once the state transition is complete.');
-    });
-    // $rootScope.$on('$viewContentLoading',function(event, viewConfig){
-    //   // runs on individual scopes, so putting it in "run" doesn't work.
-    //   console.log('$viewContentLoading - view begins loading - dom not rendered',viewConfig);
-    // });
-    $rootScope.$on('$viewContentLoaded',function(event){
-      console.log('$viewContentLoaded - fired after dom rendered',event);
-    });
-    $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
-      console.log('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
-      console.log(unfoundState, fromState, fromParams);
-    });
 
     }
   ]
-);
+);*/
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -92,7 +72,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   //});
 });
 
-pgpApp.controller('KeyListCtrl', function ($scope, $location) {
+pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
 
   $scope.$location = $location;
 
@@ -242,13 +222,36 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location) {
   };
 
   $scope.purgeKeys = function() {
-    $scope.keyring.clear();
-    $scope.keyring.store();
-    $scope.stored = false;
-  }
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'chickenBox.html',
+      controller: 'chickenBoxCtrl',
+      size: 'lg',
+      resolve: {
+        content: function () {
+          return {
+            title : 'Delete ALL key data!',
+            danger : $scope.privateKeys().length > 0,
+          };
+        }
+      }
+    });
+
+    modalInstance.result.then(function (result) {
+      $scope.keyring.clear();
+      $scope.keyring.store();
+      $scope.stored = false;
+
+      $scope.$state.go("key", {key:null, private:false});
+    }, function () {
+      //$log.info('Modal dismissed at: ' + new Date());
+    });
+
+  };
+
 });
 
-pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams) {
+pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, $modal) {
   $scope.key = null;
   $scope.$stateParams = $stateParams;
   $scope.$state = $state;
@@ -288,7 +291,28 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams) 
   };
 
   $scope.deleteKey = function() {
-    $scope.$emit('deletekey', $scope.key);
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'chickenBox.html',
+      controller: 'chickenBoxCtrl',
+      size: 'lg',
+      resolve: {
+        content: function () {
+          return {
+            title : 'Delete key data',
+            danger : $scope.isPrivateKey(),
+          };
+        }
+      }
+    });
+
+    modalInstance.result.then(function (result) {
+      $scope.$emit('deletekey', $scope.key);
+      $scope.$state.go("key", {key:null, private:false});
+    }, function () {
+      //$log.info('Modal dismissed at: ' + new Date());
+    });
+
   }
 
   $scope.loadKey = function() {
@@ -320,12 +344,8 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams) 
         key: $scope.getFingerprint(key),
         private: $scope.isPrivate(key),
       };
-      console.log(sp);
-      $scope.$state.go("generate", sp)
-        .then(function(res){ console.log("I went");})
-        .catch(function(res){console.log("oops")})
-      ;
-
+      //console.log(sp);
+      $scope.$state.go("key", sp);
     }
 
   };
@@ -396,8 +416,9 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams) 
   $scope.init();
 });
 
-pgpApp.controller('KeyGenerator', function ($scope, focus) {
+pgpApp.controller('KeyGenerator', function ($scope, $state, focus) {
   $scope.working = false;
+  $scope.$state = $state;
   $scope.generateKeyPair = function() {
     var userid;
 
@@ -423,7 +444,10 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
         $scope.$emit('persist');
         $scope.$emit('newkey', pKey.keys[0]);
         $scope.$emit('newkey', keypair.key);
-        $scope.$apply();
+        $scope.$state.go("key", {
+          key : $scope.getFingerprint(keypair.key),
+          private : true,
+        });
     }).catch(function(err) {
         // failure
         $scope.working = false;
@@ -433,6 +457,18 @@ pgpApp.controller('KeyGenerator', function ($scope, focus) {
   };
 });
 
+pgpApp.controller('chickenBoxCtrl', function ($scope, $modalInstance, content) {
+
+  $scope.content = content;
+
+  $scope.ok = function () {
+    $modalInstance.close(true);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
 
 var myKey = [
 '-----BEGIN PGP PUBLIC KEY BLOCK-----',
