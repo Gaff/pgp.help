@@ -1,4 +1,41 @@
 var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router']);
+pgpApp.run(
+  [          '$rootScope', '$state', '$stateParams',
+    function ($rootScope,   $state,   $stateParams) {
+
+    // It's very handy to add references to $state and $stateParams to the $rootScope
+    // so that you can access them from any scope within your applications.For example,
+    // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
+    // to active whenever 'contacts.list' or one of its decendents is active.
+    $rootScope.$state = $state;
+    $rootScope.$stateParams = $stateParams;
+    $rootScope.$on("$stateChangeError", console.log.bind(console));
+
+    $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
+      console.log('$stateChangeStart to '+toState.to+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
+    });
+    $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams, error){
+      console.log('$stateChangeError - fired when an error occurs during transition.');
+      console.log(arguments);
+    });
+    $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+      console.log('$stateChangeSuccess to '+toState.name+'- fired once the state transition is complete.');
+    });
+    // $rootScope.$on('$viewContentLoading',function(event, viewConfig){
+    //   // runs on individual scopes, so putting it in "run" doesn't work.
+    //   console.log('$viewContentLoading - view begins loading - dom not rendered',viewConfig);
+    // });
+    $rootScope.$on('$viewContentLoaded',function(event){
+      console.log('$viewContentLoaded - fired after dom rendered',event);
+    });
+    $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
+      console.log('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
+      console.log(unfoundState, fromState, fromParams);
+    });
+
+    }
+  ]
+);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -211,9 +248,11 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location) {
   }
 });
 
-pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
+pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams) {
   $scope.key = null;
   $scope.$stateParams = $stateParams;
+  $scope.$state = $state;
+
   $scope.init = function() {
     $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
 
@@ -253,28 +292,42 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $stateParams) {
   }
 
   $scope.loadKey = function() {
+    var publicKey;
     try {
       var publicKey = openpgp.key.readArmored($scope.rawkey);
-      if (publicKey.err) {
-        $scope.pgperror = true;
-      } else {
-        $scope.pgperror = false;
-        //Apply this first to get animations to work:
-        $scope.key = publicKey.keys[publicKey.keys.length - 1];
-        $scope.smartfade = "smartfade";
-        focus("message");
-        //$scope.wasNew = true;
-
-        //Now notify about the new keys.
-        for( i = 0; i < publicKey.keys.length; i++) {
-          $scope.$emit('newkey', publicKey.keys[i]);
-        }
-      }
-
     } catch (err) {
       //console.log("Not a key: " + err);
       $scope.pgperror = true;
+      return;
     }
+
+    if (publicKey.err) {
+      $scope.pgperror = true;
+    } else {
+      $scope.pgperror = false;
+      //Apply this first to get animations to work:
+      key = publicKey.keys[publicKey.keys.length - 1];
+      $scope.smartfade = "smartfade";
+      focus("message");
+      //$scope.wasNew = true;
+
+      //Now notify about the new keys.
+      for( i = 0; i < publicKey.keys.length; i++) {
+        $scope.$emit('newkey', publicKey.keys[i]);
+      }
+
+      var sp = {
+        key: $scope.getFingerprint(key),
+        private: $scope.isPrivate(key),
+      };
+      console.log(sp);
+      $scope.$state.go("generate", sp)
+        .then(function(res){ console.log("I went");})
+        .catch(function(res){console.log("oops")})
+      ;
+
+    }
+
   };
 
   $scope.encryptMessage = function() {
