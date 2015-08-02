@@ -121,6 +121,7 @@
           </form>
         </script>
         <script type='text/ng-template' id='keyWork.html'>
+          <!-- <pre>{{$stateParams}}</pre> -->
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>{{isPrivateKey() ? 'Decrypt' : 'Encrypt'}} Message</legend>
@@ -178,13 +179,14 @@
                     <label class="col-lg-2 control-label">Public Key</label>
                     <div class="col-lg-10 controls">
                       <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-                          placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
+                          placeholder="Raw PGP key.">{{rawkey}}</textarea>
                     </div>
                   </div>
                   <div class="forum-group row">
                     <div class="col-lg-10 col-lg-offset-2">
                       <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
                       <a class="btn btn-default" ng-click="deleteKey()">Delete Key</a>
+                      <div class="pull-right">(<a ui-sref="permalink({pgp:rawkey})">permalink</a>)</div>
                     </div>
                     <!-- Modals -->
                     <div id="keyExport" class="modal fade" role="dialog">
@@ -321,8 +323,6 @@
       </footer>
 
     </div> <!-- /container -->
-
-    <script src="js/extrastyle.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!-- script src="../../assets/js/ie10-viewport-bug-workaround.js"></script -->

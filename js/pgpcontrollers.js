@@ -41,6 +41,14 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/import");
 
   $stateProvider
+    .state('permalink', {
+      url: "/permalink?{pgp}",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+      params: {
+        pgp : null,
+      },
+    })
     .state('key', {
       url: "/",
       templateUrl: "keyWork.html",
@@ -51,19 +59,21 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
       },
     })
     .state('import', {
-      url: "/import",
+      url: "/import?{pgp}",
       templateUrl: "keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
         private : null,
+        pgp : null,
       },
     })
     .state('generate', {
       url: "/generate",
       templateUrl: "keyGenerator.html",
       controller: 'KeyGenerator',
-    });
+    })
+    ;
 
 
   // configure html5 to get links working on jsfiddle
@@ -258,23 +268,29 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   $scope.$state = $state;
 
   $scope.init = function() {
-    $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
-
-    if ($scope.isNewKey()) {
-      $scope.rawkey = "";
-      focus("pgppub");
+    if ('pgp' in $stateParams ) {
+      $scope.rawkey = decodeURIComponent($stateParams.pgp);
+      key = $scope.loadKey_raw();
+      $scope.key = key;
     } else {
-      if ($scope.isPrivateKey()) {
-        $scope.rawkey = $scope.key.toPublic().armor();
-        $scope.rawkey_private = $scope.key.armor();
-        if(!$scope.isDecryptedKey()) {
-          focus("passphrase");
-        } else {
-          focus("pmessage");
-        };
+      $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
+
+      if ($scope.isNewKey()) {
+        $scope.rawkey = "";
+        focus("pgppub");
       } else {
-        $scope.rawkey = $scope.key.armor();
-        focus("message");
+        if ($scope.isPrivateKey()) {
+          $scope.rawkey = $scope.key.toPublic().armor();
+          $scope.rawkey_private = $scope.key.armor();
+          if(!$scope.isDecryptedKey()) {
+            focus("passphrase");
+          } else {
+            focus("pmessage");
+          };
+        } else {
+          $scope.rawkey = $scope.key.armor();
+          focus("message");
+        }
       }
     }
   };
@@ -313,10 +329,9 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     }, function () {
       //$log.info('Modal dismissed at: ' + new Date());
     });
-
   }
 
-  $scope.loadKey = function() {
+  $scope.loadKey_raw = function() {
     var publicKey;
     try {
       var publicKey = openpgp.key.readArmored($scope.rawkey);
@@ -328,6 +343,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
 
     if (publicKey.err) {
       $scope.pgperror = true;
+      return null;
     } else {
       $scope.pgperror = false;
       //Apply this first to get animations to work:
@@ -340,6 +356,14 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
       for( i = 0; i < publicKey.keys.length; i++) {
         $scope.$emit('newkey', publicKey.keys[i]);
       }
+
+      return key;
+    };
+
+    $scope.loadKey = function() {
+      key = $scope.loadKey_raw();
+
+      if (!key) return;
 
       var sp = {
         key: $scope.getFingerprint(key),
