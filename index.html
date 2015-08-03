@@ -317,15 +317,13 @@
             </fieldset>
           </form>
         </script>
-        <div class="col-lg-3">
-          <div class="jumbotron" ui-sref-active="hidden" ng-show="!workstarted">
+        <div class="col-lg-3 pull-right" ng-cloak>
+          <div class="jumbotron" ui-sref-active="hidden" collapse="skipintro">
             <p>New to PGP?</p>
             <p>Click here to get started.</p>
             <p><a ui-sref="intro" class="btn btn-primary btn-lg">Learn More</a></p>
           </div>
-        </div>
-        <div class="col-lg-3" ng-show="workstarted" ng-cloak>
-          <div class="panel panel-default">
+          <div class="panel panel-default" collapse="!workstarted">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
                <a class="a-like list-group-item " ui-sref-active="active"
@@ -337,7 +335,7 @@
                   ui-sref-active="active">{{getUser(key)}}</a>
             </div>
           </div>
-          <div class="panel panel-default">
+          <div class="panel panel-default" ng-show="workstarted && (privateKeys().length || skipintro)">
             <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
