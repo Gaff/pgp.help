@@ -495,7 +495,11 @@ pgpApp.controller('KeyGenerator', function ($scope, $state, focus) {
     var userid;
 
     if ($scope.user) {
-      userid = $scope.user + " <" + $scope.email + ">";
+      if ($scope.email) {
+        userid = $scope.user + " <" + $scope.email + ">";
+      } else {
+        userid = $scope.user;
+      }
     } else {
       userid = $scope.email;
     }
