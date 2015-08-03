@@ -195,6 +195,9 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   });
 
   $scope.$watch('persist', function() {
+    if ($scope.persist) {
+      $scope.workstarted = true;
+    }
     $scope.saveKeys();
   });
 
