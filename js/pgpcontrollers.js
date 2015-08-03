@@ -1,21 +1,22 @@
 var pgpApp = angular.module('pgpApp', ['ngAnimate', 'ui.router', 'ui.bootstrap']);
 
-/*
-pgpApp.run(
-  [          '$rootScope', '$state', '$stateParams',
-    function ($rootScope,   $state,   $stateParams) {
-
-    // It's very handy to add references to $state and $stateParams to the $rootScope
-    // so that you can access them from any scope within your applications.For example,
-    // <li ng-class="{ active: $state.includes('contacts.list') }"> will set the <li>
-    // to active whenever 'contacts.list' or one of its decendents is active.
-    //$rootScope.$state = $state;
-    //$rootScope.$stateParams = $stateParams;
-    $rootScope.$on("$stateChangeError", console.log.bind(console));
-
-    }
-  ]
-);*/
+pgpApp.directive('autoselectall', ['$window', function ($window) {
+    return {
+        restrict: 'C', //A would be better
+        link: function (scope, element, attrs) {
+          //var $this = $(this);
+          element.on('click', function () {
+              if (!$window.getSelection().toString()) {
+                  // Required r mobile Safari
+                  this.select();
+              }
+          });
+          element.on('blur', function(){
+            element.scrollTop(0);
+          });
+        }
+    };
+}]);
 
 pgpApp.directive('focusOn', function() {
    return function(scope, elem, attr) {
@@ -40,6 +41,14 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/import");
 
   $stateProvider
+    .state('permalink', {
+      url: "/permalink?{pgp}",
+      templateUrl: "keyWork.html",
+      controller: 'KeyWorkCtrl',
+      params: {
+        pgp : null,
+      },
+    })
     .state('key', {
       url: "/",
       templateUrl: "keyWork.html",
@@ -50,19 +59,25 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
       },
     })
     .state('import', {
-      url: "/import",
+      url: "/import?{pgp}",
       templateUrl: "keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
         private : null,
+        pgp : null,
       },
     })
     .state('generate', {
       url: "/generate",
       templateUrl: "keyGenerator.html",
       controller: 'KeyGenerator',
-    });
+    })
+    .state('intro', {
+      url : "/intro",
+      templateUrl : "intro.html",
+    })
+    ;
 
 
   // configure html5 to get links working on jsfiddle
@@ -71,6 +86,17 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   //  requireBase: false,
   //});
 });
+
+pgpApp.config( [
+    '$compileProvider',
+    function( $compileProvider )
+    {
+        //need to enable data links for downloads.
+        ///^\s*(https?|ftp|mailto|tel|file):/
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|data|mailto):/);
+    }
+]);
+
 
 pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
 
@@ -147,6 +173,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
 
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
   $scope.workstarted = $scope.allKeys().length > 0 ? true : false; //Should we start in basic mode?
+  $scope.skipintro = $scope.allKeys().length > 2 ? true : false; //Should we start in basic mode?
   $scope.persist = $scope.workstarted;
   $scope.stored = $scope.persist; //Have we stored anything locally? Used to control delete button.
   pgpkeys = openpgp.key.readArmored(myKey);
@@ -168,6 +195,9 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   });
 
   $scope.$watch('persist', function() {
+    if ($scope.persist) {
+      $scope.workstarted = true;
+    }
     $scope.saveKeys();
   });
 
@@ -190,8 +220,18 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     var updated = $scope.addOrUpdateKey(data);
     if(data.isPrivate()) {
       $scope.newidentityopts = false;
+      $scope.workstarted = true;
     }
-    $scope.workstarted = true;
+
+    if ($scope.allKeys().length > 1 ) {
+      $scope.workstarted = true;
+    }
+
+    if ($scope.allKeys().length > 2 ) {
+      $scope.skipintro = true;
+    }
+
+
     $scope.saveKeys();
   });
 
@@ -257,23 +297,33 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   $scope.$state = $state;
 
   $scope.init = function() {
-    $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
-
-    if ($scope.isNewKey()) {
-      $scope.rawkey = "";
-      focus("pgppub");
-    } else {
-      if ($scope.isPrivateKey()) {
-        $scope.rawkey = $scope.key.toPublic().armor();
-        $scope.rawkey_private = $scope.key.armor();
-        if(!$scope.isDecryptedKey()) {
-          focus("passphrase");
-        } else {
-          focus("pmessage");
-        };
-      } else {
-        $scope.rawkey = $scope.key.armor();
+    if ('pgp' in $stateParams && $stateParams.pgp) {
+      $scope.rawkey = decodeURIComponent($stateParams.pgp);
+      key = $scope.loadKey_raw();
+      if( key ) {
+        $scope.key = key;
+        //not quite correct for private keys. Why would you be making permanlinks for this?
         focus("message");
+      }
+    } else {
+      $scope.key = $scope.findKey($stateParams.key, $stateParams.private);
+
+      if ($scope.isNewKey()) {
+        $scope.rawkey = "";
+        focus("pgppub");
+      } else {
+        if ($scope.isPrivateKey()) {
+          $scope.rawkey = $scope.key.toPublic().armor();
+          $scope.rawkey_private = $scope.key.armor();
+          if(!$scope.isDecryptedKey()) {
+            focus("passphrase");
+          } else {
+            focus("pmessage");
+          };
+        } else {
+          $scope.rawkey = $scope.key.armor();
+          focus("message");
+        }
       }
     }
   };
@@ -312,21 +362,36 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     }, function () {
       //$log.info('Modal dismissed at: ' + new Date());
     });
-
   }
 
-  $scope.loadKey = function() {
+  $scope.mailit = function() {
+    //Not bullet-proof but probably good enough.
+    var emailMatches = $scope.getUser($scope.key).match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\b/);
+    if (!emailMatches) return "";
+    var email = emailMatches[0];
+    var rt = $scope.resulttext;
+
+    return ("mailto:" + email + "?subject=" + encodeURIComponent("Sent from pgp.help") + "&body=" + encodeURIComponent(rt));
+  }
+
+  $scope.encodeURIComponent = function(raw) {
+    var r = encodeURIComponent(raw);
+    return r;
+  }
+
+  $scope.loadKey_raw = function() {
     var publicKey;
     try {
       var publicKey = openpgp.key.readArmored($scope.rawkey);
     } catch (err) {
       //console.log("Not a key: " + err);
       $scope.pgperror = true;
-      return;
+      return null;
     }
 
     if (publicKey.err) {
       $scope.pgperror = true;
+      return null;
     } else {
       $scope.pgperror = false;
       //Apply this first to get animations to work:
@@ -340,14 +405,21 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
         $scope.$emit('newkey', publicKey.keys[i]);
       }
 
-      var sp = {
-        key: $scope.getFingerprint(key),
-        private: $scope.isPrivate(key),
-      };
-      //console.log(sp);
-      $scope.$state.go("key", sp);
-    }
+      return key;
+    };
+  };
 
+  $scope.loadKey = function() {
+    key = $scope.loadKey_raw();
+
+    if (!key) return;
+
+    var sp = {
+      key: $scope.getFingerprint(key),
+      private: $scope.isPrivate(key),
+    };
+    //console.log(sp);
+    $scope.$state.go("key", sp);
   };
 
   $scope.encryptMessage = function() {
@@ -423,7 +495,11 @@ pgpApp.controller('KeyGenerator', function ($scope, $state, focus) {
     var userid;
 
     if ($scope.user) {
-      userid = $scope.user + " <" + $scope.email + ">";
+      if ($scope.email) {
+        userid = $scope.user + " <" + $scope.email + ">";
+      } else {
+        userid = $scope.user;
+      }
     } else {
       userid = $scope.email;
     }

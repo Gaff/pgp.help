@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
+    <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages.">
     <meta name="author" content="">
     <link rel="icon" href="favicon.png">
-    <title>pgp.help</title>
+    <title>pgp.help - Moden javascript client-side PGP encryption and decryption tool</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.flatly.min.css" rel="stylesheet">
@@ -23,6 +23,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/forcehttps.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-animate.min.js"></script>
@@ -42,12 +43,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="">pgp.help</a>
+          <a class="navbar-brand" ui-sref="key({key:''})">pgp.help</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
           <ul class="nav navbar-nav pull-right">
             <!-- <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li> -->
-            <li><a href="https://github.com/Gaff/pgp.help/blob/master/README.md" id="tab-help">Help</a></li>
+            <li><a ui-sref="intro">Intro</a></li>
+            <li><a href="https://github.com/Gaff/pgp.help/blob/master/README.md">Help</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -82,12 +84,73 @@
             <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
           </div>
         </script>
+        <script type='text/ng-template' id='intro.html'>
+          <div class="jumbotron">
+            <h1>Get started with PGP</h1>
+            <p class="lead">This website helps you send encrypted messages using PGP.</p>
+            <p>
+              <a class="btn btn-lg btn-success" ng-click="showwhat = true">What is PGP?</a>
+              <a class="btn btn-lg btn-success" ng-click="showrisks = true">Is pgp.help secure?</a>
+            </p>
+          </div>
+          <div id="#what" class="row" ng-show="showwhat">
+            <div class="col-lg-12">
+              <h3>What is PGP?</h3>
+              <ul>
+                <li>PGP allows you to send encrypted messages. Encrypted messages can only be read by the recipient and no-one else.</li>
+                <li>To send a message you need the recipient&#8217;s <b>public key</b>. You will have to ask them to give you this.</li>
+                <li>To receive messages you need a <b>private key</b>. We can generate one for you.</i>
+              </ul>
+            </div>
+          </div>
+          <div id="#what" class="row" ng-show="showrisks">
+            <div class="col-lg-12">
+              <h3>Is pgp.help secure?</h3>
+              <p class="text-danger">This website is not 100% secure! If privacy is important to you then make sure you understand the risks!</p>
+              <ul>
+                <li>All the code in this webside runs locally inside your browser. No data is ever sent over the internet.</li>
+                <li>However webbrowsers occasionally have security vulnerabilities, and are often targetted by hackers</li>
+                <li>Additionally since the website itself is loaded over the internet which presents an inherant risk.</li>
+                <li>This website is only intended for casual PGP usage. <em class="text-danger">Do not use this website if privacy is critical for you.</em></ii>
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <h3>Send a PGP Message</h3>
+              <p>If you want to send an encrypted message and already have thier PGP key it&#8217;s really simple:<p>
+              <ol>
+                <li>Paste their PGP key into the form.</li>
+                <li>Type your message.</li>
+                <li>Copy the encrypted result and send it to your recipient</li>
+              </ol>
+              <p>
+                <a class="btn btn-primary" ui-sref="key">Get Started »</a>
+              </p>
+            </div>
+            <div class="col-lg-4">
+              <h3>Don&#8217;t have a PGP key?</h3>
+              <p>You need to ask your recipient for their key, or suggest they go to <a href="https://pgp.help/generate">pgp.help</a> to generate one themselves.</p>
+              <p>If you want to try out PGP why not use our key to send us a message?</p>
+              <p>
+                <a class="btn btn-primary" ui-sref="key({key:'1dfa77312bac1781f699e78223fd9f3e9b067569'})">Send us a Message »</a>
+              </p>
+            </div>
+            <div class="col-lg-4">
+              <h3>Want to Receive Messages?</h3>
+              <p>We can generate a PGP key pair for you and store it inside your browser</p>
+              <p>
+                <a class="btn btn-primary" ui-sref="generate">Generate private key »</a>
+              </p>
+            </div>
+          </div>
+        </script>
         <script type='text/ng-template' id='keyGenerator.html'>
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>Generate New Identity</legend>
               <div class="form-group">
-                <label class="col-lg-2 control-label">Username</label>
+                <label class="col-lg-2 control-label">Name</label>
                 <div class="col-lg-6 controls">
                   <div class="input-append">
                     <input class="form-control" type="text" ng-model="user"/>
@@ -121,6 +184,7 @@
           </form>
         </script>
         <script type='text/ng-template' id='keyWork.html'>
+          <!-- <pre>{{$stateParams}}</pre> -->
           <form action="/" class="form-horizontal" method="get">
             <fieldset>
               <legend>{{isPrivateKey() ? 'Decrypt' : 'Encrypt'}} Message</legend>
@@ -178,13 +242,15 @@
                     <label class="col-lg-2 control-label">Public Key</label>
                     <div class="col-lg-10 controls">
                       <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-                          placeholder="Encrypted text will appear here.">{{rawkey}}</textarea>
+                          placeholder="Raw PGP key.">{{rawkey}}</textarea>
                     </div>
                   </div>
                   <div class="forum-group row">
                     <div class="col-lg-10 col-lg-offset-2">
+                      <a class="btn btn-default" download="publickey.txt" ng-href="data:text/plain;charset=utf-16le,{{encodeURIComponent(rawkey)}}">Save As</a>
                       <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
-                      <a class="btn btn-default" ng-click="deleteKey()">Delete Key</a>
+                      <a class="btn btn-default" ng-show="workstarted" ng-click="deleteKey()">Delete Key</a>
+                      <div class="pull-right">(<a ui-sref="permalink({pgp:rawkey})">permalink</a>)</div>
                     </div>
                     <!-- Modals -->
                     <div id="keyExport" class="modal fade" role="dialog">
@@ -215,6 +281,7 @@
                             </div>
                           </div>
                           <div class="modal-footer">
+                            <a class="btn btn-default" download="privatekey.txt" ng-href="data:text/plain;charset=utf-16le,{{encodeURIComponent(rawkey_private)}}">Save As</a>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                           </div>
                         </div>
@@ -241,6 +308,7 @@
                 <div class="col-lg-10 controls">
                   <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
                       placeholder="Encrypted text will appear here.">{{resulttext}}</textarea>
+                  <div class="pull-right" ng-show="resulttext && mailit()">(<a ng-href="{{mailit()}}">send in email</a>)</div>
                   <div>
                     <span id="hint_to">&nbsp;</span>&nbsp;
                   </div>
@@ -249,8 +317,13 @@
             </fieldset>
           </form>
         </script>
-        <div class="col-lg-3" ng-show="workstarted" ng-cloak>
-          <div class="panel panel-default">
+        <div class="col-lg-3 pull-right" ng-cloak>
+          <div class="jumbotron" ui-sref-active="hidden" collapse="skipintro">
+            <p>New to PGP?</p>
+            <p>Click here to get started.</p>
+            <p><a ui-sref="intro" class="btn btn-primary btn-lg">Learn More</a></p>
+          </div>
+          <div class="panel panel-default" collapse="!workstarted">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
                <a class="a-like list-group-item " ui-sref-active="active"
@@ -262,7 +335,7 @@
                   ui-sref-active="active">{{getUser(key)}}</a>
             </div>
           </div>
-          <div class="panel panel-default">
+          <div class="panel panel-default" ng-show="workstarted && (privateKeys().length || skipintro)">
             <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
@@ -321,8 +394,6 @@
       </footer>
 
     </div> <!-- /container -->
-
-    <script src="js/extrastyle.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <!-- script src="../../assets/js/ie10-viewport-bug-workaround.js"></script -->
