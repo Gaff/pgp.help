@@ -249,7 +249,7 @@
                     <div class="col-lg-10 col-lg-offset-2">
                       <a class="btn btn-default" download="publickey.txt" ng-href="data:text/plain;charset=utf-16le,{{encodeURIComponent(rawkey)}}">Save As</a>
                       <a class="btn btn-default" ng-show="isPrivateKey()" data-toggle="modal" data-target="#keyExport">Export Private Key</a>
-                      <a class="btn btn-default" ng-click="deleteKey()">Delete Key</a>
+                      <a class="btn btn-default" ng-show="workstarted" ng-click="deleteKey()">Delete Key</a>
                       <div class="pull-right">(<a ui-sref="permalink({pgp:rawkey})">permalink</a>)</div>
                     </div>
                     <!-- Modals -->
