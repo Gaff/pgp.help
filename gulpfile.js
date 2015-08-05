@@ -45,6 +45,8 @@ gulp.task('build', ['html'], function() {
 });
 
 gulp.task('test', ['build'], function() {
+  //TODO: Guess I should do something here - but hey, it at least requires
+  //a build to pass!
   return;
 });
 
