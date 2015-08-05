@@ -18,7 +18,7 @@ function lint(files, options) {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('html', [''], function() {
+gulp.task('html', function() {
   var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
   return gulp.src('app/*.html')
