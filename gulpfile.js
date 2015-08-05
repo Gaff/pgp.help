@@ -11,6 +11,20 @@ gulp.task('bower', function() {
     .pipe(gulp.dest('bower_components/'))
 });
 
+gulp.task('allclean', ['clean'], del.bind(null, ['bower_components']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
+
+gulp.task('fonts', function() {
+    var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
+    return gulp.src('./bower.json')
+        .pipe($.mainBowerFiles())
+        .pipe(filterfont)
+        //Possibly concat in app fonts here?
+        .pipe($.flatten())
+        .pipe(gulp.dest('dist/fonts'));
+});
+
+
 function lint(files, options) {
   return function() {
     return gulp.src(files)
@@ -21,12 +35,9 @@ function lint(files, options) {
   };
 };
 
-gulp.task('allclean', ['clean'], del.bind(null, ['bower_components']));
-
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('html', ['bower'], function() {
+gulp.task('html', function() {
   var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
   return gulp.src('app/*.html')
@@ -39,7 +50,7 @@ gulp.task('html', ['bower'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['html'], function() {
+gulp.task('build', ['html', 'fonts'], function() {
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
@@ -50,6 +61,6 @@ gulp.task('test', ['build'], function() {
   return;
 });
 
-gulp.task('default', ['clean'], function() {
+gulp.task('default', ['clean', 'bower'], function() {
   gulp.start('build');
 });
