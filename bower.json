@@ -18,6 +18,8 @@
     "angular-ui-router": "~0.2.15",
     "angular": "~1.4.3",
     "bootstrap": "~3.3.5",
-    "openpgp": "~1.2.0"
+    "openpgp": "~1.2.0",
+    "angular-animate": "~1.4.3",
+    "bootswatch-dist": "flatly"
   }
 }
