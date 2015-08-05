@@ -24,6 +24,15 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest('dist/fonts'));
 });
 
+gulp.task('extras', function() {
+  //favicon, and pictures.
+  return gulp.src([
+    'app/*.png',
+  ], {
+    dot: true
+  }).pipe(gulp.dest('dist'));
+});
+
 
 function lint(files, options) {
   return function() {
@@ -50,7 +59,7 @@ gulp.task('html', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['html', 'fonts'], function() {
+gulp.task('build', ['bower', 'html', 'fonts', 'extras'], function() {
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
@@ -61,6 +70,6 @@ gulp.task('test', ['build'], function() {
   return;
 });
 
-gulp.task('default', ['clean', 'bower'], function() {
+gulp.task('default', ['clean'], function() {
   gulp.start('build');
 });
