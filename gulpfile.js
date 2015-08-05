@@ -4,6 +4,13 @@ var gulpLoadPlugins = require('gulp-load-plugins');
 
 var $ = gulpLoadPlugins();
 
+var bower = require('gulp-bower');
+
+gulp.task('bower', function() {
+  return bower()
+    .pipe(gulp.dest('bower_components/'))
+});
+
 function lint(files, options) {
   return function() {
     return gulp.src(files)
@@ -12,13 +19,14 @@ function lint(files, options) {
       .pipe($.eslint.format())
       .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
   };
-}
+};
 
+gulp.task('allclean', ['clean'], del.bind(null, ['bower_components']));
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('html', function() {
+gulp.task('html', ['bower'], function() {
   var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
   return gulp.src('app/*.html')
@@ -31,10 +39,13 @@ gulp.task('html', function() {
     .pipe(gulp.dest('dist'));
 });
 
-
 gulp.task('build', ['html'], function() {
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+});
+
+gulp.task('test', ['build'], function() {
+  return;
 });
 
 gulp.task('default', ['clean'], function() {
