@@ -14,7 +14,7 @@ gulp.task('bower', function() {
 gulp.task('allclean', ['clean'], del.bind(null, ['bower_components']));
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('fonts', function() {
+gulp.task('fonts', ['bower'], function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
     return gulp.src('./bower.json')
         .pipe($.mainBowerFiles())
@@ -24,7 +24,7 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest('dist/fonts'));
 });
 
-gulp.task('extras', function() {
+gulp.task('extras', ['bower'], function() {
   //favicon, and pictures.
   return gulp.src([
     'app/*.png',
@@ -44,16 +44,16 @@ function lint(files, options) {
   };
 };
 
-gulp.task('lint', lint('app/scripts/**/*.js'));
+gulp.task('lint', ['bower'], lint('app/scripts/**/*.js'));
 
-gulp.task('html', function() {
+gulp.task('html', ['bower'], function() {
   var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
   return gulp.src('app/*.html')
     .pipe(assets)
     //.pipe($.if('*.js', $.uglify()))
     //.pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
-    .pipe(assets.restore())
+    //.pipe(assets.restore())
     .pipe($.useref())
     //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest('dist'));
