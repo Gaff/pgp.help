@@ -1,0 +1,5 @@
+language: node-js
+node-js:
+  - "0.12"
+  - "0.10"
+  - "stable"
