@@ -1,5 +1,8 @@
 var gulp = require('gulp');
 var del = require('del');
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+
 var gulpLoadPlugins = require('gulp-load-plugins');
 
 var $ = gulpLoadPlugins();
@@ -21,6 +24,7 @@ gulp.task('fonts', ['bower'], function() {
         .pipe(filterfont)
         //Possibly concat in app fonts here?
         .pipe($.flatten())
+        .pipe(gulp.dest('.tmp/fonts')) //for serve
         .pipe(gulp.dest('dist/fonts'));
 });
 
@@ -46,16 +50,63 @@ function lint(files, options) {
 
 gulp.task('lint', ['bower'], lint('app/scripts/**/*.js'));
 
+gulp.task('serve', ['bower', 'fonts'], function() {
+  browserSync({
+    notify: false,
+    port: 9000,
+    server: {
+      baseDir: ['.tmp', 'app'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
+    }
+  });
+
+  gulp.watch([
+    'app/*.html',
+    'app/scripts/**/*.js',
+    'app/images/**/*',
+    '.tmp/fonts/**/*'
+  ]).on('change', reload);
+
+  //gulp.watch('app/styles/**/*.scss', ['styles']);
+  //gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('bower.json', ['fonts']);
+});
+
+
+gulp.task('html-v', ['bower'], function() {
+  var assets = $.useref.assets({
+    noconcat: true,
+    searchPath: ['.tmp', 'app', '.']
+  });
+
+  var parts = gulp.src('app/*.html')
+    .pipe(assets)
+    .pipe($.flatten())
+
+   var js = parts
+    .pipe($.filter("*.js"))
+    .pipe(gulp.dest('dist/raw/js'))
+    .pipe($.uglify())
+    .pipe(gulp.dest('dist/min/js'))
+
+  return js;
+
+});
+
 gulp.task('html', ['bower'], function() {
-  var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
+  var assets = $.useref.assets({
+    searchPath: ['.tmp', 'app', '.']
+  });
 
   return gulp.src('app/*.html')
     .pipe(assets)
     //.pipe($.if('*.js', $.uglify()))
     //.pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
-    //.pipe(assets.restore())
+    .pipe(assets.restore())
     .pipe($.useref())
-    //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
+    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest('dist'));
 });
 

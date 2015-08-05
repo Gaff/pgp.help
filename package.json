@@ -25,6 +25,7 @@
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
+    "gulp-debug": "^2.0.1",
     "gulp-filter": "^3.0.0",
     "gulp-flatten": "^0.1.1",
     "gulp-if": "^1.2.5",
