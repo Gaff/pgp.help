@@ -19,8 +19,9 @@ gulp.task('bower', function() {
     .pipe(gulp.dest('bower_components/'))
 });
 
-gulp.task('allclean', ['clean'], del.bind(null, ['bower_components']));
+gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
+gulp.task('clean:dist', del.bind(null, ['.publish']));
 
 gulp.task('fonts', ['bower'], function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
@@ -138,10 +139,11 @@ gulp.task('test', ['build'], function() {
   return;
 });
 
-gulp.task('dist', ['test'], function() {
+gulp.task('dist', ['test', 'clean:dist'], function() {
 
   var options = {
-    branch: "gh-testpages"
+    remoteUrl: "https://$GH_TOKEN@github.com/Gaff/pgp.help.git",
+    branch: "gh-testpages-gulp"
   };
 
   return gulp.src('./dist/**/*')
