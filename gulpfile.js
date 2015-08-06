@@ -28,15 +28,6 @@ var $ = gulpLoadPlugins();
 
 var bower = require('gulp-bower');
 
-function string_src(filename, string) {
-  var src = require('stream').Readable({ objectMode: true })
-  src._read = function () {
-    this.push(new $.util.File({ cwd: "", base: "", path: filename, contents: new Buffer(string) }))
-    this.push(null)
-  }
-  return src
-}
-
 gulp.task('bower', function() {
   return bower()
     .pipe(gulp.dest('bower_components/'))
@@ -151,19 +142,11 @@ gulp.task('html', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('cname', function() {
-  var cname = process.env.CNAME || extraArgs.CNAME;
-  
-  return string_src("CNAME", cname)
-    .pipe(gulp.dest('dist'))
-});
-
-
 gulp.task('build', function() {
   runSequence(
     'bower',
     'clean',
-    ['html', 'fonts', 'extras', 'cname']
+    ['html', 'fonts', 'extras']
   );
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
@@ -180,12 +163,17 @@ gulp.task('gh-pages', ['clean:dist'], function() {
   var token = process.env.GH_TOKEN || extraArgs.GH_TOKEN;
   var ref = process.env.GH_REF || extraArgs.GH_REF;
   var branch = process.env.GH_BRANCH || extraArgs.GH_BRANCH;
+
+  //TODO: calculate cname from gh_ref
+  var cname = process.env.CNAME || extraArgs.CNAME;
+  
   var options = {
     remoteUrl: "https://" +token +"@" + ref,
     branch: branch,
   };
 
   return gulp.src('./dist/**/*')
+    .pipe($.file("CNAME", cname))
     .pipe($.ghPages(options));
 });
 
