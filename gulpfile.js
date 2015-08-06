@@ -138,6 +138,16 @@ gulp.task('test', ['build'], function() {
   return;
 });
 
+gulp.task('dist', ['test'], function() {
+
+  var options = {
+    branch: "gh-testpages"
+  };
+
+  return gulp.src('./dist/**/*')
+    .pipe($.ghPages(options));
+});
+
 gulp.task('default', ['clean'], function() {
   gulp.start('build');
 });
