@@ -1,7 +1,12 @@
 var gulp = require('gulp');
 var del = require('del');
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
+try {
+  var browserSync = require('browser-sync');
+  var reload = browserSync.reload;
+} catch (a) {
+  console.log("No browserSync");
+  var reload = function() {};
+};
 
 var gulpLoadPlugins = require('gulp-load-plugins');
 
@@ -102,7 +107,10 @@ gulp.task('html', ['bower'], function() {
 
   return gulp.src('app/*.html')
     .pipe(assets)
-    //.pipe($.if('*.js', $.uglify()))
+    //filtr js
+    //.pipe($.ngAnnotate())
+    //.pipe($.uglify())
+    //merge
     //.pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
     .pipe(assets.restore())
     .pipe($.useref())
