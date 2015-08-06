@@ -5,7 +5,7 @@
   "authors": [
     "Matthew Shaylor <github@shaylor.co.uk>"
   ],
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "ignore": [
     "**/.*",
     "node_modules",

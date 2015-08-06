@@ -16,7 +16,7 @@
     "OpenPGP"
   ],
   "author": "Gaff",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/Gaff/pgp.help/issues"
   },
@@ -28,7 +28,7 @@
     "gulp-debug": "^2.0.1",
     "gulp-filter": "^3.0.0",
     "gulp-flatten": "^0.1.1",
-    "gulp-if": "^1.2.5",
+    "gulp-gh-pages": "^0.5.2",
     "gulp-load-plugins": "^0.10.0",
     "gulp-main-bower-files": "^1.2.0",
     "gulp-minify-css": "^1.2.0",
