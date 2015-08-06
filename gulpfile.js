@@ -1,11 +1,25 @@
 var gulp = require('gulp');
 var del = require('del');
+var runSequence = require('run-sequence');
+
+//You only need browserSync to serve, not to build.
+var browserSync;
+var reload;
 try {
-  var browserSync = require('browser-sync');
-  var reload = browserSync.reload;
+  browserSync = require('browser-sync');
+  reload = browserSync.reload;
 } catch (a) {
   console.log("No browserSync");
-  var reload = function() {};
+  console.log(a);
+  reload = function() {};
+};
+
+//This is for github publishing from a local machine.
+var extraArgs;
+try {
+  extraArgs = require('./sensitive/env.json');
+} catch (a) {
+  extraArgs = {};
 };
 
 var gulpLoadPlugins = require('gulp-load-plugins');
@@ -13,6 +27,15 @@ var gulpLoadPlugins = require('gulp-load-plugins');
 var $ = gulpLoadPlugins();
 
 var bower = require('gulp-bower');
+
+function string_src(filename, string) {
+  var src = require('stream').Readable({ objectMode: true })
+  src._read = function () {
+    this.push(new $.util.File({ cwd: "", base: "", path: filename, contents: new Buffer(string) }))
+    this.push(null)
+  }
+  return src
+}
 
 gulp.task('bower', function() {
   return bower()
@@ -23,7 +46,7 @@ gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_component
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('clean:dist', del.bind(null, ['.publish']));
 
-gulp.task('fonts', ['bower'], function() {
+gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
     return gulp.src('./bower.json')
         .pipe($.mainBowerFiles())
@@ -34,7 +57,7 @@ gulp.task('fonts', ['bower'], function() {
         .pipe(gulp.dest('dist/fonts'));
 });
 
-gulp.task('extras', ['bower'], function() {
+gulp.task('extras', function() {
   //favicon, and pictures.
   return gulp.src([
     'app/*.png',
@@ -54,9 +77,9 @@ function lint(files, options) {
   };
 };
 
-gulp.task('lint', ['bower'], lint('app/scripts/**/*.js'));
+gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('serve', ['bower', 'fonts'], function() {
+gulp.task('serve', ['fonts'], function() {
   browserSync({
     notify: false,
     port: 9000,
@@ -81,7 +104,7 @@ gulp.task('serve', ['bower', 'fonts'], function() {
 });
 
 
-gulp.task('html-v', ['bower'], function() {
+gulp.task('html-v', function() {
   var assets = $.useref.assets({
     noconcat: true,
     searchPath: ['.tmp', 'app', '.']
@@ -101,7 +124,7 @@ gulp.task('html-v', ['bower'], function() {
 
 });
 
-gulp.task('html', ['bower'], function() {
+gulp.task('html', function() {
   var assets = $.useref.assets({
     searchPath: ['.tmp', 'app', '.']
   });
@@ -128,22 +151,38 @@ gulp.task('html', ['bower'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['bower', 'html', 'fonts', 'extras'], function() {
+gulp.task('cname', function() {
+  var cname = process.env.CNAME || extraArgs.CNAME;
+  
+  return string_src("CNAME", cname)
+    .pipe(gulp.dest('dist'))
+});
+
+
+gulp.task('build', function() {
+  runSequence(
+    'bower',
+    'clean',
+    ['html', 'fonts', 'extras', 'cname']
+  );
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
-gulp.task('test', ['build'], function() {
+gulp.task('test', function() {
   //TODO: Guess I should do something here - but hey, it at least requires
   //a build to pass!
   return;
 });
 
-gulp.task('dist', ['test', 'clean:dist'], function() {
+gulp.task('gh-pages', ['clean:dist'], function() {
 
+  var token = process.env.GH_TOKEN || extraArgs.GH_TOKEN;
+  var ref = process.env.GH_REF || extraArgs.GH_REF;
+  var branch = process.env.GH_BRANCH || extraArgs.GH_BRANCH;
   var options = {
-    remoteUrl: "https://$GH_TOKEN@github.com/Gaff/pgp.help.git",
-    branch: "gh-testpages-gulp"
+    remoteUrl: "https://" +token +"@" + ref,
+    branch: branch,
   };
 
   return gulp.src('./dist/**/*')
@@ -153,3 +192,11 @@ gulp.task('dist', ['test', 'clean:dist'], function() {
 gulp.task('default', ['clean'], function() {
   gulp.start('build');
 });
+
+gulp.task('dist', function() {
+  runSequence(
+    'build',
+    'test',
+    'gh-pages'
+  )
+})
