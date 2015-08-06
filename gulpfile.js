@@ -106,6 +106,7 @@ gulp.task('html', ['bower'], function() {
   });
 
   var jsFilter = $.filter('**/*.js', {restore: true});
+  var cssFilter = $.filter('**/*.css', {restore: true});
 
   return gulp.src('app/*.html')
     .pipe(assets)
@@ -114,10 +115,14 @@ gulp.task('html', ['bower'], function() {
     .pipe($.ngAnnotate())
     .pipe($.uglify())
     .pipe(jsFilter.restore)
-    //merge
-    //.pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
+    //CSS
+    //.pipe(cssFilter)
+    //TODO: This isn't "just working" for some reason
+    //.pipe($.minifyCss({compatibility: '*'}))
+    //.pipe(cssFilter.restore)
     .pipe(assets.restore())
     .pipe($.useref())
+    //html
     .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest('dist'));
 });
