@@ -35,7 +35,7 @@ gulp.task('bower', function() {
 
 gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
-gulp.task('clean:dist', del.bind(null, ['.publish']));
+gulp.task('clean:dist', del.bind(null, ['.publish', '.tmp/.publish']));
 
 gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
@@ -170,6 +170,7 @@ gulp.task('gh-pages', ['clean:dist'], function() {
   var options = {
     remoteUrl: "https://" +token +"@" + ref,
     branch: branch,
+    cacheDir: ".tmp/.publish",
   };
 
   return gulp.src('./dist/**/*')
