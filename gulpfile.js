@@ -105,11 +105,15 @@ gulp.task('html', ['bower'], function() {
     searchPath: ['.tmp', 'app', '.']
   });
 
+  var jsFilter = $.filter('**/*.js', {restore: true});
+
   return gulp.src('app/*.html')
     .pipe(assets)
     //filtr js
-    //.pipe($.ngAnnotate())
-    //.pipe($.uglify())
+    .pipe(jsFilter)
+    .pipe($.ngAnnotate())
+    .pipe($.uglify())
+    .pipe(jsFilter.restore)
     //merge
     //.pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
     .pipe(assets.restore())
