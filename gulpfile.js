@@ -176,8 +176,12 @@ gulp.task('gh-pages', ['clean:dist'], function() {
     cacheDir: ".tmp/.publish",
   };
 
+  gulp.src('./**/*')
+    .pipe($.debug({title: "gory-detail"}))
+
   return gulp.src('./dist/**/*')
     .pipe($.file("CNAME", cname))
+    .pipe($.debug({title: "gh-pages"}))
     .pipe($.ghPages(options));
 });
 
@@ -189,7 +193,6 @@ gulp.task('dist', function() {
   //I get a bit confused about how dependencies work
   //But basically only run this after a build.
   runSequence(
-    'build',
     'gh-pages'
   )
 })
