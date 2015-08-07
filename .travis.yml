@@ -4,6 +4,9 @@ node_js:
 - '0.10'
 - '0.12'
 - iojs
+before_deploy:
+  - git config --global user.email machine@pgp.help 
+  - git config --global user.name pgphelp-machine 
 deploy:
   provider: script
   script: gulp dist
