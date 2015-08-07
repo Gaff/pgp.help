@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Gaff/pgp.help.svg?branch=master)](https://travis-ci.org/Gaff/pgp.help)
+
 # pgp.help
 
 ###Help, what is PGP? How do I use this?
