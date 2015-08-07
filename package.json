@@ -1,6 +1,6 @@
 {
   "name": "pgp.help",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Modern clientside PGP encryption and decryption tool.",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
+    "gulp-bump": "^0.3.1",
     "gulp-debug": "^2.0.1",
     "gulp-file": "^0.2.0",
     "gulp-filter": "^3.0.0",

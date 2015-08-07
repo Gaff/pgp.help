@@ -164,6 +164,12 @@ gulp.task('test', function() {
   );
 });
 
+gulp.task('bump', function() {
+  return gulp.src(['./package.json', './bower.json'])
+    .pipe($.bump())
+    .pipe(gulp.dest('./'))
+});
+
 gulp.task('gh-pages', ['clean:dist'], function() {
 
   var token = process.env.GH_TOKEN || extraArgs.GH_TOKEN;
