@@ -34,8 +34,8 @@ gulp.task('bower', function() {
 });
 
 gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
-gulp.task('clean:dist', del.bind(null, ['.publish', '.tmp/.publish']));
+gulp.task('clean', del.bind(null, ['.tmp/**/!(.publish)', 'dist']));
+gulp.task('clean:dist', del.bind(null, ['.tmp/.publish']));
 
 gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
@@ -193,6 +193,7 @@ gulp.task('dist', function() {
   //I get a bit confused about how dependencies work
   //But basically only run this after a build.
   runSequence(
+    'build',
     'gh-pages'
   )
 })
