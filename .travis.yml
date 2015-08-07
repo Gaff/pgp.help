@@ -7,7 +7,7 @@ node_js:
 before_deploy:
   - git config --global user.email machine@pgp.help 
   - git config --global user.name "pgp.help Travis Build" 
-  - find .
+  - find . -not -path './node_modules/*'
 deploy:
   skip_cleanup: true
   provider: script

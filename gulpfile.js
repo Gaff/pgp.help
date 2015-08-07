@@ -158,7 +158,10 @@ gulp.task('build', function() {
 gulp.task('test', function() {
   //TODO: Guess I should do something here - but hey, it at least requires
   //a build to pass!
-  return;
+  runSequence(
+    'build',
+    //Actual test goes here!
+  );
 });
 
 gulp.task('gh-pages', ['clean:dist'], function() {
@@ -193,7 +196,6 @@ gulp.task('dist', function() {
   //I get a bit confused about how dependencies work
   //But basically only run this after a build.
   runSequence(
-    'build',
     'gh-pages'
   )
 })
