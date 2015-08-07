@@ -8,7 +8,7 @@ deploy:
   provider: script
   script: gulp dist
   on:
-    branch: deploytest
+    branch: master
     node: '0.10'
 env:
   global:
