@@ -51,10 +51,13 @@ gulp.task('fonts', function() {
 gulp.task('extras', function() {
   //favicon, and pictures.
   return gulp.src([
-    'app/*.png',
-  ], {
-    dot: true
-  }).pipe(gulp.dest('dist'));
+      'app/*.png',
+      'LICENSE',
+      'README.md',
+    ], {
+      dot: true
+    })
+    .pipe(gulp.dest('dist'));
 });
 
 

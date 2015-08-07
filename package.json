@@ -16,7 +16,7 @@
     "OpenPGP"
   ],
   "author": "Gaff",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Gaff/pgp.help/issues"
   },

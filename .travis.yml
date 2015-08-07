@@ -4,3 +4,9 @@ node_js:
   - 'iojs'
   - '0.12'
   - '0.10'
+deploy:
+  provider: script
+  script: gulp dist
+  on:
+    branch: deploytest
+    node: '0.10'
