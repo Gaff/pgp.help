@@ -159,7 +159,7 @@ gulp.task('test', function() {
   //TODO: Guess I should do something here - but hey, it at least requires
   //a build to pass!
   runSequence(
-    'build',
+    'build'
     //Actual test goes here!
   );
 });
