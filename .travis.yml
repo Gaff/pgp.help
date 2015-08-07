@@ -6,7 +6,7 @@ node_js:
 - iojs
 before_deploy:
   - git config --global user.email machine@pgp.help 
-  - git config --global user.name pgphelp-machine 
+  - git config --global user.name "pgp.help Travis Build" 
 deploy:
   provider: script
   script: gulp dist

@@ -189,6 +189,7 @@ gulp.task('dist', function() {
   //I get a bit confused about how dependencies work
   //But basically only run this after a build.
   runSequence(
+    'build',
     'gh-pages'
   )
 })
