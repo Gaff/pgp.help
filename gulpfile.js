@@ -181,6 +181,15 @@ gulp.task('electron:download', function(cb) {
   }, cb)
 });
 
+gulp.task('electron:asar', function(cb) {
+
+  return gulp.src("./dist/**")
+    //.pipe($.debug({title:"asar"}))
+    .pipe($.asar('app.asar'))
+    .pipe(gulp.dest(".tmp/asar"))
+    ;
+});
+
 gulp.task('electron', function() {
  
     gulp.src("")
