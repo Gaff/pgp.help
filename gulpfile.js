@@ -1,7 +1,9 @@
 var gulp = require('gulp');
+var gulpLoadPlugins = require('gulp-load-plugins');
+var $ = gulpLoadPlugins();
 var del = require('del');
 var runSequence = require('run-sequence');
-
+var bower = require('gulp-bower');
 //You only need browserSync to serve, not to build.
 var browserSync;
 var reload;
@@ -13,7 +15,6 @@ try {
   console.log(a);
   reload = function() {};
 };
-
 //This is for github publishing from a local machine.
 var extraArgs;
 try {
@@ -22,11 +23,11 @@ try {
   extraArgs = {};
 };
 
-var gulpLoadPlugins = require('gulp-load-plugins');
+//Mostly used for electron
+var packageJson = require('./package.json');
 
-var $ = gulpLoadPlugins();
 
-var bower = require('gulp-bower');
+
 
 gulp.task('bower', function() {
   return bower()
@@ -168,6 +169,46 @@ gulp.task('bump', function() {
   return gulp.src(['./package.json', './bower.json'])
     .pipe($.bump())
     .pipe(gulp.dest('./'))
+});
+
+downloadElectron = require('gulp-download-electron');
+gulp.task('electron:download', function(cb) {
+
+  //Not really very gulp-like.
+  return downloadElectron({
+    version: '0.30.3',
+    outputDir: './.tmp/binaries',
+  }, cb)
+});
+
+gulp.task('electron', function() {
+ 
+    gulp.src("")
+    .pipe($.electron({
+        src: './dist',
+        packageJson: packageJson,
+        release: './.tmp/release',
+        cache: './.tpm/cache',
+        version: 'v0.30.3', //Need to keep this uptodate
+        //packaging: true,
+        platforms: ['win32-ia32', 'darwin-x64'],
+        platformResources: {
+            darwin: {
+                CFBundleDisplayName: packageJson.name,
+                CFBundleIdentifier: packageJson.name,
+                CFBundleName: packageJson.name,
+                CFBundleVersion: packageJson.version
+                //icon: 'gulp-electron.icns'
+            },
+            win: {
+                "version-string": packageJson.version,
+                "file-version": packageJson.version,
+                "product-version": packageJson.version
+                //"icon": 'gulp-electron.ico'
+            }
+        }
+    }))
+    .pipe(gulp.dest("electron"));
 });
 
 gulp.task('gh-pages', ['clean:dist'], function() {
