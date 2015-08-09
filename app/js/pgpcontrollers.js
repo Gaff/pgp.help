@@ -43,7 +43,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('permalink', {
       url: "/permalink?{pgp}",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         pgp : null,
@@ -51,7 +51,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('key', {
       url: "/",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
@@ -60,7 +60,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('import', {
       url: "/import?{pgp}",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
@@ -70,12 +70,12 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('generate', {
       url: "/generate",
-      templateUrl: "keyGenerator.html",
+      templateUrl: "templates/keyGenerator.html",
       controller: 'KeyGenerator',
     })
     .state('intro', {
       url : "/intro",
-      templateUrl : "intro.html",
+      templateUrl : "templates/intro.html",
     })
     ;
 
