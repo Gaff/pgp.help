@@ -264,7 +264,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   $scope.purgeKeys = function() {
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'chickenBox.html',
+      templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
       size: 'lg',
       resolve: {
@@ -343,7 +343,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   $scope.deleteKey = function() {
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'chickenBox.html',
+      templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
       size: 'lg',
       resolve: {

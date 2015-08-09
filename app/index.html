@@ -44,6 +44,15 @@
           <div ui-view></div>
         </div>
         <div class="col-lg-3" ng-cloak>
+          <div class="panel panel-default">
+            <div class=panel-heading>New key</div>
+            <div class="list-group">
+               <a class="a-like list-group-item " ui-sref-active="active"
+                  ui-sref="import({'private':false})">
+                  Add new key...
+               </a>
+            </div>
+          </div>          
           <div class="jumbotron" ui-sref-active="hidden" collapse="skipintro">
             <p>New to PGP?</p>
             <p>Click here to get started.</p>
@@ -52,16 +61,11 @@
           <div class="panel panel-default" collapse="!workstarted">
             <div class=panel-heading>Public keys</div>
             <div class="list-group">
-               <a class="a-like list-group-item " ui-sref-active="active"
-                  ui-sref="import({'private':false})">
-                  Add new key...
-               </a>
-               <br ng-show="publicKeys().length > 0"/>
                <a class="list-group-item" ng-repeat="key in publicKeys()" ui-sref="key({'key':getFingerprint(key), 'private':false})"
                   ui-sref-active="active">{{getUser(key)}}</a>
             </div>
           </div>
-          <div class="panel panel-default" ng-show="workstarted && (privateKeys().length || skipintro)">
+          <div class="panel panel-default" ng-show="persist || workstarted">
             <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
               My identities
               <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
