@@ -109,6 +109,7 @@ gulp.task('serve', ['fonts'], function() {
 
 gulp.task('templates', function() {  
   return gulp.src('app/templates/**/*.html')
+    .pipe(gulp.dest(DEBUGDIST + "templates"))
     .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
     .pipe(gulp.dest(DEBUGDIST + "js"))
     .pipe(gulp.dest(".tmp/" + "js"));
@@ -194,6 +195,12 @@ gulp.task('electron:download', function(cb) {
     version: '0.30.3',
     outputDir: './.tmp/binaries',
   }, cb)
+});
+
+gulp.task('electron:js', function() {
+  return gulp.src(['app/*.js'])
+    .pipe(gulp.dest(DIST))
+    .pipe(gulp.dest(DEBUGDIST))
 });
 
 gulp.task('electron', function() {
