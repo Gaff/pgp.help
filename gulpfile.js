@@ -121,6 +121,8 @@ gulp.task('html', ['templates'], function() {
   var cssFilter = $.filter('**/*.css', {restore: true});
 
   return gulp.src(['app/*.html'])
+    //Remove the tags needed for debug builds:
+    .pipe($.replace(/<!-- build:flatten -->/g, ''))
     .pipe(assets)
     //filtr js
     .pipe(jsFilter)
@@ -146,8 +148,12 @@ gulp.task('debugdist', ['templates'], function() {
   })
   return gulp.src(['app/*.html'])
     .pipe(assets)
+    .pipe($.flatten({newPath:'extras'}))
     .pipe(assets.restore())
-    .pipe($.useref())
+    //.pipe($.useref())
+    .pipe($.htmlReplace({
+      flatten: "Foo",
+    }))
     .pipe(gulp.dest(DEBUGDIST))
 })
 
