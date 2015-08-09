@@ -428,8 +428,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
-        $scope.resulttext = pgpMessage;
-        //$scope.ciphertext = $scope.message + "\n" + pgpMessage;
+        $scope.resulttext = pgpMessage;        
         $scope.$apply();
       }).catch(function(error) {
         $scope.resulttext = error;
@@ -453,6 +452,11 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
         $scope.decryptMessage();
       }
     }
+  }
+
+  $scope.blockquote = function(quote) {
+    var out = "    " + quote.replace(/\n/g, "\n    ");
+    return( out );
   }
 
   $scope.decryptMessage = function() {
