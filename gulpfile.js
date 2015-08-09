@@ -23,13 +23,10 @@ try {
   extraArgs = {};
 };
 
-<<<<<<< HEAD
 //Mostly used for electron
 var packageJson = require('./package.json');
 
 
-
-=======
 //Config...
 
 var DIST = 'dist/min/';
@@ -38,7 +35,6 @@ var DEBUGDIST = 'dist/debug/'
 //
 // Work starts here
 //
->>>>>>> master
 
 gulp.task('bower', function() {
   return $.bower()
@@ -191,11 +187,10 @@ gulp.task('bump', function() {
     .pipe(gulp.dest('./'))
 });
 
-downloadElectron = require('gulp-download-electron');
 gulp.task('electron:download', function(cb) {
 
   //Not really very gulp-like.
-  return downloadElectron({
+  return $.downloadElectron({
     version: '0.30.3',
     outputDir: './.tmp/binaries',
   }, cb)
