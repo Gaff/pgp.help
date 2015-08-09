@@ -56,7 +56,7 @@
           <label class="col-lg-2 control-label">Public Key</label>
           <div class="col-lg-10 controls">
             <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-                placeholder="Raw PGP key.">{{rawkey}}</textarea>
+                placeholder="Raw PGP key.">{{applyBlockquote ? blockquote(rawkey) : rawkey}}</textarea>
           </div>
         </div>
         <div class="forum-group row">
@@ -121,10 +121,10 @@
       <label class="col-lg-2 control-label" for="dest">Result</label>
       <div class="col-lg-10 controls">
         <textarea class="form-control autoselectall" id="dest" readonly="readonly" rows="8"
-            placeholder="Encrypted text will appear here.">{{resulttext}}</textarea>
-        <div class="checkbox" ng-show="resulttext">
-          <label><input type="checkbox" ng-model="blockquote" ng-change="isPrivateKey() ? decryptMessage() : encryptMessage()">Markdown blockquote (for reddit etc)</label>
-        </div>            
+            placeholder="Encrypted text will appear here.">{{applyBlockquote && !isPrivateKey() ? blockquote(resulttext) : resulttext}}</textarea>
+        <div class="checkbox" ng-show="(resulttext && !isPrivateKey() || showdetails)">
+          <label><input type="checkbox" ng-model="applyBlockquote">Markdown blockquote (for reddit etc)</label>
+        </div>       
         <div class="pull-right" ng-show="resulttext && mailit()">(<a ng-href="{{mailit()}}">send in email</a>)</div>
         <div>
           <span id="hint_to">&nbsp;</span>&nbsp;
