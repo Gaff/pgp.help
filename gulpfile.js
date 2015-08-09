@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var $ = gulpLoadPlugins();
-var merge = require('merge-stream');
 var del = require('del');
 var runSequence = require('run-sequence');
 
