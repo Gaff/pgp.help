@@ -23,14 +23,25 @@ try {
   extraArgs = {};
 };
 
+<<<<<<< HEAD
 //Mostly used for electron
 var packageJson = require('./package.json');
 
 
 
+=======
+//Config...
+
+var DIST = 'dist/min/';
+var DEBUGDIST = 'dist/debug/'
+
+//
+// Work starts here
+//
+>>>>>>> master
 
 gulp.task('bower', function() {
-  return bower()
+  return $.bower()
     .pipe(gulp.dest('bower_components/'))
 });
 
@@ -46,7 +57,8 @@ gulp.task('fonts', function() {
         //Possibly concat in app fonts here?
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/fonts')) //for serve
-        .pipe(gulp.dest('dist/fonts'));
+        .pipe(gulp.dest(DIST + 'fonts'))
+        .pipe(gulp.dest(DEBUGDIST + 'fonts'));
 });
 
 gulp.task('extras', function() {
@@ -58,7 +70,8 @@ gulp.task('extras', function() {
     ], {
       dot: true
     })
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest(DIST))
+    .pipe(gulp.dest(DEBUGDIST));
 });
 
 
@@ -98,28 +111,15 @@ gulp.task('serve', ['fonts'], function() {
   gulp.watch('bower.json', ['fonts']);
 });
 
-
-gulp.task('html-v', function() {
-  var assets = $.useref.assets({
-    noconcat: true,
-    searchPath: ['.tmp', 'app', '.']
-  });
-
-  var parts = gulp.src('app/*.html')
-    .pipe(assets)
-    .pipe($.flatten())
-
-   var js = parts
-    .pipe($.filter("*.js"))
-    .pipe(gulp.dest('dist/raw/js'))
-    .pipe($.uglify())
-    .pipe(gulp.dest('dist/min/js'))
-
-  return js;
-
+gulp.task('templates', function() {  
+  return gulp.src('app/templates/**/*.html')
+    .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
+    .pipe(gulp.dest(DEBUGDIST + "js"))
+    .pipe(gulp.dest(".tmp/" + "js"));
 });
 
-gulp.task('html', function() {
+gulp.task('html', ['templates'], function() {
+  //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
   var assets = $.useref.assets({
     searchPath: ['.tmp', 'app', '.']
   });
@@ -127,7 +127,7 @@ gulp.task('html', function() {
   var jsFilter = $.filter('**/*.js', {restore: true});
   var cssFilter = $.filter('**/*.css', {restore: true});
 
-  return gulp.src('app/*.html')
+  return gulp.src(['app/*.html'])
     .pipe(assets)
     //filtr js
     .pipe(jsFilter)
@@ -143,14 +143,34 @@ gulp.task('html', function() {
     .pipe($.useref())
     //html
     .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest(DIST));
 });
+
+gulp.task('debugdist', ['templates'], function() {
+  var assets = $.useref.assets({
+    searchPath: ['.tmp', 'app', '.'],
+    noconcat : true
+  })
+  var htmlFilter = $.filter('*.html', {restore: true});
+
+  return gulp.src(['app/*.html'])      
+    .pipe(assets)
+    .pipe($.flatten({newPath:'extras'}))
+    .pipe(assets.restore())
+    //.pipe($.useref()) //Can't use this. Will transform manually...
+    .pipe(htmlFilter)    
+    .pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
+    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))    
+    .pipe(htmlFilter.restore)
+
+    .pipe(gulp.dest(DEBUGDIST))
+})
 
 gulp.task('build', function() {
   runSequence(
     'bower',
     'clean',
-    ['html', 'fonts', 'extras']
+    ['debugdist', 'html', 'fonts', 'extras']
   );
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
@@ -226,7 +246,7 @@ gulp.task('gh-pages', ['clean:dist'], function() {
     cacheDir: ".tmp/.publish",
   };
 
-  return gulp.src('./dist/**/*')
+  return gulp.src(DIST + '**/*')
     .pipe($.file("CNAME", cname))
     .pipe($.debug({title: "gh-pages"}))
     .pipe($.ghPages(options));
