@@ -121,8 +121,6 @@ gulp.task('html', ['templates'], function() {
   var cssFilter = $.filter('**/*.css', {restore: true});
 
   return gulp.src(['app/*.html'])
-    //Remove the tags needed for debug builds:
-    .pipe($.replace(/<!-- build:flatten -->/g, ''))
     .pipe(assets)
     //filtr js
     .pipe(jsFilter)
@@ -146,14 +144,18 @@ gulp.task('debugdist', ['templates'], function() {
     searchPath: ['.tmp', 'app', '.'],
     noconcat : true
   })
-  return gulp.src(['app/*.html'])
+  var htmlFilter = $.filter('*.html', {restore: true});
+
+  return gulp.src(['app/*.html'])      
     .pipe(assets)
     .pipe($.flatten({newPath:'extras'}))
     .pipe(assets.restore())
-    //.pipe($.useref())
-    .pipe($.htmlReplace({
-      flatten: "Foo",
-    }))
+    //.pipe($.useref()) //Can't use this. Will transform manually...
+    .pipe(htmlFilter)    
+    .pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
+    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))    
+    .pipe(htmlFilter.restore)
+
     .pipe(gulp.dest(DEBUGDIST))
 })
 
