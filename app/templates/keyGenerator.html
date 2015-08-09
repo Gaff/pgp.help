@@ -1,0 +1,36 @@
+<form action="/" class="form-horizontal" method="get">
+  <fieldset>
+    <legend>Generate New Identity</legend>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">Name</label>
+      <div class="col-lg-6 controls">
+        <div class="input-append">
+          <input class="form-control" type="text" ng-model="user"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">Email</label>
+      <div class="col-lg-6 controls">
+        <div class="input-append">
+          <input class="form-control" type="email" ng-model="email"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">Passphrase</label>
+      <div class="col-lg-6 controls">
+        <div class="input-append">
+          <input class="form-control" type="password" ng-model="passphrase"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label"></label>
+      <div class="col-lg-6 controls">
+        <div class="btn btn-large btn-primary" ng-show="!working" ng-click="generateKeyPair()">Generate New Key Pair</div>
+        <div class="btn btn-large btn-primary" disabled='true' ng-show="working">Working...</div>
+      </div>
+    </div>
+  </fieldset>
+</form>
