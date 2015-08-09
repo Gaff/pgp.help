@@ -167,7 +167,7 @@ gulp.task('build', function() {
   runSequence(
     'bower',
     'clean',
-    ['debugdist', 'html', 'fonts', 'extras']
+    ['debugdist', 'html', 'fonts', 'extras', 'electron:js']
   );
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
