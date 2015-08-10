@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var $ = gulpLoadPlugins();
+var merge = require('merge-stream');
 var del = require('del');
 var runSequence = require('run-sequence');
 var bower = require('gulp-bower');
@@ -42,15 +43,18 @@ gulp.task('bower', function() {
 });
 
 gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
-gulp.task('clean', del.bind(null, ['.tmp/**/!(.publish)', 'dist']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('clean:dist', del.bind(null, ['.tmp/.publish']));
 
 gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
-    return gulp.src('./bower.json')
-        .pipe($.mainBowerFiles())
+    var bowerfonts = gulp.src('./bower.json')
+        .pipe($.mainBowerFiles());
+    var appfonts = gulp.src('app/fonts/*');
+
+    return merge(bowerfonts, appfonts)
         .pipe(filterfont)
-        //Possibly concat in app fonts here?
+        //.pipe($.debug({title: 'fonts'}))        
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/fonts')) //for serve
         .pipe(gulp.dest(DIST + 'fonts'))
@@ -83,10 +87,24 @@ function lint(files, options) {
 
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('serve', ['fonts'], function() {
+
+gulp.task('serve', ['fonts', 'bower'], function() {
+
+  var port = 9000;
+
   browserSync({
     notify: false,
-    port: 9000,
+    port: port,
+    rewriteRules: [
+      {
+          match: /<meta http-equiv="Content-Security-Policy" content=".*">/,
+          fn: function (match) {
+              var ret = "default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self'; img-src 'self'; connect-src http://localhost:" + port + " ws://localhost:" + port
+              ret = "<meta http-equiv=\"Content-Security-Policy\" content=\"" + ret + "\">";              
+              return ret;
+          }
+      }
+    ],
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
@@ -112,13 +130,13 @@ gulp.task('templates', function() {
     .pipe(gulp.dest(DEBUGDIST + "templates"))
     .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
     .pipe(gulp.dest(DEBUGDIST + "js"))
-    .pipe(gulp.dest(".tmp/" + "js"));
+    .pipe(gulp.dest(".tmp/pre/" + "js"));
 });
 
 gulp.task('html', ['templates'], function() {
   //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
   var assets = $.useref.assets({
-    searchPath: ['.tmp', 'app', '.']
+    searchPath: ['.tmp', '.tmp/pre/', 'app', '.']
   });
 
   var jsFilter = $.filter('**/*.js', {restore: true});
@@ -139,7 +157,7 @@ gulp.task('html', ['templates'], function() {
     .pipe(assets.restore())
     .pipe($.useref())
     //html
-    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
+    //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest(DIST));
 });
 
