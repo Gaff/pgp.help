@@ -3,7 +3,7 @@
 
 # What is PGP?
 
-PGP uses [publice key cryptography](https://simple.wikipedia.org/wiki/Public-key_cryptography) to allows you to send and receive encrypted messages.
+PGP uses [public key cryptography](https://simple.wikipedia.org/wiki/Public-key_cryptography) to allows you to send and receive encrypted messages.
 
 You may have been sent here by someone who wants you to send them an encrypted message. This is what you need to do:
 
@@ -48,7 +48,7 @@ PGP work in a separate browser process to your regular browsing. If there is dem
 
 ### Can I help with your project? Can you help with my project?
 
-I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you spot any secruity issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
+I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you spot any security issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
 
 I'm currently looking for work in the security space. If you are interested or thing I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
 
