@@ -40,7 +40,7 @@ gulp.task('bower', function() {
 });
 
 gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
-gulp.task('clean', del.bind(null, ['.tmp/**/!(.publish)', 'dist']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('clean:dist', del.bind(null, ['.tmp/.publish']));
 
 gulp.task('fonts', function() {
