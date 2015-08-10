@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var $ = gulpLoadPlugins();
+var merge = require('merge-stream');
 var del = require('del');
 var runSequence = require('run-sequence');
 
@@ -44,10 +45,13 @@ gulp.task('clean:dist', del.bind(null, ['.tmp/.publish']));
 
 gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
-    return gulp.src('./bower.json')
-        .pipe($.mainBowerFiles())
+    var bowerfonts = gulp.src('./bower.json')
+        .pipe($.mainBowerFiles());
+    var appfonts = gulp.src('app/fonts/*');
+
+    return merge(bowerfonts, appfonts)
         .pipe(filterfont)
-        //Possibly concat in app fonts here?
+        //.pipe($.debug({title: 'fonts'}))        
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/fonts')) //for serve
         .pipe(gulp.dest(DIST + 'fonts'))
