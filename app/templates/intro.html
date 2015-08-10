@@ -19,12 +19,45 @@
 <div id="#what" class="row" ng-show="showrisks">
   <div class="col-lg-12">
     <h3>Is pgp.help secure?</h3>
-    <p class="text-danger">This website is not 100% secure! If privacy is important to you then make sure you understand the risks!</p>
+    <p>This website is designed with security in mind. No data is sent over the internet. Key data is (optionally) retained within your browser but nowhere else.</p>
+    <p>However you shouldn't just take my word for it, it is important to understand the risks and how they have been managed. Here are the main risks explained:
     <ul>
-      <li>All the code in this website runs locally inside your browser. No data is ever sent over the internet.</li>
-      <li>However web browsers occasionally have security vulnerabilities, and are often targeted by hackers</li>
-      <li>Additionally since the website itself is loaded over the internet which presents an inherent risk.</li>
-      <li>This website is only intended for casual PGP usage. <em class="text-danger">Do not use this website if privacy is critical for you.</em></ii>
+      <li>
+        <h4>Can pgp.help steal your data?</h4>    
+        <p>
+        No!
+        </p>
+        <p>pgp.help uses <a href="http://www.html5rocks.com/en/tutorials/security/content-security-policy/">Content Security Policy</a> headers to prohibit your browser from sending any data from this page over the internet. You can check these for yourself if you do right-click -> view source. Near the top you will see something like this:
+
+        <pre><code class="language-html" data-lang="html">&lt;meta http-equiv=<span class="text-primary">&quot;Content-Security-Policy&quot;</span> content=<span class="text-primary">&quot;default-src &#39;none&#39;; script-src &#39;self&#39;; style-src &#39;self&#39;; font-src &#39;self&#39;; img-src &#39;self&#39;;&quot;</span>/&gt;</code></pre>
+
+        The <code>default-src &#39;none&#39;</code> means "don't load anything from anywhere", followed by some exceptions: <code>script-src &#39;self&#39;; style-src &#39;self&#39;; font-src &#39;self&#39;; img-src &#39;self&#39;;&quot;</code> which allows this site to load up some scripts, styles, fonts, and images - but <span class="text-primary">only</span> from the place where this website was fetched from in the first place.</p>
+        <p>
+        If this website attempts to load data from anywhere else, or make any data connections then your browser will prevent this. It might be possible to use <a href="http://scarybeastsecurity.blogspot.co.uk/2009/12/generic-cross-browser-cross-domain.html">cunning tricks</a> to leak data back to the pgp.help themselves. If you are concerned then I suggest you use a local copy of this website to prevent this. See below.
+        </p>
+      </li>
+      <li>
+        <h4>Could pgp.help be hacked?</h4>
+        <p>
+        It's a possibility - to prevent this use a local copy.
+        </p>
+        <p>
+        Obviously we take steps to keep the website secure, but it's possible that someone could hack into the site and change the scripts to steal your data. If they did this they would also have to alter the CSP headers - see above.
+        </p>
+        <p>
+        The simplest way to prevent this risk is to save a known-good copy of the website. There is a link in the footer that allows you to download and save the website locally. You can verify the CSP header manually to check that it is safe before using it (see above).
+        </p>
+      </li>
+      <li>
+        <h4>Could my browser be hacked?</h4>
+        <p>
+        It's unlikely - if you keep your browser up to date.
+        </p>
+        <p>
+        Modern browsers that are kept up to date are relatively secure. Serious zero day exploits do happen but they are rare and get fixed quickly. Still you can minimise any risks by doing
+        PGP work in a separate browser process to your regular browsing. If there is demand then I will package a standalone executable that will significantly minimise risks from browser exploits.
+        </p>
+      </li>
     </ul>
   </div>
 </div>
