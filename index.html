@@ -1,1 +1,136 @@
-<!DOCTYPE html> <html lang=en ng-app=pgpApp ng-csp> <head> <meta charset=utf-8> <meta http-equiv=X-UA-Compatible content="IE=edge"> <meta name=viewport content="width=device-width, initial-scale=1"> <meta http-equiv=Content-Security-Policy content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self';">  <meta name=description content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages."> <meta name=author> <link rel=icon href=favicon.png> <title>pgp.help - Modern javascript client-side PGP encryption and decryption tool</title> <link rel=stylesheet href=css/main.css> </head> <body> <header class="navbar navbar-default navbar-fixed-top"> <div class=container> <div class=navbar-header> <button type=button class="navbar-toggle collapsed" data-toggle=collapse data-target=#navbar aria-expanded=false aria-controls=navbar> <span class=sr-only>Toggle navigation</span> <span class=icon-bar></span> <span class=icon-bar></span> <span class=icon-bar></span> </button> <a class=navbar-brand ui-sref="key({key:''})">pgp.help</a> </div> <div id=navbar class="collapse navbar-collapse bs-navbar-collapse"> <ul class="nav navbar-nav pull-right">  <li><a ui-sref=intro>Intro</a></li> <li><a href=https://github.com/Gaff/pgp.help/blob/master/README.md>Help</a></li> </ul> </div> </div> </header> <div class=container ng-controller=KeyListCtrl> <div class="row work"> <div class="col-lg-9 active" ng-cloak> <div ui-view></div> </div> <div class=col-lg-3 ng-cloak> <div class="panel panel-default"> <div class=panel-heading>New key</div> <div class=list-group> <a class="a-like list-group-item" ui-sref-active=active ui-sref="import({'private':false})"> Add new key... </a> </div> </div> <div class=jumbotron ui-sref-active=hidden collapse=skipintro> <p>New to PGP?</p> <p>Click here to get started.</p> <p><a ui-sref=intro class="btn btn-primary btn-lg">Learn More</a></p> </div> <div class="panel panel-default" collapse=!workstarted> <div class=panel-heading>Public keys</div> <div class=list-group> <a class=list-group-item ng-repeat="key in publicKeys()" ui-sref="key({'key':getFingerprint(key), 'private':false})" ui-sref-active=active>{{getUser(key)}}</a> </div> </div> <div class="panel panel-default" ng-show="persist || workstarted"> <div class=panel-heading ng-click="newidentityopts=!newidentityopts"> My identities <span class="pull-right clickable"><i class=glyphicon ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span> </div> <div class=list-group> <a class="list-group-item a-like" ui-sref-active=active ng-show=newidentityopts ui-sref=generate> Generate new identity... </a> <a class="list-group-item a-like" ui-sref-active=active ng-show=newidentityopts ui-sref="import({'private':true})"> Import private key... </a> <br ng-show="privateKeys().length > 0 && newidentityopts"> <a class=list-group-item ng-repeat="key in privateKeys()" ui-sref="key({'key':getFingerprint(key), 'private':true})" ui-sref-active=active> {{getUser(key)}} </a> </div> </div> <div class="panel panel-default"> <div class=panel-heading ng-click="settingsopts=!settingsopts"> Settings <span class="pull-right clickable"><i class=glyphicon ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span> </div> <div class=panel-body ng-show=settingsopts> <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false"> <label class="control-label col-sm-7">Store key data</label> <div class="controls col-sm-5 pull-right"> <div class="btn-group btn-group-justified btn-group-horizontal"> <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div> <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div> </div> </div> </div> <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored"> Key data is stored within your browser. It is NEVER sent over the internet. </div> <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0"> <label class="control-label col-sm-7">Delete all data?</label> <div class="controls col-sm-5 pull-right"> <button class="btn btn-xs btn-block btn-danger" ng-click=purgeKeys()>Delete!</button> </div> </div> </div> </div> </div> </div> <footer class=footer> <hr> <p>&copy; pgp.help 2015 <span class=pull-right>Powered by <a href=http://pages.github.com>GitHub Pages</a> &nbsp; <a href=https://github.com/Gaff/pgp.help/tree/gh-pages>GitHub Repository</a> &nbsp; <a href=https://github.com/Gaff/pgp.help/archive/gh-pages.zip>Download .zip</a></span> </p> </footer> </div>  <script src=js/plugins.js></script> <script src=js/main.js></script> </body> </html> 
+<!DOCTYPE html>
+<html lang="en" ng-app="pgpApp" ng-csp>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!--
+    This is the Content-Security-Policy header:
+    See https://pgp.help/#/intro for more info
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self';"> 
+    
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages."/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="favicon.png"/>
+    <title>pgp.help - Modern javascript client-side PGP encryption and decryption tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+
+  <body>
+    <header class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" ui-sref="key({key:''})">pgp.help</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse bs-navbar-collapse">
+          <ul class="nav navbar-nav pull-right">
+            <!-- <li class="active"><a data-toggle="tab" href="#home" id="tab-home">Home</a></li> -->
+            <li><a ui-sref="intro">Intro</a></li>
+            <li><a href="https://github.com/Gaff/pgp.help/blob/master/README.md">Help</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </header>
+
+    <div class="container" ng-controller="KeyListCtrl">
+      <div class="row work">
+        <div class="col-lg-9 active" ng-cloak>
+          <div ui-view></div>
+        </div>
+        <div class="col-lg-3" ng-cloak>
+          <div class="panel panel-default">
+            <div class=panel-heading>New key</div>
+            <div class="list-group">
+               <a class="a-like list-group-item " ui-sref-active="active"
+                  ui-sref="import({'private':false})">
+                  Add new key...
+               </a>
+            </div>
+          </div>          
+          <div class="jumbotron" ui-sref-active="hidden" collapse="skipintro">
+            <p>New to PGP?</p>
+            <p>Click here to get started.</p>
+            <p><a ui-sref="intro" class="btn btn-primary btn-lg">Learn More</a></p>
+          </div>
+          <div class="panel panel-default" collapse="!workstarted">
+            <div class=panel-heading>Public keys</div>
+            <div class="list-group">
+               <a class="list-group-item" ng-repeat="key in publicKeys()" ui-sref="key({'key':getFingerprint(key), 'private':false})"
+                  ui-sref-active="active">{{getUser(key)}}</a>
+            </div>
+          </div>
+          <div class="panel panel-default" ng-show="persist || workstarted">
+            <div class=panel-heading ng-click="newidentityopts=!newidentityopts">
+              My identities
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':newidentityopts, 'glyphicon-chevron-down':!newidentityopts}"></i></span>
+            </div>
+            <div class="list-group" >
+               <a class="list-group-item a-like" ui-sref-active="active" ng-show="newidentityopts"
+                  ui-sref="generate">
+                  Generate new identity...
+               </a>
+               <a class="list-group-item a-like" ui-sref-active="active"
+                  ng-show="newidentityopts" ui-sref="import({'private':true})">
+                  Import private key...
+               </a>
+               <br ng-show="privateKeys().length > 0 && newidentityopts"/>
+               <a class="list-group-item" ng-repeat="key in privateKeys()" ui-sref="key({'key':getFingerprint(key), 'private':true})"
+                  ui-sref-active="active">
+                  {{getUser(key)}}
+              </a>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class=panel-heading ng-click="settingsopts=!settingsopts">
+              Settings
+              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span>
+            </div>
+            <div class="panel-body" ng-show="settingsopts">
+              <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
+                <label class="control-label col-sm-7">Store key data</label>
+                <div class="controls col-sm-5 pull-right">
+                  <div class="btn-group btn-group-justified btn-group-horizontal">
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': persist }" ng-click="persist=!persist">ON</div>
+                    <div class="btn btn-xs btn-default" ng-class="{'btn-primary': !persist }" ng-click="persist=!persist">OFF</div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
+                Key data is stored within your browser. It is NEVER sent over the internet.
+              </div>
+              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
+                <label class="control-label col-sm-7" >Delete all data?</label>
+                <div class="controls col-sm-5 pull-right">
+                  <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <hr/>
+        <p>&copy; pgp.help 2015
+          <span class="pull-right">Powered by <a href="http://pages.github.com">GitHub Pages</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/tree/gh-pages">GitHub Repository</a> &nbsp; <a href="https://github.com/Gaff/pgp.help/archive/gh-pages.zip">Download .zip</a></span>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="js/plugins.js"></script>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
