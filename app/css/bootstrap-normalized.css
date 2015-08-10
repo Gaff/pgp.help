@@ -5,21 +5,21 @@
   font-family: 'Lato';
   font-style: normal;
   font-weight: 400;
-  src: local('Lato Regular'), local('Lato-Regular'), url(lato_v11_regular.ttf) format('truetype');
+  src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/lato_v11_regular.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'Lato';
   font-style: normal;
   font-weight: 700;
-  src: local('Lato Bold'), local('Lato-Bold'), url(lato_v11_bold.ttf) format('truetype');
+  src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/lato_v11_bold.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'Lato';
   font-style: italic;
   font-weight: 400;
-  src: local('Lato Italic'), local('Lato-Italic'), url(lato_v11_italic.ttf) format('truetype');
+  src: local('Lato Italic'), local('Lato-Italic'), url(../fonts/lato_v11_italic.ttf) format('truetype');
 }
 
 /*!
