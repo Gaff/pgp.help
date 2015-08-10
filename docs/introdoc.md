@@ -43,13 +43,29 @@ It's unlikely - if you keep your browser up to date.
 Modern browsers that are kept up to date are relatively secure. Serious zero day exploits do happen but they are rare and get fixed quickly. Still you can minimise any risks by doing
 PGP work in a separate browser process to your regular browsing. If there is demand then I will package a standalone executable that will significantly minimise risks from browser exploits.
 
+# About pgp.help
+
+### What technology does pgp.help use?
+
+pgp.help is primarily built upon:
+
+* [Angular.js](https://angularjs.org/)
+* [Bootstrap](http://getbootstrap.com/)
+* [Openpgpjs.org](http://openpgpjs.org)
+* [Github pages](https://pages.github.com/)
+* [Cloudflare](https://www.cloudflare.com/)
+
+### What about licensing?
+
+Most components are MIT licensed. Openpgpjs is LGPL. Please refer to the github repo and individual components for full details.
+
 ### Can I help with your project? Can you help with my project?
 
 I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you spot any security issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
 
 I'm currently looking for work in the security space. If you are interested or thing I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
 
-# How can I contact you? What is your PGP key?
+### How can I contact you? What is your PGP key?
 
 You can email me at hello@pgp.help
 
