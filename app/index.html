@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="pgpApp" ng-csp>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+    <!--
+    This is the Content-Security-Policy header:
+    See https://pgp.help/#/intro for more info
+    -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self';"> 
     
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages.">
-    <meta name="author" content="">
-    <link rel="icon" href="favicon.png">
+    <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages."/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="favicon.png"/>
     <title>pgp.help - Modern javascript client-side PGP encryption and decryption tool</title>
 
     <!-- build:css css/main.css -->
-    <link rel="stylesheet" href="css/bootstrap-normalized.css">
-    <link rel="stylesheet" href="/bower_components/angular/angular-csp.css">
-    <link rel="stylesheet" href="css/mytemplate.css">
+    <link rel="stylesheet" href="css/bootstrap-normalized.css"/>
+    <link rel="stylesheet" href="/bower_components/angular/angular-csp.css"/>
+    <link rel="stylesheet" href="css/mytemplate.css"/>
     <!-- endbuild -->
   </head>
 
@@ -143,6 +147,7 @@
     <script src="js/forcehttps.js"></script>
     <script src="js/pgpcontrollers.js"></script>
     <script src="js/templates.js"></script>
+    <script src="js/cookie.js"></script>
     <!-- endbuild -->
   </body>
 </html>

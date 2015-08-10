@@ -126,13 +126,13 @@ gulp.task('templates', function() {
   return gulp.src('app/templates/**/*.html')
     .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
     .pipe(gulp.dest(DEBUGDIST + "js"))
-    .pipe(gulp.dest(".tmp/" + "js"));
+    .pipe(gulp.dest(".tmp/pre/" + "js"));
 });
 
 gulp.task('html', ['templates'], function() {
   //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
   var assets = $.useref.assets({
-    searchPath: ['.tmp', 'app', '.']
+    searchPath: ['.tmp', '.tmp/pre/', 'app', '.']
   });
 
   var jsFilter = $.filter('**/*.js', {restore: true});
@@ -153,7 +153,7 @@ gulp.task('html', ['templates'], function() {
     .pipe(assets.restore())
     .pipe($.useref())
     //html
-    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
+    //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest(DIST));
 });
 
