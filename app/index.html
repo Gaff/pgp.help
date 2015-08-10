@@ -4,7 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self'; img-src 'self';"> 
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self'; img-src 'self'; connect-src http://localhost:9000 ws://localhost:9000"> 
+
+    <!--
+    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; script-src 'none' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'none'; font-src 'none'; img-src 'none'; connect-src http://localhost:9000 ws://localhost:9000">     
+    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self';"> 
+    -->
+    
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages.">
     <meta name="author" content="">
