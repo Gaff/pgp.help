@@ -71,6 +71,21 @@ gulp.task('extras', function() {
     .pipe(gulp.dest(DEBUGDIST));
 });
 
+gulp.task('markdown:readme', function () {
+    return gulp.src(['docs/readme-pre.md', 'docs/intro.md'])
+        .pipe($.concat('README.md'))
+        .pipe(gulp.dest('.'));
+});
+
+gulp.task('markdown:docs', function () {
+    return gulp.src('docs/*.md')
+        .pipe($.markdown())
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('markdown', ['markdown:readme', 'markdown:docs'], function() {
+  return
+});
 
 function lint(files, options) {
   return function() {

@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/Gaff/pgp.help.svg?branch=master)](https://travis-ci.org/Gaff/pgp.help)
-
 # What is PGP?
 
 * PGP allows you to send encrypted messages. Encrypted messages can only be read by the recipient and no-one else.
