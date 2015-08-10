@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="pgpApp">
+<html lang="en" ng-app="pgpApp" ng-csp>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self'; report-uri localhost:8000;"> 
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="pgp.help is a modern client-side tool for encrypting and decrypting PGP / OpenPGP / GnuPG messages.">
     <meta name="author" content="">
@@ -12,6 +13,7 @@
 
     <!-- build:css css/main.css -->
     <link rel="stylesheet" href="/bower_components/bootswatch-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/bower_components/angular/angular-csp.css">
     <link rel="stylesheet" href="css/mytemplate.css">
     <!-- endbuild -->
   </head>
