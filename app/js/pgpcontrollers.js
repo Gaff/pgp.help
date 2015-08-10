@@ -43,7 +43,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('permalink', {
       url: "/permalink?{pgp}",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         pgp : null,
@@ -51,7 +51,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('key', {
       url: "/",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
@@ -60,7 +60,7 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('import', {
       url: "/import?{pgp}",
-      templateUrl: "keyWork.html",
+      templateUrl: "templates/keyWork.html",
       controller: 'KeyWorkCtrl',
       params: {
         key : null,
@@ -70,12 +70,12 @@ pgpApp.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('generate', {
       url: "/generate",
-      templateUrl: "keyGenerator.html",
+      templateUrl: "templates/keyGenerator.html",
       controller: 'KeyGenerator',
     })
     .state('intro', {
       url : "/intro",
-      templateUrl : "intro.html",
+      templateUrl : "templates/intro.html",
     })
     ;
 
@@ -264,7 +264,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   $scope.purgeKeys = function() {
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'chickenBox.html',
+      templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
       size: 'lg',
       resolve: {
@@ -343,7 +343,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   $scope.deleteKey = function() {
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'chickenBox.html',
+      templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
       size: 'lg',
       resolve: {
@@ -428,8 +428,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
-        $scope.resulttext = pgpMessage;
-        //$scope.ciphertext = $scope.message + "\n" + pgpMessage;
+        $scope.resulttext = pgpMessage;        
         $scope.$apply();
       }).catch(function(error) {
         $scope.resulttext = error;
@@ -453,6 +452,11 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
         $scope.decryptMessage();
       }
     }
+  }
+
+  $scope.blockquote = function(quote) {
+    var out = "    " + quote.replace(/\n/g, "\n    ");
+    return( out );
   }
 
   $scope.decryptMessage = function() {

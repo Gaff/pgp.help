@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">&times;</button>
+  <h4 class="modal-title">{{content.title}}</h4>
+</div>
+<div class="modal-body">
+  <div class="panel panel-danger" ng-show="content.danger">
+    <div class="panel-heading">
+      <h3 class="panel-title">This action is irreversible!</h3>
+    </div>
+    <div class="panel-body">
+      <p>This will permanently delete the key data! There will be no way to recover this identity unless YOU made a backup.</p>
+      <p>Are you sure you wish to do this?</p>
+    </div>
+  </div>
+  <div ng-show="!content.danger">
+    Are you sure? This action cannot be reversed.
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn" ng-class="content.danger ? 'btn-danger' : 'btn-warning'" ng-click="ok()">Delete!</button>
+  <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>
