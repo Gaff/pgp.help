@@ -72,7 +72,7 @@ gulp.task('extras', function() {
 });
 
 gulp.task('markdown:readme', function () {
-    return gulp.src(['docs/readme-pre.md', 'docs/intro.md'])
+    return gulp.src(['docs/readme-pre.md', 'docs/introdoc.md'])
         .pipe($.concat('README.md'))
         .pipe(gulp.dest('.'));
 });
@@ -80,7 +80,7 @@ gulp.task('markdown:readme', function () {
 gulp.task('markdown:docs', function () {
     return gulp.src('docs/*.md')
         .pipe($.markdown())
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('.tmp/templates'));
 });
 
 gulp.task('markdown', ['markdown:readme', 'markdown:docs'], function() {
@@ -137,8 +137,8 @@ gulp.task('serve', ['fonts', 'bower'], function() {
   gulp.watch('bower.json', ['fonts']);
 });
 
-gulp.task('templates', function() {  
-  return gulp.src('app/templates/**/*.html')
+gulp.task('templates', ['markdown'], function() {  
+  return gulp.src(['app/templates/**/*.html','.tmp/templates/**/*.html'])
     .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
     .pipe(gulp.dest(DEBUGDIST + "js"))
     .pipe(gulp.dest(".tmp/pre/" + "js"));
