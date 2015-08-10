@@ -19,7 +19,7 @@
 <div id="#what" class="row" ng-show="showrisks">
   <div class="col-lg-12">
     <h3>Is pgp.help secure?</h3>
-    <p>This website is desinged with security in mind. No data is sent over the internet. Key data is (optionally) retained within your browser but nowhere else.</p>
+    <p>This website is designed with security in mind. No data is sent over the internet. Key data is (optionally) retained within your browser but nowhere else.</p>
     <p>However you shouldn't just take my word for it, it is important to understand the risks and how they have been managed. Here are the main risks explained:
     <ul>
       <li>
@@ -27,7 +27,7 @@
         <p>
         No!
         </p>
-        <p>pgp.help uses <a href="http://www.html5rocks.com/en/tutorials/security/content-security-policy/">Content Security Policy</a> headers to prohibit your browser from sending any data form this page over the internet. You can check these for yourself if you do right-click -> view source. Near the top you will see something like this:
+        <p>pgp.help uses <a href="http://www.html5rocks.com/en/tutorials/security/content-security-policy/">Content Security Policy</a> headers to prohibit your browser from sending any data from this page over the internet. You can check these for yourself if you do right-click -> view source. Near the top you will see something like this:
 
         <pre><code class="language-html" data-lang="html">&lt;meta http-equiv=<span class="text-primary">&quot;Content-Security-Policy&quot;</span> content=<span class="text-primary">&quot;default-src &#39;none&#39;; script-src &#39;self&#39;; style-src &#39;self&#39;; font-src &#39;self&#39;; img-src &#39;self&#39;;&quot;</span>/&gt;</code></pre>
 
@@ -39,10 +39,10 @@
       <li>
         <h4>Could pgp.help be hacked?</h4>
         <p>
-        It's a possiblity - to prevent this use a local copy.
+        It's a possibility - to prevent this use a local copy.
         </p>
         <p>
-        Obviously we take steps to keep the website secure, but it's possible that someone could hack into the site and change the scripts to steal your data. If they did this they would also have to alta the CSP headers - see above.
+        Obviously we take steps to keep the website secure, but it's possible that someone could hack into the site and change the scripts to steal your data. If they did this they would also have to alter the CSP headers - see above.
         </p>
         <p>
         The simplest way to prevent this risk is to save a known-good copy of the website. There is a link in the footer that allows you to download and save the website locally. You can verify the CSP header manually to check that it is safe before using it (see above).
