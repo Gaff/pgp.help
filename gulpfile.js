@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var $ = gulpLoadPlugins();
+var merge = require('merge-stream');
 var del = require('del');
 var runSequence = require('run-sequence');
 var bower = require('gulp-bower');
@@ -27,26 +28,37 @@ try {
 var packageJson = require('./package.json');
 
 
+//Config...
 
+var DIST = 'dist/min/';
+var DEBUGDIST = 'dist/debug/'
+
+//
+// Work starts here
+//
 
 gulp.task('bower', function() {
-  return bower()
+  return $.bower()
     .pipe(gulp.dest('bower_components/'))
 });
 
 gulp.task('clean:all', ['clean', 'clean:dist'], del.bind(null, ['bower_components']));
-gulp.task('clean', del.bind(null, ['.tmp/**/!(.publish)', 'dist']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 gulp.task('clean:dist', del.bind(null, ['.tmp/.publish']));
 
 gulp.task('fonts', function() {
     var filterfont = $.filter('**/*.{eot,svg,ttf,woff,woff2}');
-    return gulp.src('./bower.json')
-        .pipe($.mainBowerFiles())
+    var bowerfonts = gulp.src('./bower.json')
+        .pipe($.mainBowerFiles());
+    var appfonts = gulp.src('app/fonts/*');
+
+    return merge(bowerfonts, appfonts)
         .pipe(filterfont)
-        //Possibly concat in app fonts here?
+        //.pipe($.debug({title: 'fonts'}))        
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/fonts')) //for serve
-        .pipe(gulp.dest('dist/fonts'));
+        .pipe(gulp.dest(DIST + 'fonts'))
+        .pipe(gulp.dest(DEBUGDIST + 'fonts'));
 });
 
 gulp.task('extras', function() {
@@ -58,7 +70,8 @@ gulp.task('extras', function() {
     ], {
       dot: true
     })
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest(DIST))
+    .pipe(gulp.dest(DEBUGDIST));
 });
 
 
@@ -74,10 +87,24 @@ function lint(files, options) {
 
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('serve', ['fonts'], function() {
+
+gulp.task('serve', ['fonts', 'bower'], function() {
+
+  var port = 9000;
+
   browserSync({
     notify: false,
-    port: 9000,
+    port: port,
+    rewriteRules: [
+      {
+          match: /<meta http-equiv="Content-Security-Policy" content=".*">/,
+          fn: function (match) {
+              var ret = "default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self'; img-src 'self'; connect-src http://localhost:" + port + " ws://localhost:" + port
+              ret = "<meta http-equiv=\"Content-Security-Policy\" content=\"" + ret + "\">";              
+              return ret;
+          }
+      }
+    ],
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
@@ -98,36 +125,24 @@ gulp.task('serve', ['fonts'], function() {
   gulp.watch('bower.json', ['fonts']);
 });
 
-
-gulp.task('html-v', function() {
-  var assets = $.useref.assets({
-    noconcat: true,
-    searchPath: ['.tmp', 'app', '.']
-  });
-
-  var parts = gulp.src('app/*.html')
-    .pipe(assets)
-    .pipe($.flatten())
-
-   var js = parts
-    .pipe($.filter("*.js"))
-    .pipe(gulp.dest('dist/raw/js'))
-    .pipe($.uglify())
-    .pipe(gulp.dest('dist/min/js'))
-
-  return js;
-
+gulp.task('templates', function() {  
+  return gulp.src('app/templates/**/*.html')
+    .pipe(gulp.dest(DEBUGDIST + "templates"))
+    .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
+    .pipe(gulp.dest(DEBUGDIST + "js"))
+    .pipe(gulp.dest(".tmp/pre/" + "js"));
 });
 
-gulp.task('html', function() {
+gulp.task('html', ['templates'], function() {
+  //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
   var assets = $.useref.assets({
-    searchPath: ['.tmp', 'app', '.']
+    searchPath: ['.tmp', '.tmp/pre/', 'app', '.']
   });
 
   var jsFilter = $.filter('**/*.js', {restore: true});
   var cssFilter = $.filter('**/*.css', {restore: true});
 
-  return gulp.src('app/*.html')
+  return gulp.src(['app/*.html'])
     .pipe(assets)
     //filtr js
     .pipe(jsFilter)
@@ -142,15 +157,35 @@ gulp.task('html', function() {
     .pipe(assets.restore())
     .pipe($.useref())
     //html
-    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
-    .pipe(gulp.dest('dist'));
+    //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
+    .pipe(gulp.dest(DIST));
 });
+
+gulp.task('debugdist', ['templates'], function() {
+  var assets = $.useref.assets({
+    searchPath: ['.tmp', 'app', '.'],
+    noconcat : true
+  })
+  var htmlFilter = $.filter('*.html', {restore: true});
+
+  return gulp.src(['app/*.html'])      
+    .pipe(assets)
+    .pipe($.flatten({newPath:'extras'}))
+    .pipe(assets.restore())
+    //.pipe($.useref()) //Can't use this. Will transform manually...
+    .pipe(htmlFilter)    
+    .pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
+    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))    
+    .pipe(htmlFilter.restore)
+
+    .pipe(gulp.dest(DEBUGDIST))
+})
 
 gulp.task('build', function() {
   runSequence(
     'bower',
     'clean',
-    ['html', 'fonts', 'extras']
+    ['debugdist', 'html', 'fonts', 'extras', 'electron:js']
   );
   //dump some size info
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
@@ -171,11 +206,10 @@ gulp.task('bump', function() {
     .pipe(gulp.dest('./'))
 });
 
-downloadElectron = require('gulp-download-electron');
 gulp.task('electron:download', function(cb) {
 
   //Not really very gulp-like.
-  return downloadElectron({
+  return $.downloadElectron({
     version: '0.30.3',
     outputDir: './.tmp/binaries',
   }, cb)
@@ -188,6 +222,12 @@ gulp.task('electron:asar', function(cb) {
     .pipe($.asar('app.asar'))
     .pipe(gulp.dest(".tmp/asar"))
     ;
+});
+
+gulp.task('electron:js', function() {
+  return gulp.src(['app/*.js'])
+    .pipe(gulp.dest(DIST))
+    .pipe(gulp.dest(DEBUGDIST))
 });
 
 gulp.task('electron', function() {
@@ -235,7 +275,7 @@ gulp.task('gh-pages', ['clean:dist'], function() {
     cacheDir: ".tmp/.publish",
   };
 
-  return gulp.src('./dist/**/*')
+  return gulp.src(DIST + '**/*')
     .pipe($.file("CNAME", cname))
     .pipe($.debug({title: "gh-pages"}))
     .pipe($.ghPages(options));
