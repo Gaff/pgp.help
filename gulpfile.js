@@ -84,10 +84,37 @@ function lint(files, options) {
 
 gulp.task('lint', lint('app/scripts/**/*.js'));
 
-gulp.task('serve', ['fonts'], function() {
+
+gulp.task('serve', ['fonts', 'bower'], function() {
   browserSync({
     notify: false,
-    port: 9000,
+    port: 9003,
+    rewriteRules: [
+      {
+          match: /<meta http-equiv="Content-Security-Policy" content=".*">/,
+          fn: function (match) {
+              //Parse the tag and build up a map.  
+              str = match.match(/<meta http-equiv="Content-Security-Policy" content="(.*)">/)[1];              
+              var str = match[1];
+              var data = str.split(";").map(function(x){return x.trim()})
+                            .reduce(function(d,x){
+                                var m = x.indexOf(" ");
+                                if (m>0) { d[x.substr(0,m)] = x.substr(m); } 
+                                return d;
+                            },{} );
+              console.log( data);
+              data["scrpt-src"] = data["scrpt-src"] + " rubbish.com";
+              data["connect-src"] = data["scrpt-src"] + " http://localhost:9000 ws://localhost:9000";
+              
+              var ret = "";
+              console.log(data);
+              data.forEach(function(k,v) { ret = ret + "; " + k + " " + v});
+              ret = "<meta http-equiv=\"Content-Security-Policy\" content=\"" + ret + "\">";
+              console.log( "Boom: " + ret);
+              return ret;
+          }
+      }
+    ],
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
