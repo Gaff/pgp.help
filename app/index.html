@@ -109,10 +109,8 @@
                   </div>
                 </div>
               </div>
-              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
-                Key data is stored within your browser. It is NEVER sent over the internet.
-              </div>
-              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
+              <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+              <div class="form-group row" ng-show="!persist && isStored()">
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
                   <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>

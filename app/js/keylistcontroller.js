@@ -74,7 +74,6 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
   $scope.skipintro = $scope.allKeys().length > 2 ? true : false; //Should we start in basic mode?
   $scope.persist = $scope.workstarted;
-  $scope.stored = $scope.persist; //Have we stored anything locally? Used to control delete button.
   pgpkeys = openpgp.key.readArmored(myKey);
   openpgp.config.commentstring = "https://pgp.help"; //Bit of a hack?
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
@@ -88,10 +87,19 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     };
   };
 
-
-  $scope.$watch('$viewContentLoaded', function() {
-    //This makes sure that when we load up we pass down the selection.
-  });
+  $scope.isStored = function() {
+    if(typeof(Storage) !== "undefined") {
+      var ls = window.localStorage;
+      //TODO fetch these strings from openpgpjs lib
+      if(ls.getItem("openpgp-private-keys") || ls.getItem("openpgp-public-keys")) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
 
   $scope.$watch('persist', function() {
     if ($scope.persist) {
@@ -155,7 +163,6 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     if ($scope.persist) {
       //console.log("saved...");
       $scope.keyring.store();
-      $scope.stored = true;
     };
   };
 
@@ -178,7 +185,6 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     modalInstance.result.then(function (result) {
       $scope.keyring.clear();
       $scope.keyring.store();
-      $scope.stored = false;
 
       $scope.$state.go("key", {key:null, private:false});
     }, function () {
