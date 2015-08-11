@@ -29,6 +29,24 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     }
   };
 
+  $scope.isStored = function() {
+    if(typeof(Storage) !== "undefined") {
+      var ls = window.localStorage;
+      //TODO fetch these strings from openpgpjs lib
+      var prk = ls.getItem("openpgp-private-keys");
+      var puk = ls.getItem("openpgp-public-keys");
+      //empty lists are persisted. See:
+      //https://github.com/openpgpjs/openpgpjs/pull/344
+      if((prk && prk != "[]" ) || (puk && puk != "[]")) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
+
   $scope.addOrUpdateKey = function(data) {
     //console.log(data);
     var f = $scope.getFingerprint(data);
@@ -73,7 +91,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
 
   $scope.keyring = new openpgp.Keyring(); //Magically attaches to local store!
   $scope.skipintro = $scope.allKeys().length > 2 ? true : false; //Should we start in basic mode?
-  $scope.persist = $scope.workstarted;
+  $scope.persist = $scope.isStored();
   pgpkeys = openpgp.key.readArmored(myKey);
   openpgp.config.commentstring = "https://pgp.help"; //Bit of a hack?
   $scope.addOrUpdateKey(pgpkeys.keys[0]);
@@ -86,20 +104,6 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
       return $scope.keyring.publicKeys.getForId(id);
     };
   };
-
-  $scope.isStored = function() {
-    if(typeof(Storage) !== "undefined") {
-      var ls = window.localStorage;
-      //TODO fetch these strings from openpgpjs lib
-      if(ls.getItem("openpgp-private-keys") || ls.getItem("openpgp-public-keys")) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
 
   $scope.$watch('persist', function() {
     if ($scope.persist) {
