@@ -63,7 +63,7 @@ Most components are MIT licensed. Openpgpjs is LGPL. Please refer to the github 
 
 I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you spot any security issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
 
-I'm currently looking for work in the security space. If you are interested or thing I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
+I'm currently looking for work in the security space. If you are interested or think I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
 
 ### How can I contact you? What is your PGP key?
 
