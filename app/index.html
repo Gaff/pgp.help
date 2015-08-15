@@ -110,7 +110,7 @@
               </div>
               <alert type="danger" ng-show="isStored() && isStorageSafe()" ng-cloak>This webpage has been loaded from a file. Stored data can be seen by any other web pages loaded from files on your system. It is not recomended you persist data in this configuration.<a ui-sref="intro">Why?</a></alert>
               <alert type="warning" ng-show="!persist && unstoredPrivateKeys" ng-cloak>Private key data has not been saved anywhere.</alert>
-              <div class="form-group row" ng-show="!persist && isStored()">
+              <div class="form-group row" ng-show="!persist && isStored()" ng-cloak>
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
                   <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
