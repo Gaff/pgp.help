@@ -108,6 +108,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   $scope.$watch('persist', function() {
     if ($scope.persist) {
       $scope.workstarted = true;
+      $scope.unstoredPrivateKeys = false;
     }
     $scope.saveKeys();
   });
@@ -122,8 +123,16 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
     return key.primaryKey.isDecrypted;
   }
 
-  $scope.$on('persist', function(event) {
-    $scope.persist = true;
+  $scope.isStorageSafe = function() {
+    return getOrigin() == "file://";
+  }
+
+  $scope.$on('generate', function(event) {
+    //TODO: Really the get should be able to tell us if it was
+    //generated or imported. Maybe?
+    if(!$scope.persist) {
+      $scope.unstoredPrivateKeys = true;
+    }
   });
 
   $scope.$on('newkey', function(event, data) {

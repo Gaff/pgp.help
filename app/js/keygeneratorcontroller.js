@@ -27,7 +27,7 @@ pgpApp.controller('KeyGenerator', function ($scope, $state, focus) {
         //var privkey = keypair.privateKeyArmored;
         //var pubkey = keypair.publicKeyArmored;
         var pKey = openpgp.key.readArmored( keypair.publicKeyArmored );
-        $scope.$emit('persist');
+        $scope.$emit('generate');
         $scope.$emit('newkey', pKey.keys[0]);
         $scope.$emit('newkey', keypair.key);
         $scope.$state.go("key", {

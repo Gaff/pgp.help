@@ -36,12 +36,21 @@ Obviously we take steps to keep the website secure, but it's possible that someo
 
 The simplest way to prevent this risk is to save a known-good copy of the website. There is a link in the footer that allows you to download and save the website locally. You can verify the CSP header manually to check that it is safe before using it (see above).
 
+### Is it safe to store key data?
+
+Generally yes, unless you load this website from a local file.
+
+Html5 local storage is visible only to pages loaded from the same origin. This means you must trust that all pages on that domain won't steal data. 
+
+If you load from a local file, the origin is file://, which means any other html pages loaded from a file can see your key data. This is not a great idea and this webpage will warn you against using storage in this configuration. I have some thoughts on how this could be improved. Please contact me if this would be useful to you.
+
 ### Could my browser be hacked?
 
 It's unlikely - if you keep your browser up to date.
 
 Modern browsers that are kept up to date are relatively secure. Serious zero day exploits do happen but they are rare and get fixed quickly. Still you can minimise any risks by doing
 PGP work in a separate browser process to your regular browsing. If there is demand then I will package a standalone executable that will significantly minimise risks from browser exploits.
+
 
 # About pgp.help
 
