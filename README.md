@@ -29,7 +29,7 @@ pgp.help uses [Content Security Policy]("http://www.html5rocks.com/en/tutorials/
 
 The `default-src 'none'` means "don't load anything from anywhere", followed by some exceptions: `script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'` which allows this site to load up some scripts, styles, fonts, and images - but *only* from the place where this website was fetched from in the first place.
 
-If this website attempts to load data from anywhere else, or make any data connections then your browser will prevent this. It might be possible to use [cunning tricks]("http://scarybeastsecurity.blogspot.co.uk/2009/12/generic-cross-browser-cross-domain.html") to leak data back to the pgp.help themselves. If you are concerned then I suggest you use a local copy of this website to prevent this. See below.
+If this website attempts to load data from anywhere else, or make any data connections then your browser will prevent this. It would be theoretically possible to use [tricks]("http://scarybeastsecurity.blogspot.co.uk/2009/12/generic-cross-browser-cross-domain.html") to leak data back to the pgp.help itself - but since this is hosted by github pages, which only alows for static content, it wouldn't be possible to record the data. You can monitor the connections made by pgp.help to ensure that it isn't attempting to steal data this way. If you are concerned then I suggest you use a local copy of this website to prevent this. See below.
 
 ### Could pgp.help be hacked?
 
@@ -39,12 +39,21 @@ Obviously we take steps to keep the website secure, but it's possible that someo
 
 The simplest way to prevent this risk is to save a known-good copy of the website. There is a link in the footer that allows you to download and save the website locally. You can verify the CSP header manually to check that it is safe before using it (see above).
 
+### Is it safe to store key data?
+
+Generally yes, but see below:
+
+Html5 local storage is visible only to pages loaded from the same origin. This means you must trust that all pages on that domain won't steal data. 
+
+If you load from a local file, the origin is file://, which means any other html pages loaded from a file can see your key data. This is not a great idea and this webpage will warn you against using storage in this configuration. I have some thoughts on how this could be improved. Please contact me if this would be useful to you.
+
 ### Could my browser be hacked?
 
 It's unlikely - if you keep your browser up to date.
 
 Modern browsers that are kept up to date are relatively secure. Serious zero day exploits do happen but they are rare and get fixed quickly. Still you can minimise any risks by doing
 PGP work in a separate browser process to your regular browsing. If there is demand then I will package a standalone executable that will significantly minimise risks from browser exploits.
+
 
 # About pgp.help
 
@@ -58,15 +67,15 @@ pgp.help is primarily built upon:
 * [Github pages](https://pages.github.com/)
 * [Cloudflare](https://www.cloudflare.com/)
 
-### What about licencing.
+### What about licensing?
 
-Most components are MIT licenced. Openpgpjs is LGPL. Please refer to the github repo and individual components for full details.
+Most components are MIT licensed. Openpgpjs is LGPL. Please refer to the github repo and individual components for full details.
 
 ### Can I help with your project? Can you help with my project?
 
-I'd love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I'm especially interested if you spot any security issues. I'm also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
+I would love any help! Feel free to contact me, or just send me pull requests. Whatever makes you happy. I am especially interested if you spot any security issues. I am also looking for someone who can help me make my html / css look prettier. I am willing to pay for certain things (via Bitcoin), so please get in touch.
 
-I'm currently looking for work in the security space. If you are interested or thing I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
+I am currently looking for work in the security space. If you are interested or think I could help please get in touch. If you would like specific enhancements added to the site then please feel free to ask.
 
 ### How can I contact you? What is your PGP key?
 

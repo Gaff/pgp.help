@@ -95,11 +95,10 @@
             </div>
           </div>
           <div class="panel panel-default">
-            <div class=panel-heading ng-click="settingsopts=!settingsopts">
+            <div class=panel-heading>
               Settings
-              <span class="pull-right clickable"><i class="glyphicon" ng-class="{'glyphicon-chevron-up':settingsopts, 'glyphicon-chevron-down':!settingsopts}"></i></span>
             </div>
-            <div class="panel-body" ng-show="settingsopts">
+            <div class="panel-body">
               <div class="form-group row" ng-mouseenter="persist_mo=true" ng-mouseleave="persist_mo=false">
                 <label class="control-label col-sm-7">Store key data</label>
                 <div class="controls col-sm-5 pull-right">
@@ -109,10 +108,9 @@
                   </div>
                 </div>
               </div>
-              <div class="alert alert-warning smartfade" ng-show="persist_mo && !stored">
-                Key data is stored within your browser. It is NEVER sent over the internet.
-              </div>
-              <div class="form-group row" ng-show="!persist && stored && allKeys().length > 0">
+              <alert type="danger" ng-show="isStored() && isStorageSafe()" ng-cloak>This webpage has been loaded from a file. Stored data can be seen by any other web pages loaded from files on your system. It is not recomended you persist data in this configuration.<a ui-sref="intro">Why?</a></alert>
+              <alert type="warning" ng-show="!persist && unstoredPrivateKeys" ng-cloak>Private key data has not been saved anywhere.</alert>
+              <div class="form-group row" ng-show="!persist && isStored()" ng-cloak>
                 <label class="control-label col-sm-7" >Delete all data?</label>
                 <div class="controls col-sm-5 pull-right">
                   <button class="btn btn-xs btn-block btn-danger" ng-click="purgeKeys()">Delete!</button>
@@ -145,7 +143,12 @@
 
     <!-- build:js js/main.js -->
     <script src="js/forcehttps.js"></script>
+    <script src="js/origin.js"></script>
+    <script src="js/pgpkey.js"></script>
     <script src="js/pgpcontrollers.js"></script>
+    <script src="js/keylistcontroller.js"></script>
+    <script src="js/keyworkcontroller.js"></script>
+    <script src="js/keygeneratorcontroller.js"></script>
     <script src="js/templates.js"></script>    
     <!-- endbuild -->
   </body>
