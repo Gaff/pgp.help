@@ -21,7 +21,7 @@ This website is designed with security in mind. No data is sent over the interne
 
 No!
 
-pgp.help uses [Content Security Policy]("http://www.html5rocks.com/en/tutorials/security/content-security-policy/") headers to prohibit your browser from sending any data from this page over the internet. You can check these for yourself if you do right-click -> view source. Near the top you will see something like this:
+pgp.help uses [Content Security Policy](http://www.html5rocks.com/en/tutorials/security/content-security-policy/) headers to prohibit your browser from sending any data from this page over the internet. You can check these for yourself if you do right-click -> view source. Near the top you will see something like this:
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self';">
@@ -29,7 +29,7 @@ pgp.help uses [Content Security Policy]("http://www.html5rocks.com/en/tutorials/
 
 The `default-src 'none'` means "don't load anything from anywhere", followed by some exceptions: `script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'` which allows this site to load up some scripts, styles, fonts, and images - but *only* from the place where this website was fetched from in the first place.
 
-If this website attempts to load data from anywhere else, or make any data connections then your browser will prevent this. It would be theoretically possible to use [tricks]("http://scarybeastsecurity.blogspot.co.uk/2009/12/generic-cross-browser-cross-domain.html") to leak data back to the pgp.help itself - but since this is hosted by github pages, which only alows for static content, it wouldn't be possible to record the data. You can monitor the connections made by pgp.help to ensure that it isn't attempting to steal data this way. If you are concerned then I suggest you use a local copy of this website to prevent this. See below.
+If this website attempts to load data from anywhere else, or make any data connections then your browser will prevent this. It would be theoretically possible to use [tricks](http://scarybeastsecurity.blogspot.co.uk/2009/12/generic-cross-browser-cross-domain.html) to leak data back to the pgp.help itself - but since this is hosted by github pages, which only alows for static content, it wouldn't be possible to record the data. You can monitor the connections made by pgp.help to ensure that it isn't attempting to steal data this way. If you are concerned then I suggest you use a local copy of this website to prevent this. See below.
 
 ### Could pgp.help be hacked?
 
