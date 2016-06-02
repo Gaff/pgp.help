@@ -1,12 +1,14 @@
 sudo: false
 language: node_js
 node_js:
-- '0.10'
 - '0.12'
-- iojs
+- '5'
+- '5.1'
+- '4'
+- '4.2'
 before_deploy:
-  - git config --global user.email machine@pgp.help 
-  - git config --global user.name "pgp.help Travis Build" 
+  - git config --global user.email machine@pgp.help
+  - git config --global user.name "pgp.help Travis Build"
 deploy:
   skip_cleanup: true
   provider: script
