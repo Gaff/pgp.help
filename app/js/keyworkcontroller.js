@@ -48,7 +48,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   };
 
   $scope.deleteKey = function() {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
       templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
