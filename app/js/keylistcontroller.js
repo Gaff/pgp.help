@@ -1,4 +1,4 @@
-pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
+pgpApp.controller('KeyListCtrl', function ($scope, $location, $uibModal) {
 
   $scope.$location = $location;
 
@@ -180,7 +180,7 @@ pgpApp.controller('KeyListCtrl', function ($scope, $location, $modal) {
   };
 
   $scope.purgeKeys = function() {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
       templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',

@@ -1,4 +1,4 @@
-pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, $modal) {
+pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, $uibModal) {
   $scope.key = null;
   $scope.$stateParams = $stateParams;
   $scope.$state = $state;
@@ -48,7 +48,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
   };
 
   $scope.deleteKey = function() {
-    var modalInstance = $modal.open({
+    var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
       templateUrl: 'templates/chickenBox.html',
       controller: 'chickenBoxCtrl',
@@ -135,7 +135,7 @@ pgpApp.controller('KeyWorkCtrl', function ($scope, focus, $state, $stateParams, 
     if ($scope.message && !$scope.isNewKey()) {
       //return "DEC: " + message;
       openpgp.encryptMessage($scope.key, $scope.message).then(function(pgpMessage) {
-        $scope.resulttext = pgpMessage;        
+        $scope.resulttext = pgpMessage;
         $scope.$apply();
       }).catch(function(error) {
         $scope.resulttext = error;

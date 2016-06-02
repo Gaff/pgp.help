@@ -98,16 +98,15 @@ pgpApp.config( [
 ]);
 
 
-pgpApp.controller('chickenBoxCtrl', function ($scope, $modalInstance, content) {
+pgpApp.controller('chickenBoxCtrl', function ($scope, $uibModalInstance, content) {
 
   $scope.content = content;
 
   $scope.ok = function () {
-    $modalInstance.close(true);
+    $uibModalInstance.close(true);
   };
 
   $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
+    $uibModalInstance.dismiss('cancel');
   };
 });
-
