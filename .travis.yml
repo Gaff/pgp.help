@@ -3,9 +3,8 @@ language: node_js
 node_js:
 - '0.12'
 - '5'
-- '5.1'
 - '4'
-- '4.2'
+- 'iojs'
 before_deploy:
   - git config --global user.email machine@pgp.help
   - git config --global user.name "pgp.help Travis Build"
