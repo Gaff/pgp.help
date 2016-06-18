@@ -51,7 +51,7 @@ gulp.task('fonts', function() {
 
     return merge(bowerfonts, appfonts)
         .pipe(filterfont)
-        //.pipe($.debug({title: 'fonts'}))        
+        //.pipe($.debug({title: 'fonts'}))
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/fonts')) //for serve
         .pipe(gulp.dest(DIST + 'fonts'))
@@ -112,7 +112,7 @@ gulp.task('serve', ['fonts', 'bower'], function() {
           match: /<meta http-equiv="Content-Security-Policy" content=".*">/,
           fn: function (match) {
               var ret = "default-src 'none'; script-src 'self' 'sha256-dU4exL-Fu8MTHLyLOAFLnhSp1aGnPtTXhZwXTX6xAn8='; style-src 'self'; font-src 'self'; img-src 'self'; connect-src http://localhost:" + port + " ws://localhost:" + port
-              ret = "<meta http-equiv=\"Content-Security-Policy\" content=\"" + ret + "\">";              
+              ret = "<meta http-equiv=\"Content-Security-Policy\" content=\"" + ret + "\">";
               return ret;
           }
       }
@@ -137,7 +137,7 @@ gulp.task('serve', ['fonts', 'bower'], function() {
   gulp.watch('bower.json', ['fonts']);
 });
 
-gulp.task('templates', ['markdown'], function() {  
+gulp.task('templates', ['markdown'], function() {
   return gulp.src(['app/templates/**/*.html','.tmp/templates/**/*.html'])
     .pipe($.angularTemplatecache("templates.js", {module: "pgpApp", root: "templates"}))
     .pipe(gulp.dest(DEBUGDIST + "js"))
@@ -162,8 +162,8 @@ gulp.task('html', ['templates'], function() {
     .pipe(jsFilter.restore)
     //CSS
     //.pipe(cssFilter)
-    //TODO: This isn't "just working" for some reason
-    //.pipe($.minifyCss({compatibility: '*'}))
+    //TODO: This isn't "just working" for some reason, though not tested for a while.
+    //.pipe($.cleanCss({compatibility: '*'}))
     //.pipe(cssFilter.restore)
     .pipe(assets.restore())
     .pipe($.useref())
@@ -179,14 +179,14 @@ gulp.task('debugdist', ['templates'], function() {
   })
   var htmlFilter = $.filter('*.html', {restore: true});
 
-  return gulp.src(['app/*.html'])      
+  return gulp.src(['app/*.html'])
     .pipe(assets)
     .pipe($.flatten({newPath:'extras'}))
     .pipe(assets.restore())
     //.pipe($.useref()) //Can't use this. Will transform manually...
-    .pipe(htmlFilter)    
+    .pipe(htmlFilter)
     .pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
-    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))    
+    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))
     .pipe(htmlFilter.restore)
 
     .pipe(gulp.dest(DEBUGDIST))
@@ -225,7 +225,7 @@ gulp.task('gh-pages', ['clean:dist'], function() {
 
   //TODO: calculate cname from gh_ref
   var cname = process.env.CNAME || extraArgs.CNAME;
-  
+
   var options = {
     remoteUrl: "https://" +token +"@" + ref,
     branch: branch,
@@ -233,7 +233,7 @@ gulp.task('gh-pages', ['clean:dist'], function() {
   };
 
   return gulp.src(DIST + '**/*')
-    .pipe($.file("CNAME", cname))
+    //.pipe($.file("CNAME", cname))
     .pipe($.debug({title: "gh-pages"}))
     .pipe($.ghPages(options));
 });
