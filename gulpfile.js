@@ -162,8 +162,8 @@ gulp.task('html', ['templates'], function() {
     .pipe(jsFilter.restore)
     //CSS
     //.pipe(cssFilter)
-    //TODO: This isn't "just working" for some reason
-    //.pipe($.minifyCss({compatibility: '*'}))
+    //TODO: This isn't "just working" for some reason, though not tested for a while.
+    //.pipe($.cleanCss({compatibility: '*'}))
     //.pipe(cssFilter.restore)
     .pipe(assets.restore())
     .pipe($.useref())
