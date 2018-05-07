@@ -1,12 +1,9 @@
 sudo: false
 language: node_js
 node_js:
-- '7'
 - '8'
+- '10'
 - 'node'
-# I don't know enough about node flavours to get this to work
-# Seems like io.js is incompatible with some basic node stuff.
-#- 'iojs'
 before_deploy:
   - git config --global user.email machine@pgp.help
   - git config --global user.name "pgp.help Travis Build"
