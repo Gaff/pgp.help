@@ -1,6 +1,6 @@
 {
   "name": "pgp.help",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Modern clientside PGP encryption and decryption tool.",
   "main": "index.js",
   "scripts": {

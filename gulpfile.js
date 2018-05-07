@@ -145,16 +145,10 @@ gulp.task('templates', ['markdown'], function() {
 });
 
 gulp.task('html', ['templates'], function() {
-  //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
-  var assets = $.useref.assets({
-    searchPath: ['.tmp', '.tmp/pre/', 'app', '.']
-  });
-
   var jsFilter = $.filter('**/*.js', {restore: true});
   var cssFilter = $.filter('**/*.css', {restore: true});
 
   return gulp.src(['app/*.html'])
-    .pipe(assets)
     //filtr js
     .pipe(jsFilter)
     .pipe($.ngAnnotate())
@@ -165,8 +159,8 @@ gulp.task('html', ['templates'], function() {
     //TODO: This isn't "just working" for some reason, though not tested for a while.
     //.pipe($.cleanCss({compatibility: '*'}))
     //.pipe(cssFilter.restore)
-    .pipe(assets.restore())
-    .pipe($.useref())
+    //Prefer to find assets in .tmp than app - which means templates.js will have the built version.
+    .pipe($.useref({searchPath: ['.tmp', '.tmp/pre/', 'app', '.']}))
     //html
     //.pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
     .pipe(gulp.dest(DIST));

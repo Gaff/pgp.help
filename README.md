@@ -64,6 +64,7 @@ pgp.help is primarily built upon:
 * [Bootstrap](http://getbootstrap.com/)
 * [Openpgpjs.org](http://openpgpjs.org)
 * [Github pages](https://pages.github.com/)
+* [Cloudflare](https://www.cloudflare.com/)
 
 ### What about licensing?
 

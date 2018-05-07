@@ -14,7 +14,7 @@ deploy:
   script: gulp dist
   on:
     branch: master
-    node: '7'
+    node: '8'
 env:
   global:
     - secure: F3qUSANTBahnzXV0yfZMTnU1qylmLXzqmu7yhJKz0HM+5ioabV1xsvXJbbkodAdGGW3f/6wq+0oAZWotZazrYJh127Ut4esRjToFJqYhZGP1HCcUuMMeTt9nCt0UJ51dANb7gfjZr/u/1VH0fy4d2G8l3ZzDkBGG0zfSqdrBFiR81NCCGjtRgFaltFScw0ThMSZTbtojBRx3I52ShUm19HIqEMB0IoLPEttvzVcUvHIDmGxeOYe2xsv7DcUXNubgQhUQDZJ2f4xja6kafAGOqreeAE5wmzc0S3KG7j4iXjXnCfWxDNayjZNeBwxit4RUt4yK8LM9qgizNGVIRRd6OqYIyhsByvOG+25dRSmDnhSGTDIHD4P3z2CAE4qLZazTB+31CavZzvsBR1k1zRQPciuutDXCpYYqK1fqqkoMSY+JbMvqV89GDpcGJmypgcAjfcWXdyamLV8uKraI8AkbGu0s0PAD0yLVSW/Mx/PjI/HQ594Kh4s4vLOrkS6/2EZ5MNLgGKTCqS4GQKqBJIIWVsx3fXYdyydP5BV3CVuHkq5xlmJcxjKfMbh8kE4heSN6F6IkCUHYKVm5IGiF+bieUzTmaUsVdc32aMrWqoNyvLcofpoeHiH0OnSKUCIYu1fYXPi9oNw+InMgq+LrFnz0Bl6OTrdJxuTj/NCa8sKmg0w=
