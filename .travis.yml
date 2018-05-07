@@ -1,9 +1,9 @@
 sudo: false
 language: node_js
 node_js:
-- '0.12'
 - '5'
-- '4'
+- '7'
+- 'node'
 - 'iojs'
 before_deploy:
   - git config --global user.email machine@pgp.help
