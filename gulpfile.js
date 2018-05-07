@@ -167,21 +167,23 @@ gulp.task('html', ['templates'], function() {
 });
 
 gulp.task('debugdist', ['templates'], function() {
+  /*
   var assets = $.useref.assets({
     searchPath: ['.tmp', 'app', '.'],
     noconcat : true
   })
+  */
   var htmlFilter = $.filter('*.html', {restore: true});
 
   return gulp.src(['app/*.html'])
-    .pipe(assets)
-    .pipe($.flatten({newPath:'extras'}))
-    .pipe(assets.restore())
+    //.pipe(assets)
+    //.pipe($.flatten({newPath:'extras'}))
+    //.pipe(assets.restore())
     //.pipe($.useref()) //Can't use this. Will transform manually...
-    .pipe(htmlFilter)
-    .pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
-    .pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))
-    .pipe(htmlFilter.restore)
+    //.pipe(htmlFilter)
+    //.pipe($.replace(/stylesheet\" href=\".*\/(.*\.css)\"/g,'stylesheet" href="extras/$1"'))
+    //.pipe($.replace(/script src=\".*\/(.*\.js)\"/g,'script src="extras/$1"'))
+    //.pipe(htmlFilter.restore)
 
     .pipe(gulp.dest(DEBUGDIST))
 })
