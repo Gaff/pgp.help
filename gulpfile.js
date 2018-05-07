@@ -167,12 +167,11 @@ gulp.task('html', ['templates'], function() {
 });
 
 gulp.task('debugdist', ['templates'], function() {
-  /*
-  var assets = $.useref.assets({
-    searchPath: ['.tmp', 'app', '.'],
-    noconcat : true
-  })
-  */
+  //var assets = $.useref.assets({
+  //  searchPath: ['.tmp', 'app', '.'],
+  //  noconcat : true
+  //})
+
   var htmlFilter = $.filter('*.html', {restore: true});
 
   return gulp.src(['app/*.html'])
